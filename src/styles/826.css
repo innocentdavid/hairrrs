@@ -1,0 +1,108 @@
+@media only screen and (max-width: 826px){
+	.addboard{
+        display: none;
+        background: white;
+        height: 100vh;
+        width: 100%;
+        align-items: center;
+        top: 0;
+        left: 0;
+        z-index: 25;
+        position: fixed;
+    }
+    .accord-030{
+        display: inline-block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        text-align: center;
+    }
+    .accord-030 span{
+        position: absolute;
+        top: 36%;
+        left: 50%;
+        width: 320px;
+        transform: translate( -50%, -50% );
+    }
+    .accord-030 h{
+        font-size: 15px;
+        font-weight: 600;
+    }
+    
+    .accord-030 .business-statistics{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .addboard .close{
+        float: right;
+        margin-right: 30px;
+        font-size: 50px;
+        font-weight: 300;
+        color: #f40053;
+    }
+    .business-statistics .box-3{
+        background: #f40053;
+        height: 30px;
+        width: 320px;
+        border-radius: 5px;
+        color: white;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: .5s;
+        margin-bottom: 15px;
+    }
+    .box-3:hover{
+        background: #ee0452;
+    }
+    .business-statistics{
+        margin: auto;
+    }
+    .business-statistics img{
+        width: 0px;
+        display: none;
+    }
+    .stats-0{
+        display: inline-block;
+        justify-content: space-between;
+        align-content: center;
+        padding: 0px 0px;
+        padding-bottom: 0;
+        
+    }
+    .box-3 h2{
+        text-align: center;
+        align-items: center;
+        width: auto;
+        color: white;
+        font-size: 15px;
+        font-weight: 400;
+        margin-left: 0px;
+    }
+    .business-statistics .box-1{
+        background: #f9f9f9;
+        height: 100px;
+        width: 250px;
+        border-radius: 0px;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition-delay: .4s;
+        transition: .4s;
+    }
+    .business-statistics .box-1:hover{
+        background: #f0eeee;
+    }
+    .box-1 h2{
+        text-align: center;
+        color: black;
+        font-size: 13px;
+        font-weight: 400;
+    }
+}

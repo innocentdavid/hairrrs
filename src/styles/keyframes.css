@@ -1,0 +1,44 @@
+@-webkit-keyframes slideInUp {
+    0% {
+      opacity: 0;
+      -webkit-transform: translateY(100%);
+      transform: translateY(100%);
+      visibility: visible;
+    }
+    100% {
+      opacity: 1;
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideInUp {
+    0% {
+      opacity: 0;
+      -webkit-transform: translateY(100%);
+      transform: translateY(100%);
+      visibility: visible;
+    }
+    100% {
+      opacity: 1;
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
+    }
+  }
+  
+  @-webkit-keyframes bg-color {
+    0% { background-color: #f3d9e1; }
+    20% { background-color: #f0a4be; }
+    40% { background-color: #f5749f; }
+    60% { background-color: #f05689; }
+    80% { background-color: #f1296c; }
+    100% { background-color: #f70f5c; }
+  }
+  @keyframes bg-color {
+    0% { background-color: #f3d9e1; }
+    20% { background-color: #f0a4be; }
+    40% { background-color: #f5749f; }
+    60% { background-color: #f05689; }
+    80% { background-color: #f1296c; }
+    100% { background-color: #f70f5c; }
+  }

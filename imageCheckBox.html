@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* input[type="checkbox"][id^="myCheckbox"] {
+            display: none
+        } */
+
+        .imgCheckBox {
+            display: none;
+        }
+
+        label {
+            border: 1px solid #fff;
+            padding: 10px;
+            display: block;
+            position: relative;
+            margin: 10px;
+            cursor: pointer
+        }
+
+        label:before {
+            background-color: white;
+            color: white;
+            content: " ";
+            display: block;
+            border-radius: 50%;
+            border: 1px solid grey;
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            line-height: 28px;
+            transition-duration: 0.4s;
+            transform: scale(0)
+        }
+
+        label img {
+            height: 100px;
+            width: 100px;
+            transition-duration: 0.2s;
+            transform-origin: 50% 50%
+        }
+
+        :checked+label {
+            border-color: #ddd
+        }
+
+        :checked+label:before {
+            content: "✓";
+            background-color: grey;
+            transform: scale(1)
+        }
+
+        :checked+label img {
+            transform: scale(0.9);
+            /* box-shadow: 0 0 5px #333; */
+            z-index: -1
+        }
+    </style>
+</head>
+
+<body>
+    <div style="width: 100%;">
+        <a href="/" style="width: 210px; height: 70px; border: 1px solid red; border-radius: 5px; display: flex;">
+            <img src="" style="width: 38%; min-height: 70px; background: #e6e6e690;" alt="" />
+            <div style="padding: 5px;">
+                <b>Clasical Wig first class</b>
+
+            </div>
+        </a>
+    </div>
+
+
+    <div style="display: flex; flex-wrap: wrap;">
+        <div>
+            <input type="checkbox" class="imgCheckBox" id="myCheckbox1"
+                data-imgSrc="http://tech21info.com/admin/wp-content/uploads/2013/03/chrome-logo-200x200.png" />
+            <label for="myCheckbox1"><img
+                    src="http://tech21info.com/admin/wp-content/uploads/2013/03/chrome-logo-200x200.png" /></label>
+        </div>
+
+        <div>
+            <input type="checkbox" class="imgCheckBox" id="myCheckbox2"
+                data-imgSrc="http://www.thebusinessofsports.com/wp-content/uploads/2010/10/facebook-icon-200x200.png" />
+            <label for="myCheckbox2"><img
+                    src="http://www.thebusinessofsports.com/wp-content/uploads/2010/10/facebook-icon-200x200.png" /></label>
+        </div>
+    </div>
+
+    <button onclick=check()>Insert</button>
+
+    <div class="prevw" style="display: flex; flex-wrap: wrap;"></div>
+
+
+
+    <script>
+        const check = () => {
+            let inputs = document.querySelectorAll('input')
+            console.log(inputs)
+
+            inputs.forEach(element => {
+                if (element.checked) {
+                    let src = element.dataset.imgsrc
+                    console.log(src)
+                    let img = document.createElement('img')
+                    img.src = src;
+                    document.querySelector('.prevw').append(img);
+                    element.checked = false;
+                }
+            });
+
+        }
+    </script>
+</body>
+
+</html>

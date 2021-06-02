@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20.111" height="20.111" viewBox="0 0 20.111 20.111">
+  <g id="support-icon" transform="translate(-1479.75 -37.25)">
+    <path id="Icon_feather-message-circle" data-name="Icon feather-message-circle" d="M23.111,13.289a8.665,8.665,0,0,1-.931,3.929,8.789,8.789,0,0,1-7.858,4.86,8.665,8.665,0,0,1-3.929-.931L4.5,23.111l1.965-5.894a8.665,8.665,0,0,1-.931-3.929,8.789,8.789,0,0,1,4.86-7.858A8.665,8.665,0,0,1,14.323,4.5h.517a8.768,8.768,0,0,1,8.272,8.272Z" transform="translate(1476 33.5)" fill="#f40053" stroke="#f40053" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Icon_simple-slashdot" data-name="Icon simple-slashdot" d="M7.8,0,4.244,6.7H2.8L6.356,0Z" transform="translate(1484.505 43.958)" fill="#fff" stroke="#fff" stroke-width="1"/>
+  </g>
+</svg>

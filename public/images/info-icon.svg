@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="26.09" height="26.09" viewBox="0 0 26.09 26.09">
+  <g id="info-icon" transform="translate(-1195.815 -819.256)">
+    <g id="Icon_feather-info" data-name="Icon feather-info" transform="translate(1196.815 820.256)">
+      <path id="Path_1047" data-name="Path 1047" d="M27.09,15.045A12.045,12.045,0,1,1,15.045,3,12.045,12.045,0,0,1,27.09,15.045Z" transform="translate(-3 -3)" fill="none" stroke="#00c2f4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    </g>
+    <path id="Icon_open-info" data-name="Icon open-info" d="M5.339,0a1.78,1.78,0,1,0,1.78,1.78A1.785,1.785,0,0,0,5.339,0ZM2.67,4.449A2.666,2.666,0,0,0,0,7.119H1.78a.89.89,0,1,1,1.78,0c0,.5-1.78,2.919-1.78,4.449a2.633,2.633,0,0,0,2.67,2.67,2.666,2.666,0,0,0,2.67-2.67H5.339a.89.89,0,0,1-1.78,0c0-.641,1.78-3.275,1.78-4.449A2.689,2.689,0,0,0,2.67,4.449Z" transform="translate(1205.3 825.181)" fill="#00c2f4"/>
+  </g>
+</svg>

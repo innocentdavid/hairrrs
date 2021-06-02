@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+*src-ig-clone
+*src-old
+
 # testing
 /coverage
 
