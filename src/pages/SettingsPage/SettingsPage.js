@@ -26,8 +26,6 @@ function SettingsPage() {
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
-    const [photoURL, setphotoURL] = useState(null)
-    const [coverPhotoURL, setCoverPhotoURL] = useState(null)
     const [dob, setDob] = useState('')
     const [gender, setGender] = useState(null)
     const [userName, setUserName] = useState('')
@@ -44,14 +42,34 @@ function SettingsPage() {
     const [settings, setSettings] = useState([])
 
     const updateAccount = () => {
+        var coverPhotoURL = document.querySelector('#profilePics').src
+        var photoURL = document.querySelector('#profilePics').src
+        var firstName = document.querySelector('#firstName').src
+        var lastName = document.querySelector('#lastName').src
+        var phoneNumber = document.querySelector('#phoneNumber').src
+        var dob = document.querySelector('#dob').src
+        var gender = document.querySelector('#gender').src
+        var userName = document.querySelector('#userName').src
+        var aboutBusiness = document.querySelector('#aboutBusiness').src
+        var website = document.querySelector('#website').src
+        var services = document.querySelector('#services').src
+        var country = document.querySelector('#country').src
+        var location = document.querySelector('#location').src
+        var address = document.querySelector('#address').src
+        var fullName = document.querySelector('#fullName').src
+        var docForVerification = document.querySelector('.docForVerification').src
+        var reqToDelAcc = document.querySelector('#reqToDelAcc').src
+        var settings = document.querySelector('#settings').src
+
         var data = {
-            firstName,lastName,phoneNumber,photoURL,coverPhotoURL,dob,gender,userName,aboutBusiness,website,services,country,location,address,fullName,docForVerification,reqToDelAcc,settings
+            firstName,lastName,phoneNumber,dob,gender,userName,aboutBusiness,website,services,country,location,address,fullName,docForVerification,reqToDelAcc,settings,photoURL,coverPhotoURL
         }
-        console.log(auth.currentUser)
-        if(auth.currentUser && user?.email){
-            db.collection('users').doc(auth.currentUser.uid).update(data)
-            console.log('updated')
-        }else{ console.log('error') }
+        console.log({data})
+        
+        // if(auth.currentUser && user?.email){
+        //     db.collection('users').doc(auth.currentUser.uid).update(data)
+        //     console.log('updated')
+        // }else{ console.log('error') }
     }
 
     return (
@@ -81,19 +99,21 @@ function SettingsPage() {
 
                     <div className="display-picture">
                         <div className="d-photo">
-                            <img src={user?.photoURL ? user?.photoURL : process.env.REACT_APP_DEFAULT_USER_PHOTO_URL} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                            <img id="profilePics" src={user?.photoURL ? user.photoURL : process.env.REACT_APP_DEFAULT_USER_PHOTO_URL} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
                         </div>
                         <span className='txt'>Profile picture</span>
                     </div>
 
-                    <div className="cover"></div>
+                    <div className="cover">
+                        <img id="coverPics" src={user?.coverPhotoURL} alt="" style={{ width: '100%', height: '100%' }}/>
+                    </div>
                     <span className='txt'>Cover picture</span>
 
                     <div className="details-user">
                         <div className="registration-form">
                             <span className='txt'>First name</span>
                             <br />
-                            <input
+                            <input id="firstName"
                                 value={user?.firstName}
                                 onChange={(e) => { setFirstName(e.target.value) }}
                                 type="text" className="firstname" />
@@ -102,7 +122,7 @@ function SettingsPage() {
                         <div className="registration-form">
                             <span className='txt'>Last name</span>
                             <br />
-                            <input
+                            <input id="lastName"
                                 value={user?.lastName}
                                 onChange={(e) => { setLastName(e.target.value) }}
                                 type="text" className="firstname" />
@@ -126,6 +146,7 @@ function SettingsPage() {
                             <div className="system" style={{ marginTop: 0 }}>
                                 <b>Use as contact number</b>
                                 <input
+                                id="phoneNumber"
                                     value={user?.phoneNumber}
                                     onChange={(e) => { setPhoneNumber(e.target.value) }}
                                     type="checkbox" checked="checked" />
@@ -135,7 +156,7 @@ function SettingsPage() {
                         <div className="margin-top">
                             <span className='txt'>Birthday</span>
                             <br />
-                            <input
+                            <input id="dob"
                                 value={user?.dob}
                                 onChange={(e) => { setDob(e.target.value) }}
                                 type="date" className="classctl" />
@@ -144,7 +165,7 @@ function SettingsPage() {
                         <div className="selection">
                             <span className='txt'>Gender</span>
                             <div className="selector">
-                                <input
+                                <input id="gender"
                                     value={user?.gender}
                                     onChange={(e) => { setGender(e.target.value) }}
                                     type="text" placeholder="---" />
@@ -165,7 +186,7 @@ function SettingsPage() {
                         <div className="margin-top">
                             <span className='txt'>Username</span> http://www.Ohyanga.com/username
                         <br />
-                            <input
+                            <input id="userName"
                                 value={user?.userName}
                                 onChange={(e) => { setUserName(e.target.value) }}
                                 type="text" className="classctl" />
@@ -174,7 +195,7 @@ function SettingsPage() {
                         <div className="margin-top">
                             <span className='txt'>About business</span>
                             <br />
-                            <input
+                            <input id="aboutBusiness"
                                 value={user?.aboutBusiness}
                                 onChange={(e) => { setAboutBusiness(e.target.value) }}
                                 type="text" className="classctl" />
@@ -183,7 +204,7 @@ function SettingsPage() {
                         <div className="margin-top">
                             <span className='txt'>Website</span>
                             <br />
-                            <input
+                            <input id="website"
                                 value={user?.website}
                                 onChange={(e) => { setWebsite(e.target.value) }}
                                 type="url" className="classctl" />
@@ -192,7 +213,7 @@ function SettingsPage() {
                         <div className="margin-top">
                             <span className='txt'>Services</span>
                             <br />
-                            <input
+                            <input id="services"
                                 value={user?.services}
                                 onChange={(e) => { setServices(e.target.value) }}
                                 type="text" placeholder="Search service" className="classctl" />
@@ -222,7 +243,7 @@ function SettingsPage() {
                         <div className="selection">
                             <span className='txt'>Country</span>
                             <div className="selector">
-                                <input
+                                <input id="country"
                                     value={user?.country}
                                     onChange={(e) => { setCountry(e.target.value) }}
                                     type="text" placeholder="---" />
@@ -245,7 +266,7 @@ function SettingsPage() {
                         <div className="selection">
                             <span className='txt'>Location</span>
                             <div className="selector">
-                                <input
+                                <input id="location"
                                     value={user?.location}
                                     onChange={(e) => { setLocation(e.target.value) }}
                                     type="text" placeholder="---" />
@@ -269,6 +290,7 @@ function SettingsPage() {
                             <span className='txt'>Address</span>
                             <br />
                             <input
+                            id="address"
                                 value={user?.address}
                                 onChange={(e) => { setAddress(e.target.value) }}
                                 type="text" className="classctl" />
@@ -394,7 +416,7 @@ function SettingsPage() {
                         <div className="margin-top">
                             <span className='txt'>Full name</span>
                             <br />
-                            <input 
+                            <input id="fullName"
                             value={user?.fullName}
                             onChange={(e) => { setFullName(e.target.value) }}
                             type="text" className="classctl" />
@@ -406,7 +428,7 @@ function SettingsPage() {
                             <br />
 
                             <form>
-                                <input 
+                                <input className="docForVerification"
                                 value={user?.docForVerification}
                                 onChange={(e) => { setDocForVerification(e.target.value) }}
                                 type="file" id="fileupload" />

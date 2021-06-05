@@ -78,43 +78,6 @@ const getUserGeolocationDetails = () => {
         .then(data => { return data })
 }
 
-const UploadImage = (imageFile) => {
-    var fileName = imageFile.name
-    if (auth.currentUser) {
-        const MAX_WIDTH = 400;
-
-        if (!imageFile) { alert('You did not select any image') };
-        const reader = new FileReader();
-        reader.readAsDataURL(imageFile);
-
-        reader.onload = function (event) {
-            const imgElement = document.createElement("img");
-            imgElement.src = event.target.result;
-
-            imgElement.onload = function (e) {
-                const canvas = document.createElement("canvas");
-                const scaleSize = MAX_WIDTH / e.target.width;
-                canvas.width = MAX_WIDTH;
-                canvas.height = e.target.height * scaleSize;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(e.target, 0, 0, canvas.width, canvas.height);
-                const srcEncoded = ctx.canvas.toDataURL(e.target, "image/jpeg");
-                // Split the base64 string in data and contentType
-                var block = srcEncoded.split(";");
-                // Get the content type of the image
-                var contentType = block[0].split(":")[1];// In this case "image/jpeg"
-                // get the real base64 content of the file
-                var realData = block[1].split(",")[1];// In this case "R0lGODlhPQBEAPeoAJosM...."
-
-                // Convert it to a blob to upload
-                var blob = b64toBlob(realData, contentType);
-                // console.log(blob);
-                handleUpload(blob, fileName);
-            };
-        };
-    }
-}
-
 function b64toBlob(b64Data, contentType, sliceSize) {
     contentType = contentType || '';
     sliceSize = sliceSize || 512;
@@ -139,31 +102,6 @@ function b64toBlob(b64Data, contentType, sliceSize) {
     return blob;
 }
 
-const handleUpload = (imageFile, fileName) => {
-    var file = new File([imageFile], fileName, { type: "image/png" });
-    const uploadTask = storage.ref(`images/${auth.currentUser.uid}/${fileName}`).put(file);
-
-    uploadTask.on("state_change", (snapshot) => {
-        const progress =
-            Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-        console.log(progress);
-    },
-        (error) => {
-            console.log(error);
-            // alert(error.message)
-        },
-        () => {
-            // complete function...
-            storage
-                .ref(`images/${auth.currentUser.uid}/${fileName}`)
-                .getDownloadURL()
-                .then(url => {
-                    // post image inside db
-                    db.collection('users').doc(auth.currentUser.uid).collection('images').add({ url });
-                });
-        }
-    );
-};
 
 const deleteArticle = (id) => {
     if (id) {
@@ -200,16 +138,16 @@ const hasSaved = (saveList, id) => {
     if (r.length !== 0) { return true } else { return false }
 }
 
-const followUser = (userId, photoURL, displayName, userName='Username') => {
-    if(uid){
+const followUser = (userId, photoURL, displayName, userName = 'Username') => {
+    if (uid) {
         db.collection('users').doc(uid).collection('following').doc(userId).set({
             uid: userId, photoURL, displayName, userName
         })
 
         db.collection('users').doc(userId).collection('follower').doc(uid).set({
-            uid, 
-            photoURL: user?.map(doc => doc.photoURL ), 
-            displayName: user?.map(doc => doc.displayName ),
+            uid,
+            photoURL: user?.map(doc => doc.photoURL),
+            displayName: user?.map(doc => doc.displayName),
             userName
             // userName: user?.map(doc => doc.userName )
         })
@@ -217,24 +155,58 @@ const followUser = (userId, photoURL, displayName, userName='Username') => {
 }
 
 const unFollowUser = (userId) => {
-    if(uid){
+    if (uid) {
         db.collection('users').doc(uid).collection('following').doc(userId).delete()
         db.collection('users').doc(userId).collection('follower').doc(uid).delete()
     }
 }
 
 const hasFollowed = async (userId) => {
-    if(uid){
+    if (uid) {
         let followerRef = await db.collection('users').doc(userId).collection('follower').doc(uid).get()
         return followerRef.exists
     }
 
 }
 
+function pasteHtmlAtCaret(html) {
+    var sel, range;
+    if (window.getSelection) {
+        // IE9 and non-IE
+        sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+
+            // Range.createContextualFragment() would be useful here but is
+            // non-standard and not supported in all browsers (IE9, for one)
+            var el = document.createElement("div");
+            el.innerHTML = html;
+            var frag = document.createDocumentFragment(), node, lastNode;
+            while ((node = el.firstChild)) {
+                lastNode = frag.appendChild(node);
+            }
+            range.insertNode(frag);
+
+            // Preserve the selection
+            if (lastNode) {
+                range = range.cloneRange();
+                range.setStartAfter(lastNode);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+    } else if (document.selection && document.selection.type !== "Control") {
+        // IE < 9
+        document.selection.createRange().pasteHTML(html);
+    }
+}
+
 export {
     month, getMonthDate, getMonthDateYearHour_minute,
     getDesc, topFunction, getRandomInt,
-    getUserGeolocationDetails, UploadImage,
-    deleteArticle, save, Unsave, hasSaved, followUser, 
-    unFollowUser, hasFollowed
+    getUserGeolocationDetails, b64toBlob,
+    deleteArticle, save, Unsave, hasSaved, followUser,
+    unFollowUser, hasFollowed, pasteHtmlAtCaret
 };

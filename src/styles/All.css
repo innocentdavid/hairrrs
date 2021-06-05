@@ -1902,7 +1902,7 @@ input[type="date"]::-webkit-inner-spin-button {
 }
 
 .insertImageModalCloseOnTouch {
-  display: none;
+  /* display: none; */
   position: fixed;
   top: 0;
   left: 0;
@@ -9629,7 +9629,6 @@ seller {
   border: 1px solid #dbdbdb;
   box-shadow: 0px 4px 14px 0.5px rgba(128, 128, 128, 0.116);
   z-index: 99999999;
-  display: none;
 }
 
 .modal .inserts {

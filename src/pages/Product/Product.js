@@ -83,11 +83,12 @@ function Product() {
     // getUserGeolocationDetails to set page view
     useEffect(() => {
         const unsubscribe = () => {
-            if (product?.id) {
+            if (product) {
                 getUserGeolocationDetails().then(data => {
                     const docId = `${data.country_name}_${data.IPv4}`;
 
-                    if (window.location.hostname !== 'localhost' && product?.sellerId !== auth.currentUser.uid) {
+                    // if (window.location.hostname !== 'localhost' && product?.sellerId !== auth.currentUser.uid) {
+                    if (product?.sellerId !== auth.currentUser.uid) {
                         db.collection('products').doc(product?.id).collection('pageViews').doc(docId).set({
                             IPv4: data.IPv4,
                             city: data.city,
