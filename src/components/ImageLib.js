@@ -5,7 +5,7 @@ import firebase from 'firebase';
 import { pasteHtmlAtCaret, b64toBlob } from '../fuctions';
 import ProgressBar from './ProgressBar';
 
-function ImageLib({ articleTitle, setImageToList, inserImgCaller, closeInsertImageModal }) {
+function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal }) {
     const [user] = useAuthState(auth)
     const [progress, setProgress] = useState(0)
     const [showProgBar, setShowProgBar] = useState(false)
@@ -33,11 +33,16 @@ function ImageLib({ articleTitle, setImageToList, inserImgCaller, closeInsertIma
             let editor = document.querySelector('#output');
 
             if (location === 'editor' && editor) {
-                let img = `<img src=${src} alt=${articleTitle.toString()} />`
+                let img = `<img src=${src} alt=${title.toString()} />`
                 editor.focus();
                 pasteHtmlAtCaret(img);
-            } else {
-                setImageToList(src)
+            }
+            if(inserImgCaller === 'AddProduct'){
+                let img = document.createElement('img')
+                img.alt=title;
+                img.src=src;
+                img.classList.add('pImg');
+                document.querySelector('.add-images').append(img)
             }
             checkedImage.checked = false;
             closeInsertImageModal();
@@ -119,7 +124,7 @@ function ImageLib({ articleTitle, setImageToList, inserImgCaller, closeInsertIma
                 </div>
 
                 <div className="imgPrevw"><img className="" src="" alt="" width='100%' height="100%" /></div>
-                <button className="insertImage" onClick={() => { insert(inserImgCaller) }}>Insert image</button>
+                <button className="insertImage" onClick={(e) => { e.preventDefault(); insert(inserImgCaller) }}>Insert image</button>
             </div>
             <div className="galleryLoad">
                 <div className="imagesGallery">

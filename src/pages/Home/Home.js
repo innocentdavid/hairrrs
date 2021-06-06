@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
+import ProductCard from '../../components/ProductCard';
 import TrendingArticles from '../../components/TrendingArticles';
 import { db } from '../../firebase';
 
@@ -19,7 +20,7 @@ function Home() {
     }, [])
 
     // eslint-disable-next-line no-unused-vars
-    const featuredCatg = ['wigs', 'Weavons', 'extras', 'gadgets']
+    const featuredCatg = ['wig', 'weavon', 'gadgets', 'extra']
 
     return (
         <>
@@ -147,180 +148,25 @@ function Home() {
 
             {/* Products per catg */}
             <div className="layout3">
-
-                {/* catgs_01 */}
-                <div className="subcategories">
-                    <div className="trenz">
-                        <h1>Wigs</h1>
-                    </div>
-                    <div className="prodCont">
-
-                        {/* product base on catg01 */}
-                        <div className="products">
-                            <Link to={`products?category=wigs`} >
-                                <div className="shopper">
-                                    <div className="imgbox">
-                                        <img src="/images/nutless braid.png" alt="images" className="images" />
-                                        <div className="details">
-                                            <h2>Classical Wig, everlly style</h2>
-                                            <span>N17,500</span>
-                                            <div className="seller">hairrrs</div>
-                                            <div className="likes--save">
-                                                <div className="promo-validity">
-                                                    <div className="goldpromotion">Gold promotion</div>
-                                                </div>
-                                                <div className="save--icon">
-                                                    <img src="/images/circle-arrow-down-color.svg" alt="" className="group84" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
+                {featuredCatg.map(catg => (
+                    <div key={catg} className="subcategories">
+                        <div className="trenz">
+                            <h1>{catg}</h1>
                         </div>
-                        {/* product base on catg01 end */}
-
-                    </div>
-
-                    <div className="seemore-class">
-                        <Link to="products" ><div className="seemore">see more</div></Link>
-                    </div>
-
-                </div>
-                {/* catgs_01 end */}
-
-                {/* catgs_02 */}
-                <div className="subcategories">
-                    <div className="trenz">
-                        <h1>Weavons</h1>
-                    </div>
-
-                    <div className="prodCont">
-
-                        {/* product base on catg02 */}
-                        <div className="products">
-                            <Link to={`products?category=Weavons`} >
-                                <div className="shopper">
-                                    <div className="imgbox">
-                                        <img src="/images/nutless braid.png" alt="images" className="images" />
-                                        <div className="details">
-                                            <h2>Classical Wig, everlly style</h2>
-                                            <span>N17,500</span>
-                                            <div className="seller">hairrrs</div>
-                                            <div className="likes--save">
-                                                <div className="promo-validity">
-                                                    <div className="goldpromotion">Gold promotion</div>
-                                                </div>
-                                                <div className="save--icon">
-                                                    <img src="/images/circle-arrow-down-color.svg" alt="" className="group84" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
+                        <div className="prodCont">
+                            <ProductCard catg={catg} />
                         </div>
-                        {/* product base on catg02 end */}
 
-                    </div>
-
-                    <div className="seemore-class">
-                        <Link to="products" ><div className="seemore">see more</div></Link>
-                    </div>
-
-                </div>
-                {/* catgs_02 end */}
-
-                {/* catgs_03 */}
-                <div className="subcategories">
-                    <div className="trenz">
-                        <h1>Gadgets</h1>
-                    </div>
-
-                    <div className="prodCont">
-
-                        {/* product base on catg02 */}
-                        <div className="products">
-                        <Link to={`products?category=gadgets`} >
-                                <div className="shopper">
-                                    <div className="imgbox">
-                                        <img src="/images/nutless braid.png" alt="images" className="images" />
-                                        <div className="details">
-                                            <h2>Classical Wig, everlly style</h2>
-                                            <span>N17,500</span>
-                                            <div className="seller">hairrrs</div>
-                                            <div className="likes--save">
-                                                <div className="promo-validity">
-                                                    <div className="goldpromotion">Gold promotion</div>
-                                                </div>
-                                                <div className="save--icon">
-                                                    <img src="/images/circle-arrow-down-color.svg" alt="" className="group84" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
+                        <div className="seemore-class">
+                            <Link to={`products?category=${catg}`} ><div className="seemore">see more</div></Link>
                         </div>
-                        {/* product base on catg02 end */}
 
                     </div>
-
-                    <div className="seemore-class">
-                        <Link to="products" ><div className="seemore">see more</div></Link>
-                    </div>
-
-                </div>
-                {/* catgs_03 end */}
-
-                {/* catgs_04 */}
-                <div className="subcategories">
-                    <div className="trenz">
-                        <h1>Extras</h1>
-                    </div>
-
-                    <div className="prodCont">
-
-                        {/* product base on catg02 */}
-                        <div className="products">
-                        <Link to={`products?category=extras`} >
-                                <div className="shopper">
-                                    <div className="imgbox">
-                                        <img src="/images/nutless braid.png" alt="images" className="images" />
-                                        <div className="details">
-                                            <h2>Classical Wig, everlly style</h2>
-                                            <span>N17,500</span>
-                                            <div className="seller">hairrrs</div>
-                                            <div className="likes--save">
-                                                <div className="promo-validity">
-                                                    <div className="goldpromotion">Gold promotion</div>
-                                                </div>
-                                                <div className="save--icon">
-                                                    <img src="/images/circle-arrow-down-color.svg" alt="" className="group84" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-                        {/* product base on catg02 end */}
-
-                    </div>
-
-                    <div className="seemore-class">
-                        <Link to="products" ><div className="seemore">see more</div></Link>
-                    </div>
-
-                </div>
-                {/* catgs_04 end */}
-
+                ))}
             </div>
             {/* Products per catg end */}
 
-            {/* Articles per catg */}
             <TrendingArticles />
-            {/* Articles per catg end */}
 
             {/* Job vacancy per catg */}
             <div className="layout3">

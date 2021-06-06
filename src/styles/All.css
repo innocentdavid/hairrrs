@@ -13,7 +13,9 @@
   box-sizing: border-box;
 }
 
-html { scroll-behavior: smooth }
+html {
+  scroll-behavior: smooth
+}
 
 body {
   background: #c10041;
@@ -32,6 +34,7 @@ button {
   margin: 10px !important;
   transition: .2s !important
 }
+
 button:hover {
   background: #c10041 !important;
   color: white !important
@@ -2134,7 +2137,8 @@ input[type="date"]::-webkit-inner-spin-button {
   margin-left: -30px;
 }
 
-#output div, #output span {
+#output div,
+#output span {
   background-color: transparent !important;
   color: black !important;
   font-family: inherit !important;
@@ -2206,7 +2210,13 @@ input[type="date"]::-webkit-inner-spin-button {
   margin-top: 10px;
 }
 
-.customArticleTextarea p, .customArticleTextarea h1, .customArticleTextarea h2, .customArticleTextarea h3, .customArticleTextarea h4, .customArticleTextarea h5, .customArticleTextarea h6 {
+.customArticleTextarea p,
+.customArticleTextarea h1,
+.customArticleTextarea h2,
+.customArticleTextarea h3,
+.customArticleTextarea h4,
+.customArticleTextarea h5,
+.customArticleTextarea h6 {
   background-color: unset !important
 }
 
@@ -2824,6 +2834,7 @@ span h2 {
 .promobtn:hover {
   background: white;
 }
+
 /* 
 .price {
   background-color: white;
@@ -3219,12 +3230,14 @@ input[type=range]::-webkit-slider-thumb {
   visibility: visible;
 }
 
-.according .prev, .next {
+.according .prev,
+.next {
   font-weight: 700;
   cursor: pointer;
 }
 
-.prev, .next {
+.prev,
+.next {
   font-weight: 700;
 }
 
@@ -3274,7 +3287,8 @@ input[type=range]::-webkit-slider-thumb {
   margin-top: 250px;
 }
 
-.active, .dot:hover {
+.active,
+.dot:hover {
   background-color: #f40053;
 }
 
@@ -3872,7 +3886,8 @@ input[type=range]::-webkit-slider-thumb {
   display: inline-block;
 }
 
-.ratings-001>span:hover:before, .ratings-001>span:hover~span:before {
+.ratings-001>span:hover:before,
+.ratings-001>span:hover~span:before {
   content: "\2605";
   position: absolute;
   color: #fd0f5f;
@@ -5006,7 +5021,8 @@ textarea.comment-textarea {
   margin: 15px 0;
 }
 
-.showFbtn_false, .totalFollowers_true {
+.showFbtn_false,
+.totalFollowers_true {
   display: none
 }
 
@@ -5161,7 +5177,8 @@ textarea.comment-textarea {
   cursor: pointer;
 }
 
-.ratings-00>span:hover:before, .ratings-00>span:hover~span:before {
+.ratings-00>span:hover:before,
+.ratings-00>span:hover~span:before {
   content: "\2605";
   position: absolute;
   color: #fd0f5f;
@@ -5223,7 +5240,8 @@ textarea.comment-textarea {
   margin-top: -10px;
 }
 
-.okstars>span:hover:before, .okstars>span:hover~span:before {
+.okstars>span:hover:before,
+.okstars>span:hover~span:before {
   content: "\2605";
   position: absolute;
   color: #fd0f5f;
@@ -6122,6 +6140,7 @@ textarea.comment-textarea {
     margin-top: 30px;
     padding: 0 5px;
   }
+
   .comments_likes_dislikes_views {
     font-size: .6rem !important;
     font-weight: 400;
@@ -6279,7 +6298,8 @@ textarea.comment-textarea {
   height: 18px;
 }
 
-.comment-box, .reply-box {
+.comment-box,
+.reply-box {
   border: 1px solid #dbdbdb;
   height: auto;
   width: 100%;
@@ -6289,7 +6309,8 @@ textarea.comment-textarea {
   padding: 20px;
 }
 
-.comment-box form, .reply-box form {
+.comment-box form,
+.reply-box form {
   width: 100%;
   padding: 0 10px;
   padding-top: 10px;
@@ -7640,7 +7661,10 @@ seller {
   left: 43%;
   border-radius: 5px 0px 0px 5px;
 }
-.div-icon img { cursor: pointer }
+
+.div-icon img {
+  cursor: pointer
+}
 
 .createArticleMainCont {
   width: 100vw;
@@ -7657,6 +7681,7 @@ seller {
   .according-000 {
     padding: 10px !important;
   }
+
   .article-board .div-icon {
     width: 40%;
     left: 30%;
@@ -9205,19 +9230,24 @@ seller {
     height: 25px;
     margin-top: 0;
   }
+
   .header nav {
     background: #f40053;
   }
+
   .logo {
     margin-left: 30px;
   }
+
   .logo img {
     width: 100px;
     left: 120px;
   }
+
   .logo--mobile {
     display: none;
   }
+
   header nav {
     position: fixed;
     display: flex;
@@ -9230,6 +9260,7 @@ seller {
     color: #757575;
     z-index: 20;
   }
+
   header button {
     cursor: pointer;
     background: #f40053 !important;
@@ -9240,9 +9271,11 @@ seller {
     border: none;
     z-index: 1;
   }
+
   header button:hover {
     background: rgb(235, 0, 78);
   }
+
   header input {
     background: none;
     height: 30px;
@@ -9254,6 +9287,7 @@ seller {
     color: #757575;
     border-radius: 5px;
   }
+
   header form {
     display: flex;
     width: 250px;
@@ -9261,6 +9295,7 @@ seller {
     margin-right: 0;
     text-align: center;
   }
+
   .header2 {
     position: fixed;
     background: #f40053;
@@ -9274,14 +9309,17 @@ seller {
     box-shadow: 0px 4px 14px 0.5px rgba(0, 0, 0, 0.205);
     z-index: 5;
   }
+
   .up-products {
     margin: 0;
     margin-left: 50px;
   }
+
   .up-business {
     margin: 0;
     margin-right: -200px;
   }
+
   .up-JobVacancies {
     margin: 0;
     color: white;
@@ -9289,25 +9327,30 @@ seller {
     margin-left: 200px;
     cursor: pointer;
   }
+
   .up-Articles {
     margin: 0;
     margin-right: 50px;
   }
+
   .icon2 {
     cursor: pointer;
     margin-left: 40%;
     z-index: 20;
   }
+
   .icon2 img {
     height: 20px;
     width: 20px;
   }
+
   .strtsales {
     margin-right: 50px;
     border-radius: 5px;
     margin-left: 30px;
     align-items: center;
   }
+
   .startselling {
     background: #f40053;
     color: white;
@@ -9319,9 +9362,11 @@ seller {
     transition: .4s;
     align-items: center;
   }
+
   .startselling:hover {
     background: rgb(235, 0, 78);
   }
+
   .shopper9 {
     background: white;
     color: black;
@@ -9329,6 +9374,7 @@ seller {
     width: 220px;
     border-radius: 10px 5px 10px 10px;
   }
+
   .shopper9 .imgbox1 img {
     margin-bottom: -3px;
     width: 60px;
@@ -9339,6 +9385,7 @@ seller {
     margin-left: 10px;
     position: absolute;
   }
+
   .shopper9 .learnmore {
     display: flex;
     justify-content: space-between;
@@ -9346,9 +9393,11 @@ seller {
     text-align: center;
     margin-left: 0px;
   }
+
   .shopper9 .user-display {
     display: none;
   }
+
   .shopper9 .website {
     padding: 5px;
     padding-left: 20px;
@@ -9360,6 +9409,7 @@ seller {
     font-weight: 400;
     font-size: 10px;
   }
+
   .shopper9 .learn-more {
     padding: 5px 12px;
     background: #f40053;
@@ -9367,28 +9417,34 @@ seller {
     font-weight: 400;
     font-size: 10px;
   }
+
   .shopper9 .details1 {
     margin-top: 13px;
     width: 140px;
     float: right;
     margin-right: 3px;
   }
+
   .shopper9 .details1 h2 {
     width: 130px;
   }
+
   .shopper9 .details1 .informations {
     width: 130px;
     line-height: 12px;
     margin-top: 5px;
   }
+
   .shopper9 .details1 .imgbox1 {
     width: 20px;
   }
+
   .layout2 {
     background: white;
     padding-right: 10px;
     box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11);
   }
+
   .adv {
     display: flex;
     justify-content: space-between;
@@ -9397,6 +9453,7 @@ seller {
     padding-top: 14px;
     align-content: center;
   }
+
   .billboard {
     cursor: pointer;
     background: #c10041;
@@ -9406,6 +9463,7 @@ seller {
     margin: 20px;
     margin-bottom: 30px;
   }
+
   .billboard .arrows {
     visibility: hidden;
     display: flex;
@@ -9417,9 +9475,11 @@ seller {
     float: right;
     z-index: 1;
   }
+
   .billboard:hover .arrows {
     visibility: visible;
   }
+
   .according .arrows {
     visibility: hidden;
     position: absolute;
@@ -9440,24 +9500,29 @@ seller {
     transform: scale(1);
     top: 60px;
   }
+
   .createArticleMainCont .title h2 {
     color: black
   }
+
   .headerAd {
     background-color: #c10041;
     width: 100%;
     height: 25px;
     margin-top: 0;
   }
+
   .headerAd img {
     width: 100%;
     height: 25px;
     position: fixed;
     z-index: 2;
   }
+
   .header nav {
     background: #f40053;
   }
+
   header nav {
     position: fixed;
     display: flex;
@@ -9473,15 +9538,19 @@ seller {
     padding-right: 30px;
     box-shadow: 0px 2px 20px 10px rgba(0, 0, 0, 0.089);
   }
+
   .logo {
     display: none;
   }
+
   .logo--mobile {
     display: flex;
   }
+
   .logo--mobile img {
     width: 93px;
   }
+
   header button {
     cursor: pointer;
     background: none;
@@ -9494,12 +9563,15 @@ seller {
     border: none;
     z-index: 1;
   }
+
   header button:hover {
     background: none;
   }
+
   .search--holder0 {
     display: none;
   }
+
   header input {
     background: none;
     height: 30px;
@@ -9511,29 +9583,36 @@ seller {
     color: #757575;
     border-radius: 5px;
   }
+
   header form {
     display: flex;
     width: 470px;
     margin-left: 30px;
     margin-right: 0;
   }
+
   .searchicon img {
     height: 14px;
     width: 14px;
     z-index: 3;
   }
+
   .strtsales {
     display: none;
   }
+
   body {
     background: white;
   }
+
   .header2 {
     display: none;
   }
+
   .ly0 {
     display: none;
   }
+
   .navigation--icons {
     position: fixed;
     display: flex;
@@ -9548,34 +9627,43 @@ seller {
     box-shadow: 0px 10px 10px 15px rgba(0, 0, 0, 0.096);
     z-index: 20;
   }
+
   .navigation--icons img {
     width: 17px;
   }
+
   .mobile--icon {
     display: flex;
   }
+
   .mobile-nav-icon {
     display: flex;
     z-index: 22;
   }
+
   .mobile-nav-icon img {
     z-index: 28;
     bottom: 0;
   }
+
   .saveicon {
     display: none;
   }
+
   .notifier {
     display: none;
   }
+
   .icons-class {
     margin-left: 0px;
     z-index: 20;
   }
+
   .icon2 {
     padding: 0;
     margin: 0;
   }
+
   .support {
     position: fixed;
     bottom: 62px;
@@ -9585,19 +9673,23 @@ seller {
     padding: 8px;
     height: 25px;
   }
+
   .support txt {
     margin: 0;
     font-size: 12px;
   }
+
   .support img {
     margin: 0;
     width: 10px;
   }
+
   .scrolltotop {
     bottom: 60px;
     width: 30px;
     height: 30px;
   }
+
   .scrolltotop img {
     align-items: center;
     width: 15px;
@@ -9624,7 +9716,7 @@ seller {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate( -50%, -50%);
+  transform: translate(-50%, -50%);
   border-radius: 5px;
   border: 1px solid #dbdbdb;
   box-shadow: 0px 4px 14px 0.5px rgba(128, 128, 128, 0.116);
@@ -9754,8 +9846,14 @@ seller {
   cursor: pointer;
   padding: 20px;
 }
-.show_share { transition: 2s; }
-.show_share_false { display: none }
+
+.show_share {
+  transition: 2s;
+}
+
+.show_share_false {
+  display: none
+}
 
 
 
@@ -9815,6 +9913,11 @@ label img {
   transform: scale(0.9);
   /* box-shadow: 0 0 5px #333; */
   z-index: -1
+}
+
+.errSection {
+  color: red;
+  margin-left: 23px;
 }
 
 

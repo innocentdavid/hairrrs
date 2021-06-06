@@ -233,7 +233,7 @@ function CreateArticle() {
       <br />
 
       {openImageLib && <ImageLib
-        articleTitle={articleTitle}
+        title={articleTitle}
         setImageToList={setArticleCover}
         closeInsertImageModal={closeInsertImageModal}
         inserImgCaller={inserImgCaller}
