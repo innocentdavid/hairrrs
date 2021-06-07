@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import Header from './components/Header';
+import Header from './components/Header/Header';
 import Auth from './components/Auth';
 import { auth } from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth'

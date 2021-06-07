@@ -4405,10 +4405,6 @@ h1 {
   background: #f9f9f959;
 }
 
-.imgbox img {
-  width: 112px;
-}
-
 .imgbox {
   display: flex;
   height: 119px;

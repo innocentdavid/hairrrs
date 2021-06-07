@@ -20,7 +20,7 @@ function Home() {
     }, [])
 
     // eslint-disable-next-line no-unused-vars
-    const featuredCatg = ['wig', 'weavon', 'gadgets', 'extra']
+    const featuredCatg = ['wig', 'weavon', 'gadgets', 'extras']
 
     return (
         <>

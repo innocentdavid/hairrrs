@@ -8,8 +8,12 @@ import TrendingArticles from '../../components/TrendingArticles';
 import { Helmet } from 'react-helmet';
 import { SaveListContext } from '../../contexts/GlobalStore';
 import SocialMediaButtons from '../../components/SocialMediaButtons';
+import UserProfile from '../../components/UserProfile';
+import RelatedProduct from '../../components/RelatedProduct';
 
 function Product() {
+    var user = UserProfile.getUser().data.user.user
+
     var titleSlug;
     const history = useHistory();
     const params = new URLSearchParams(window.location.search);
@@ -53,25 +57,20 @@ function Product() {
         })
     })
 
-    const [relProducts, setRelProducts] = useState([]);
-
-    const relProductQuery = product ? db.collection('products').where('category', '==', product?.category) : db.collection('products');
-    const [relatedProduct, loadingRelatedProduct, relatedProductError] = useCollectionOnce(
-        relProductQuery, { idField: 'id' }
-    );
-    relatedProductError && console.log(relatedProductError);
-
-    useEffect(() => {
-        relatedProduct && setRelProducts(relatedProduct?.docs.map(doc => ({ id: doc.id, product: doc.data() })))
-    }, [relatedProduct])
-
     const requestcall = (id) => {
         if (product?.seller !== auth.currentUser.displayName) {
             if (product?.sellerId) {
-                db.collection('users').doc(product?.sellerId).collection('requestedCalls').doc(`${id}_${auth.currentUser.uid}`).set({
-                    email: auth.currentUser.email,
-                    phone: auth.currentUser.phoneNumber,
-                    name: auth.currentUser.displayName,
+                db.collection('users').doc(product?.sellerId).collection('history').doc(`${id}_requestedCalls`).set({
+                    type: 'requestedCalls',
+                    email: user.email,
+                    phone: user.phoneNumber,
+                    name: user.displayName,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                })
+
+                db.collection('users').doc(user.uid).collection('requestedCalls').doc(id).set({
+                    title: product.title,
+                    price: product.price,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 })
             }
@@ -82,32 +81,44 @@ function Product() {
 
     // getUserGeolocationDetails to set page view
     useEffect(() => {
-        const unsubscribe = () => {
             if (product) {
                 getUserGeolocationDetails().then(data => {
                     const docId = `${data.country_name}_${data.IPv4}`;
 
                     // if (window.location.hostname !== 'localhost' && product?.sellerId !== auth.currentUser.uid) {
                     if (product?.sellerId !== auth.currentUser.uid) {
-                        db.collection('products').doc(product?.id).collection('pageViews').doc(docId).set({
-                            IPv4: data.IPv4,
-                            city: data.city,
-                            state: data.state,
-                            country_code: data.country_code,
-                            country_name: data.country_name,
-                            latitude: data.latitude,
-                            longitude: data.longitude,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        }).catch(error => { console.log('Error setting page view', error) })
-                        db.collection('products').doc(product?.id).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
+                        db.collection('users').doc(user.uid).collection('pageViews').doc(product.id).get().then(doc => {
+                            if(!doc.exists){
+                                db.collection('products').doc(product?.id).collection('pageViews').doc(docId).set({
+                                    IPv4: data.IPv4,
+                                    city: data.city,
+                                    state: data.state,
+                                    country_code: data.country_code,
+                                    country_name: data.country_name,
+                                    latitude: data.latitude,
+                                    longitude: data.longitude,
+                                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                                }).catch(error => { console.log('Error setting page view', error) })
+                                db.collection('articles').doc(product.id).update({totalPageView: firebase.firestore.FieldValue.increment(1) })
+                                
+                                db.collection('users').doc(user.uid).collection('pageViews').doc(product.id).set({
+                                    category: product.category,
+                                    type: 'product',
+                                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                                })
+                            }
+                        })
                     }
                 })
             }
-        }
-        unsubscribe();
-    }, [product])
+    }, [product, user])
     // getUserGeolocationDetails to set page view end
 
+    var productImages = document.querySelector('.productImagesI')
+    var prevwPane = document.querySelector('#prevw-pane')
+    useEffect(() => {
+        if(productImages && prevwPane){ prevwPane.src = productImages.src }
+    }, [prevwPane, productImages]);
 
     return (
         <>
@@ -134,7 +145,7 @@ function Product() {
 
                                 <div className="productImages">
                                     <div className="image-view">
-                                        <img id="prevw-pane" src="/images/wigs-braids.jpeg" alt="" />
+                                        <img id="prevw-pane" src="" alt="" />
                                     </div>
 
                                     <div className="arrows">
@@ -143,10 +154,9 @@ function Product() {
                                     </div>
                                     <div className="p-10px"></div>
                                     <div className="images-view-1">
-                                        <img className="tile activeTile" data-src="/images/wigs-braids.jpeg" src="/images/wigs-braids.jpeg" alt="" />
-                                        <img className="tile" data-src="/images/wigs-braids-1.jpeg" src="/images/wigs-braids-1.jpeg" alt="" />
-                                        <img className="tile" data-src="/images/wigs-braids.jpeg" src="/images/wigs-braids.jpeg" alt="" />
-                                        <img className="tile" data-src="/images/wigs-braids-1.jpeg" src="/images/wigs-braids-1.jpeg" alt="" />
+                                        {product.productImages.map(image => (
+                                            <img key={image} className="tile productImagesI" data-src={image} src={image} alt="" style={{ width: '80px', height: '80px'}} />
+                                        ))}
                                     </div>
                                 </div>
 
@@ -231,41 +241,8 @@ function Product() {
                         <div className="layout2a">
                             <div className="related">
                                 {/* Related products */}
-                                <div className="products">
-                                    <div className="trenz">
-                                        <h1>Related products</h1>
-                                    </div>
-                                    <div className="shelf">
-
-                                        {loadingRelatedProduct && <h3>Loading ...</h3>}
-                                        {relProducts && relProducts.map(({ id, product }) => (
-                                            <Link key={id} to={`/product?title=${id}`} onClick={() => { topFunction() }}>
-                                                <div className="shopper">
-                                                    <div className="imgbox">
-                                                        <img src="/images/nutless braid.png" alt={product?.title} />
-                                                        <div className="details">
-                                                            <h2>{product?.title}</h2>
-                                                            <span className="price">{product?.price}</span>
-                                                            <div className="seller">{product?.seller}</div>
-                                                            <div className="likes--save">
-                                                                <div className="promo-validity">
-                                                                    <div className="goldpromotion">{product?.promotion}</div>
-                                                                </div>
-                                                                <div className="save--icon">
-                                                                    <img src="/images/circle-arrow-down-color.svg" className="group84" alt={product?.title} />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Link>
-                                        ))}
-
-                                        <div className="seemore-class">
-                                            <Link to="products-page.html"><div className="seemore">see more</div></Link>
-                                        </div>
-                                    </div>
-                                </div>
+                                <RelatedProduct category={product.category} title={product.title} />
+                                
                                 {/* Trending Articles */}
                                 <TrendingArticles />
                             </div>

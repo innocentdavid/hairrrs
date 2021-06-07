@@ -66,6 +66,7 @@ function AddProduct() {
         const data = {
             id,
             title,
+            price,
             productDesc,
             sellerName: auth.currentUser?.displayName,
             sellerId: auth.currentUser?.uid,
@@ -83,7 +84,8 @@ function AddProduct() {
             phone: '+234 811 265 904',
         }
         
-        await db.collection('Jobs').doc(id).set(data);
+        await db.collection('products').doc(id).set(data);
+        window.location=`/product?title=${id}`
 
         setTitle(''); setType(''); setPrice(''); setLocation(''); setAddress('');
         setProductDesc(''); setNegotiable('');
