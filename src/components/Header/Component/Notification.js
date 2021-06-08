@@ -7,8 +7,6 @@ function Notification() {
     const [notificationList] = useContext(NotificationContext)
     const [notificationListTotal, setNotificationListTotal] = useState(0)
 
-    console.log(notificationList)
-
     let tnl = notificationList.map(({ totalNotificationList }) => totalNotificationList)[0]
     useEffect(() => {
         if (tnl) { setNotificationListTotal(tnl) } else { setNotificationListTotal(0) }
@@ -51,13 +49,13 @@ function Notification() {
                         <div key={id} className="people">
                             <Link to={list.link} className="shielder" style={{ display: 'flex', color: 'black' }}>
                                 <div className="img">
-                                    <img src={list.photoURL} alt="hairrrs logo" className="imagy" />
+                                    <img src={list.userPhotoURL} alt="hairrrs logo" className="" />
                                 </div>
                                 <div className="user0">
                                     <br />
                                     <div className="infos">
                                         <div className="text-1">
-                                            <span className="txt">{list.description} </span>
+                                            <span className="txt"><strong>{list.userName}</strong> requested for a call on <strong>{list.productTitle}</strong></span>
                                         </div>
                                         <div
                                             onClick={(e) => { e.preventDefault(); deleteList(id) }}
@@ -72,7 +70,6 @@ function Notification() {
                 </div>
             </div>
         </div>
-
     )
 }
 

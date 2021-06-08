@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { useCollectionOnce, useDocumentData } from 'react-firebase-hooks/firestore';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase';
 import { auth, db } from '../../firebase';
-import { getDesc, getMonthDateYearHour_minute, getUserGeolocationDetails, hasSaved, save, topFunction, Unsave } from '../../fuctions';
+import { getDesc, getMonthDateYearHour_minute, getUserGeolocationDetails, hasSaved, save, Unsave } from '../../fuctions';
 import TrendingArticles from '../../components/TrendingArticles';
 import { Helmet } from 'react-helmet';
-import { SaveListContext } from '../../contexts/GlobalStore';
+import { NotificationContext, SaveListContext } from '../../contexts/GlobalStore';
 import SocialMediaButtons from '../../components/SocialMediaButtons';
 import UserProfile from '../../components/UserProfile';
 import RelatedProduct from '../../components/RelatedProduct';
+import ItemOwner from '../../components/ItemOwner';
 
 function Product() {
     var user = UserProfile.getUser().data.user.user
@@ -30,11 +31,25 @@ function Product() {
     if (!titleSlug) { history.push('/products') }
 
     const [saveList] = useContext(SaveListContext)
+    const [notificationList] = useContext(NotificationContext)
+
     const [showShare, setShowShare] = useState(false)
 
     const productRef = db.collection('products')
     const query = productRef.doc(titleSlug);
     const [product] = useDocumentData(query, { idField: 'id' });
+
+    const [hasRequestedCalled, setHasRequestedCalled] = useState(false);
+    useEffect(() => {
+        if (notificationList && product) {
+            notificationList.forEach(item => {
+                if (item.id === `${product.id}_requestedCalls`) {
+                    setHasRequestedCalled(true)
+                }
+            });
+        }
+    }, [notificationList, product])
+
 
     // seller's userName
     useEffect(() => {
@@ -61,6 +76,9 @@ function Product() {
         if (product?.seller !== auth.currentUser.displayName) {
             if (product?.sellerId) {
                 db.collection('users').doc(product?.sellerId).collection('history').doc(`${id}_requestedCalls`).set({
+                    userName: user.displayName,
+                    userPhotoURL: user.photoURL,
+                    productTitle: product.title,
                     type: 'requestedCalls',
                     email: user.email,
                     phone: user.phoneNumber,
@@ -75,49 +93,57 @@ function Product() {
                 })
             }
         }
-        alert("Your request has been sent to this seller")
+        setHasRequestedCalled(true)
     }
-
+    const deleteRequestcall = (id) => {
+        if (product?.seller !== auth.currentUser.displayName) {
+            if (product?.sellerId) {
+                db.collection('users').doc(product?.sellerId).collection('history').doc(`${id}_requestedCalls`).delete()
+                db.collection('users').doc(user.uid).collection('requestedCalls').doc(id).delete()
+            }
+        }
+        setHasRequestedCalled(false)
+    }
 
     // getUserGeolocationDetails to set page view
     useEffect(() => {
-            if (product) {
-                getUserGeolocationDetails().then(data => {
-                    const docId = `${data.country_name}_${data.IPv4}`;
+        if (product) {
+            getUserGeolocationDetails().then(data => {
+                const docId = `${data.country_name}_${data.IPv4}`;
 
-                    // if (window.location.hostname !== 'localhost' && product?.sellerId !== auth.currentUser.uid) {
-                    if (product?.sellerId !== auth.currentUser.uid) {
-                        db.collection('users').doc(user.uid).collection('pageViews').doc(product.id).get().then(doc => {
-                            if(!doc.exists){
-                                db.collection('products').doc(product?.id).collection('pageViews').doc(docId).set({
-                                    IPv4: data.IPv4,
-                                    city: data.city,
-                                    state: data.state,
-                                    country_code: data.country_code,
-                                    country_name: data.country_name,
-                                    latitude: data.latitude,
-                                    longitude: data.longitude,
-                                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                                }).catch(error => { console.log('Error setting page view', error) })
-                                db.collection('articles').doc(product.id).update({totalPageView: firebase.firestore.FieldValue.increment(1) })
-                                
-                                db.collection('users').doc(user.uid).collection('pageViews').doc(product.id).set({
-                                    category: product.category,
-                                    type: 'product',
-                                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                                })
-                            }
-                        })
-                    }
-                })
-            }
+                // if (window.location.hostname !== 'localhost' && product?.sellerId !== auth.currentUser.uid) {
+                if (product?.sellerId !== auth.currentUser.uid) {
+                    db.collection('users').doc(user.uid).collection('pageViews').doc(product.id).get().then(doc => {
+                        if (!doc.exists) {
+                            db.collection('products').doc(product?.id).collection('pageViews').doc(docId).set({
+                                IPv4: data.IPv4,
+                                city: data.city,
+                                state: data.state,
+                                country_code: data.country_code,
+                                country_name: data.country_name,
+                                latitude: data.latitude,
+                                longitude: data.longitude,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            }).catch(error => { console.log('Error setting page view', error) })
+                            db.collection('articles').doc(product.id).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
+
+                            db.collection('users').doc(user.uid).collection('pageViews').doc(product.id).set({
+                                category: product.category,
+                                type: 'product',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            })
+                        }
+                    })
+                }
+            })
+        }
     }, [product, user])
     // getUserGeolocationDetails to set page view end
 
     var productImages = document.querySelector('.productImagesI')
     var prevwPane = document.querySelector('#prevw-pane')
     useEffect(() => {
-        if(productImages && prevwPane){ prevwPane.src = productImages.src }
+        if (productImages && prevwPane) { prevwPane.src = productImages.src }
     }, [prevwPane, productImages]);
 
     return (
@@ -155,7 +181,7 @@ function Product() {
                                     <div className="p-10px"></div>
                                     <div className="images-view-1">
                                         {product.productImages.map(image => (
-                                            <img key={image} className="tile productImagesI" data-src={image} src={image} alt="" style={{ width: '80px', height: '80px'}} />
+                                            <img key={image} className="tile productImagesI" data-src={image} src={image} alt="" style={{ width: '80px', height: '80px' }} />
                                         ))}
                                     </div>
                                 </div>
@@ -230,7 +256,8 @@ function Product() {
 
                                 <div className="Contact-user">
                                     <Link to="#"><div className="chat">Chat</div></Link>
-                                    <div style={{ cursor: 'pointer' }} onClick={() => { requestcall(product?.id) }} className="Requestcall">Request Call</div>
+                                    {hasRequestedCalled ? <div style={{ cursor: 'pointer' }} onClick={() => { deleteRequestcall(product?.id) }} className="Requestcall">Unrequest Call</div>
+                                        : <div style={{ cursor: 'pointer' }} onClick={() => { requestcall(product?.id) }} className="Requestcall">Request Call</div>}
                                 </div>
                                 <div className="call-class">
                                     <Link to={`/tel:${product?.phone.toString().slice(1).replace(/ /g, '')}`}><div className="call">Call {product?.phone}</div></Link>
@@ -242,31 +269,14 @@ function Product() {
                             <div className="related">
                                 {/* Related products */}
                                 <RelatedProduct category={product.category} title={product.title} />
-                                
+
                                 {/* Trending Articles */}
                                 <TrendingArticles />
                             </div>
                         </div>
                     </div>
 
-                    <div className="layout6">
-                        <div className="sellers-data">
-                            <span>Posted by</span>
-                            <div className="users-data">
-                                <div className="images-data">
-                                    <img src="/images/user.png" alt="" />
-                                </div>
-                                <div className="sellers-name">{product?.seller}</div>
-                                <div className="clickables">
-                                    <div className="message">Message</div>
-                                    <div className="follow">Follow</div>
-                                    <div className="followers seller-followers"></div>
-                                </div>
-                            </div>
-                            <div className="report">
-                                <img src="/images/Icon material-flag.png" className="flag" alt="" /> Report this Business</div>
-                        </div>
-                    </div>
+                    <ItemOwner userId={product?.sellerId} />
                 </>
             }
         </>

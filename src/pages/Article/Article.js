@@ -6,9 +6,9 @@ import firebase from "firebase";
 import { deleteArticle, getDesc, getMonthDate, getUserGeolocationDetails, hasSaved, save, Unsave } from '../../fuctions';
 import SocialMediaButtons from '../../components/SocialMediaButtons';
 import ArticleComments from './Components/comments/ArticleComments';
-import ArticleAuthor from './Components/ArticleAuthor';
 import { Helmet } from 'react-helmet';
 import { SaveListContext } from '../../contexts/GlobalStore';
+import ItemOwner from '../../components/ItemOwner';
 
 function Article() {
     const [saveList] = useContext(SaveListContext)
@@ -314,7 +314,7 @@ function Article() {
                         </div>
                     </div>
 
-                    {article && <ArticleAuthor article={article} articleId={articleId} />}
+                    {article && <ItemOwner userId={article.userId} />}
                 </div>
                 : <h1>loading ...</h1>}
         </>
