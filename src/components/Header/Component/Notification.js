@@ -13,7 +13,7 @@ function Notification() {
     }, [tnl])
 
     const deleteList = (id) => {
-        db.collection('users').doc(auth.currentUser.uid).collection('history').doc(id).delete()
+        db.collection('users').doc(auth.currentUser?.uid).collection('history').doc(id).delete()
     }
 
     return (

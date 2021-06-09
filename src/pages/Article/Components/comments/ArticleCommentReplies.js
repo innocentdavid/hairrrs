@@ -64,37 +64,33 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies }) {
             {showReplies &&
                 <>
                     {replies.map(({ replyId, reply }) => (
-                        <>
-                            <div className="replies--user">
-                                <div className="img-comment-replies">
-                                    <div className="user-data">
-                                        <img key={replyId} className="c-photo" src={reply.photoURL ? reply.photoURL : '/images/default-user.png'} alt="" />
-                                    </div>
-                                    <div className="post--details">
-                                        <div className="username">{reply.userName}</div>
-                                        <comment key={replyId}>{reply.reply}</comment>
-                                    </div>
+                        <div key={replyId} className="replies--user">
+                            <div className="img-comment-replies">
+                                <div className="user-data">
+                                    <img key={replyId} className="c-photo" src={reply.photoURL ? reply.photoURL : '/images/default-user.png'} alt="" />
                                 </div>
-                                <div className="replies-data-js d-flex align-center">
-                                    <RepliesReactions articleId={articleId} commentId={commentId} replyId={replyId} />
-                                    <span className="reportBtn">
-                                        <img src="/images/Group 1192.svg" alt="elipsis hairrrs" />
-                                        <div className="elipsis--info-reply">
-                                            <ul>
-                                                <li>Report</li>
-                                            </ul>
-                                        </div>
-                                    </span>
+                                <div className="post--details">
+                                    <div className="username">{reply.userName}</div>
+                                    <comment key={replyId}>{reply.reply}</comment>
                                 </div>
                             </div>
-
-                        </>
+                            <div className="replies-data-js d-flex align-center">
+                                <RepliesReactions articleId={articleId} commentId={commentId} replyId={replyId} />
+                                <span className="reportBtn">
+                                    <img src="/images/Group 1192.svg" alt="elipsis hairrrs" />
+                                    <div className="elipsis--info-reply">
+                                        <ul>
+                                            <li>Report</li>
+                                        </ul>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
                     ))}
-                    <div>
-                        <br />
-                        <span className="c" onClick={() => { setShowReplies(!showReplies) }}>see less</span>
-                &nbsp;&nbsp;&nbsp;
-                <span className="c">see more</span>
+
+                    <div> <br />
+                        <span className="c" onClick={() => { setShowReplies(!showReplies) }}>see less</span> &nbsp;&nbsp;&nbsp;
+                        <span className="c">see more</span>
                     </div>
 
                     <div className="reply-box">
@@ -102,13 +98,13 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies }) {
                         <form action="comment" method="POST" onSubmit={(e) => { e.preventDefault(); replyComment() }} >
                             <div className="holder-accord">
                                 <textarea onChange={(e) => { setReply(e.target.value) }} value={newReply} type="text" name="reply" placeholder="write reply" className="comment-textarea"></textarea>
-                                    <div className="submit-content-cont">
-                                        {newReply &&
-                                            <button className="submit-content">
-                                                {auth.currentUser ? <img src="/images/Group 1188.svg" alt="send icon" /> : <i className="fa fa-times"></i>}
-                                            </button>
-                                        }
-                                    </div>
+                                <div className="submit-content-cont">
+                                    {newReply &&
+                                        <button className="submit-content">
+                                            {auth.currentUser ? <img src="/images/Group 1188.svg" alt="send icon" /> : <i className="fa fa-times"></i>}
+                                        </button>
+                                    }
+                                </div>
                             </div>
                         </form>
                     </div>

@@ -4,7 +4,6 @@ import firebase from 'firebase';
 import ImageLib from '../../components/ImageLib';
 
 function AddProduct() {
-    const [inserImgCaller, setInserImgCaller] = useState("AddProduct")
     const [openImageLib, setOpenImageLib] = useState(false);
     const closeInsertImageModal = () => { setOpenImageLib(false) }
 
@@ -109,7 +108,7 @@ function AddProduct() {
             {openImageLib && <ImageLib
                 title={'Hairrs'}
                 closeInsertImageModal={closeInsertImageModal}
-                inserImgCaller={inserImgCaller}
+                inserImgCaller = 'AddProduct'
             />}
 
             <div className="layout" style={{ marginTop: 0 }}>

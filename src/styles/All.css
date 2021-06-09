@@ -2227,6 +2227,11 @@ input[type="date"]::-webkit-inner-spin-button {
   background-color: unset !important
 }
 
+.customArticleTextarea img {
+  display: block;
+}
+
+
 .customArticleTextarea p .Details .textarea {
   background: #f9f9f9;
   outline: none;
@@ -6327,6 +6332,10 @@ textarea.comment-textarea {
   resize: none;
 }
 
+.submit-content {
+  border: none !important;
+}
+
 .submit-content img {
   float: right;
   cursor: pointer;
@@ -6442,7 +6451,7 @@ form .reply-area {
 
 .submit-content:focus {
   box-shadow: 0px 1px 10px 1px rgb(117 117 117 / 81%);
-  transform: rotate(40deg);
+  /* transform: rotate(40deg); */
 }
 
 .submit-content {
@@ -6480,7 +6489,6 @@ form .reply-area {
 
 .img-comment {
   display: flex;
-  justify-content: space-between;
   width: 500px;
 }
 

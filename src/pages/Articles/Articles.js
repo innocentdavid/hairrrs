@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { db } from '../../firebase';
+import { UrlSlug } from '../../fuctions';
 
 function Articles() {
     const [category, setCategory] = useState('all')
 
-    const params = new URLSearchParams(window.location.search);
-
-    if (params.has('category')) {
-        let r = params.get('category');
-        setCategory(r.toLowerCase())
-    }
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('category') && params.get('category') !== '') {
+            let r = (params.get('category'));
+            setCategory(UrlSlug(r, 'decode'))
+        }
+    }, [])
 
     const [articles, setArticles] = useState([])
     useEffect(() => {
@@ -33,10 +35,6 @@ function Articles() {
             getCatgArticles(category)
         }
     }, [category])
-
-    useEffect(() => {
-        console.log(articles);
-    }, [articles])
 
     return (
         <>
@@ -620,6 +618,7 @@ function Articles() {
                     <div className="seemore" style={{ marginLeft: '50px' }}>see more</div>
                 </div>
             </div>
+
             <div className="layout5">
                 <div className="filter-article">
                     <div className="type-roof">Category</div>

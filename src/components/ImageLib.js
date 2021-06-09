@@ -22,7 +22,7 @@ function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal
         }
     }, [user])
 
-    async function insert(location) {
+    async function insert() {
         let imgRadio = document.querySelectorAll('.imgRadio')
         if (imgRadio) {
             var checkedImage;
@@ -32,7 +32,7 @@ function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal
             let src = checkedImage.value
             let editor = document.querySelector('#output');
 
-            if (location === 'editor' && editor) {
+            if (inserImgCaller === 'editor' && editor) {
                 let img = `<img src=${src} alt=${title.toString()} />`
                 editor.focus();
                 pasteHtmlAtCaret(img);
@@ -43,6 +43,10 @@ function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal
                 img.src=src;
                 img.classList.add('pImg');
                 document.querySelector('.add-images').append(img)
+            }
+            if(inserImgCaller === 'AddArticleCover'){
+                
+                setImageToList(src)
             }
             checkedImage.checked = false;
             closeInsertImageModal();
@@ -124,7 +128,7 @@ function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal
                 </div>
 
                 <div className="imgPrevw"><img className="" src="" alt="" width='100%' height="100%" /></div>
-                <button className="insertImage" onClick={(e) => { e.preventDefault(); insert(inserImgCaller) }}>Insert image</button>
+                <button className="insertImage" onClick={(e) => { e.preventDefault(); insert() }}>Insert image</button>
             </div>
             <div className="galleryLoad">
                 <div className="imagesGallery">

@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import TrendingArticles from '../../components/TrendingArticles';
 import { auth, db } from '../../firebase';
 import firebase from "firebase";
-import { deleteArticle, getDesc, getMonthDate, getUserGeolocationDetails, hasSaved, save, Unsave } from '../../fuctions';
+import { deleteArticle, getDesc, getMonthDate, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
 import SocialMediaButtons from '../../components/SocialMediaButtons';
 import ArticleComments from './Components/comments/ArticleComments';
 import { Helmet } from 'react-helmet';
@@ -11,6 +11,8 @@ import { SaveListContext } from '../../contexts/GlobalStore';
 import ItemOwner from '../../components/ItemOwner';
 
 function Article() {
+    var authUser = auth.currentUser
+
     const [saveList] = useContext(SaveListContext)
     const history = useHistory();
     const params = new URLSearchParams(window.location.search);
@@ -148,33 +150,19 @@ function Article() {
         }
     }
     // ReactToArticle ends
-    
-    // getUserGeolocationDetails to set page view
-    useEffect(() => {
-        const unsubscribe = () => {
-            if (articleId) {
-                getUserGeolocationDetails().then(data => {
-                    const docId = `${data.country_name}_${data.IPv4}`;
 
-                    if (window.location.hostname !== 'localhost' && article.userId !== auth.currentUser.uid) {
-                        db.collection('articles').doc(articleId).collection('pageViews').doc(docId).set({
-                            IPv4: data.IPv4,
-                            city: data.city,
-                            state: data.state,
-                            country_code: data.country_code,
-                            country_name: data.country_name,
-                            latitude: data.latitude,
-                            longitude: data.longitude,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        }).catch(error => { console.log('Error setting page view', error) })
-                        db.collection('articles').doc(articleId).update({totalPageView: firebase.firestore.FieldValue.increment(1) })
-                    }
-                })
+    // set page viewed
+    useEffect(() => {
+        var pageUrl = window.location.href;
+        if (articleId && article.userId !== authUser.uid && pageUrl) {
+            var storedPages = JSON.parse(localStorage.getItem(pageUrl));
+            if (!storedPages) {
+                localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
+                db.collection('articles').doc(articleId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
             }
         }
-        unsubscribe();
-    }, [article, articleId])
-    // getUserGeolocationDetails to set page view end
+    }, [articleId, article])
+    // localStorage.clear()
 
     return (
         <>
@@ -204,7 +192,7 @@ function Article() {
                                     </div>
                                     <div style={{ position: 'relative', margin: '10px 0' }}>
                                         <div>
-                                            {article?.category ? <span className="category">{article?.category}</span> : <span>...</span>}
+                                            {article?.category ? <Link to={`/articles?category=${UrlSlug(article.category, 'encode')}`} className="category">{article?.category}</Link> : <span>...</span>}
                                                 &nbsp;&nbsp;&nbsp;
                                                 <span>{getMonthDate(article?.createdAt)}</span>
                                         </div>
@@ -281,9 +269,19 @@ function Article() {
                                                     <img src="/images/saturday awesome-comment.svg" alt="comment icon" />
                                                     <span className='views'>{totalComments}</span>
                                                 </div>
-                                                {hasSaved(saveList, articleId) ?
-                                                    <div onClick={() => { Unsave(articleId) }} className="text">&nbsp;saved</div>
-                                                    : <div onClick={() => { save(articleId, article.articleCover, article.title, `/article?title=${article.title}`, 'article') }} className="text">&nbsp;saved</div>}
+                                                <div className="reach">{hasSaved(saveList, articleId) ?
+                                                    <div onClick={() => { Unsave(articleId) }} style={{ display: 'flex' }}>
+                                                        <div className="icon">
+                                                            <img src="/images/circle-arrow-down-color.svg" alt="" />
+                                                        </div>
+                                                        <div className="text">&nbsp;saved</div>
+                                                    </div>
+                                                    : <div onClick={() => { save(articleId, article.articleCover, article.title, `/article?title=${article.title}`, 'article') }} style={{ display: 'flex' }}>
+                                                        <div className="icon">
+                                                            <img src="/images/saturday save icon.svg" alt="" />
+                                                        </div>
+                                                        <div className="text">save</div>
+                                                    </div>}</div>
 
                                                 <div className="reach" style={{ position: 'relative' }}>
                                                     <div className={`show_share show_share_${showShare}`} style={{ position: 'absolute', bottom: '35px' }}>
@@ -303,7 +301,7 @@ function Article() {
                                             </div>
                                             {/* ReactToArticle end */}
 
-                                            {articleId && <ArticleComments key={articleUrlSlug} currentUser={auth.currentUser} articleId={articleId} />}
+                                            {articleId && <ArticleComments key={articleUrlSlug} articleId={articleId} />}
                                         </>
                                     }
                                 </div>

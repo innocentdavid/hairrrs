@@ -160,7 +160,7 @@ function CreateArticle() {
       setArticleCategory('')
       setArticleTitle('')
       document.querySelector('#output').innerHTML = 'Write new article ...'
-      document.querySelector('.uploadingModal').style.display = "none"
+      // document.querySelector('.uploadingModal').style.display = "none"
       document.querySelector('.loader').style.display = 'none';
       // alert('saved');
       setTimeout(() => { history.push(`/article?title=${UrlSlug}`) }, 100);
@@ -181,7 +181,7 @@ function CreateArticle() {
           <div className="stepper-banner">Step 1 - create article</div>
           <div className="stepper-body">
             <div className="upload-image-btn">
-              <span className="add-p" style={{ cursor: 'pointer' }} onClick={() => { setInserImgCaller('articleCover'); setOpenImageLib(!openImageLib) }}>&#10133;</span>
+              <span className="add-p" style={{ cursor: 'pointer' }} onClick={() => { setInserImgCaller('AddArticleCover'); setOpenImageLib(!openImageLib) }}>&#10133;</span>
               <h2>Upload article cover</h2>
             </div>
             <div className="add-images">
@@ -194,12 +194,14 @@ function CreateArticle() {
             <div><br /></div>
 
             <div className="article-body">
+
+
+
               <div
                 id="output"
                 className="textarea customArticleTextarea"
                 contentEditable="true"
                 inputMode="text"
-                // suppressContentEditableWarning="true"
                 onInput={(e) => { handleArticleBodyChange(e.target.innerHTML) }}
                 onBlur={(e) => { handleArticleBodyChange(e.target.innerHTML) }}
                 onPaste={(e) => {
@@ -207,6 +209,9 @@ function CreateArticle() {
                   window.document.execCommand('insertText', false, e.clipboardData.getData('text'))
                 }}
               />
+
+
+
 
               <div className="div-icon">
                 <img onClick={() => { document.execCommand('bold', false, null) }} src="/images/B.svg" alt="icon" className="boldBtn" />

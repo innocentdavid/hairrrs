@@ -13,17 +13,13 @@ function ArticleComments({ articleId }) {
     useEffect(() => {
         const unsubscribe = () => {
             if (articleId) {
-                db.collection('articles').doc(articleId).collection('comments').orderBy('createdAt', 'desc').get()
-                .then(data => {
-                    let r = (data.docs.map(doc => ({ commentId: doc.id, comment: doc.data() })))
+                db.collection('articles').doc(articleId).collection('comments')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot((snapshot) => {
+                    let r = (snapshot.docs.map((doc) => ({ commentId: doc.id, comment: doc.data() })))
                     setComments(r);
                     setTotalComments(r.length);
-                }).catch(e => console.log(`setComments and totalcoments error`, e))
-                // .onSnapshot((snapshot) => {
-                //     let r = (snapshot.docs.map((doc) => ({ commentId: doc.id, comment: doc.data() })))
-                //     setComments(r);
-                //     setTotalComments(r.length);
-                // })
+                })
             }
         }
         unsubscribe()
@@ -79,7 +75,7 @@ function ArticleComments({ articleId }) {
                             <div className="user-data">
                                 <img key={commentId} className="c-photo" src={comment.photoUrl ? comment.photoUrl : '/images/default-user.png'} alt="" />
                             </div>
-                            <div className="post--">
+                            <div className="post--" style={{ marginLeft: '20px'}}>
                                 <div className="username">{comment.userName}</div>
                                 <p className="comment">{comment.comment}</p>
                             </div>

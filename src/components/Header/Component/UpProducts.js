@@ -6,9 +6,11 @@ import TrendingArticles from '../../TrendingArticles'
 function UpProducts() {
     const [mostEngagedProduct, setMostEngagedProduct] = useState([])
     useEffect(() => {
-        db.collection('products').orderBy('totalEngagement', 'desc').limit(1).get().then(snapshot => {
+        db.collection('products')
+        // .orderBy('totalEngagement', 'desc')
+        .limit(1).get().then(snapshot => {
             let r = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
-            setMostEngagedProduct(r)
+            if(r){ setMostEngagedProduct(r) }
         })
     }, [])
 
@@ -47,7 +49,7 @@ function UpProducts() {
 
                     {/* mostEngagedProduct advert-billboard */}
                     <div className="advert-billboard">
-                        <img src={mostEngagedProduct[0]?.imageUrl} alt="hairrrs product" />
+                        <img src={mostEngagedProduct[0]?.featuredImage} alt="hairrrs product" />
                         <div className="free-shopper">
                             <Link to={`/product?title=${mostEngagedProduct[0]?.id}`}>
                                 <div className="shopper">

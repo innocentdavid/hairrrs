@@ -6,7 +6,9 @@ import TrendingArticles from '../../TrendingArticles'
 function UpArticles() {
     const [mostEngagedArticle, setMostEngagedArticle] = useState([])
     useEffect(() => {
-        db.collection('articles').orderBy('totalEngagement', 'desc').limit(1).get().then(snapshot => {
+        db.collection('articles')
+        // .orderBy('totalEngagement', 'desc')
+        .limit(1).get().then(snapshot => {
             let r = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
             setMostEngagedArticle(r)
         })
@@ -18,28 +20,28 @@ function UpArticles() {
             <div className="categories-class">
                 <span className="cats">
                     <ul>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
-                        <Link to="Articles-page.html"><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
+                        <Link to={`/articles?category=${'all'}`}><li>Articles category</li></Link>
                     </ul>
                 </span>
             </div>
@@ -51,7 +53,7 @@ function UpArticles() {
                     <div className="advert-billboard">
                         <img src={mostEngagedArticle[0]?.articleCover} alt="hairrrs articles" />
                         <div className="free-shopper">
-                            <Link to="Articles-post.html"><div className="shopper5">
+                            <Link to={`/article?title=${mostEngagedArticle[0]?.id}`}><div className="shopper5">
                                 <div className="user-display">
                                     <img src="/images/user.png" alt="" />
                                     <span className="tooltiptext">Chizzyfix</span>

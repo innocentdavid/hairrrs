@@ -203,9 +203,16 @@ function pasteHtmlAtCaret(html) {
     }
 }
 
+function UrlSlug(str, action) {
+    if(action === 'encode'){
+        return str.replace(/\s+/g, '-')
+    }else{
+        return str.replace(/-/g, ' ')
+    }
+}
 export {
     month, getMonthDate, getMonthDateYearHour_minute,
-    getDesc, topFunction, getRandomInt,
+    getDesc, topFunction, getRandomInt, UrlSlug,
     getUserGeolocationDetails, b64toBlob,
     deleteArticle, save, Unsave, hasSaved, followUser,
     unFollowUser, hasFollowed, pasteHtmlAtCaret
