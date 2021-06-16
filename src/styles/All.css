@@ -31,8 +31,17 @@ button {
   padding: 5px 10px !important;
   border: 1px solid #c10041 !important;
   border-radius: 3px !important;
-  margin: 10px !important;
+  margin: 10px 0 !important;
   transition: .2s !important
+}
+button.disabledBtn {
+  color: #a5a5a5 !important;
+  border: none !important
+}
+
+button.btnSolid {
+  background: #c10041 !important;
+  color: white !important
 }
 
 button:hover {
@@ -198,7 +207,7 @@ header form {
 }
 
 .search-ads {
-  display: none;
+  /* display: none; */
   margin-left: -452px;
   margin-top: 32px;
 }
@@ -1207,7 +1216,8 @@ div#mainCont {
 }
 
 .users .img img {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .users .img .imagy {
@@ -6285,6 +6295,17 @@ textarea.comment-textarea {
   margin-left: -15px;
 }
 
+@media (max-width: 767px) {
+  .comments-thumbs-save {
+    display: block
+  }
+}
+
+.comments-thumbs-save .children {
+  display: flex;
+  margin-bottom: 15px;
+}
+
 .artc-1 .comments-thumbs-save {
   height: 35px;
 }
@@ -6509,12 +6530,12 @@ form .reply-area {
 }
 
 .elipsis--info-comment {
-  display: none;
+  /* display: none; */
   position: absolute;
   border: 1px solid #dbdbdb;
   background: white;
   padding: 5px 10px;
-  margin-top: -25px;
+  margin-top: -50px;
   margin-left: -5px;
 }
 
@@ -7751,7 +7772,7 @@ seller {
 }
 
 .reportboard {
-  display: none;
+  /* display: none; */
   position: fixed;
   background: rgba(0, 0, 0, 0.637);
   color: black;
@@ -9877,11 +9898,7 @@ seller {
 }
 
 label {
-  border: 1px solid #fff;
-  padding: 10px;
-  display: block;
   position: relative;
-  margin: 10px;
   cursor: pointer
 }
 

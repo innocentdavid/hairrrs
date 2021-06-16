@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { auth, db } from '../firebase';
+import Chat from './Chat';
+import ReportBoard from './ReportBoard'
 
 function ItemOwner({ userId }) {
     const [user, setUser] = useState(null);
@@ -8,6 +10,8 @@ function ItemOwner({ userId }) {
             setUser(doc.data())
         })
     }, [userId]);
+
+    const [showReportBoard, setShowReportBoard] = useState(false)
 
     const [hasFollow, setHasFollow] = useState(false)
     const [totalFollowers, setTotalFollowers] = useState(0)
@@ -77,25 +81,36 @@ function ItemOwner({ userId }) {
         }
     }
 
+    const [openChat, setOpenChat] = useState(false)
+
     return (
         <div className="layout6">
+            {showReportBoard && <ReportBoard
+                setShowReportBoard={setShowReportBoard}
+            />}
+            {openChat && <Chat toggle={setOpenChat} userId={userId} />}
+
             <div className="sellers-data">
                 <div className="postedBy">Posted by</div>
                 <div className="users-data">
                     <div className="images-data"> <img src={user?.photoURL} alt={user?.displayName} /></div>
                     <div className="author-name">{user?.displayName}</div>
                     <div className="clickables">
-                        <div className="message">Message</div>
-                    &nbsp;&nbsp;
-                    {hasFollow ? <div className={`followed showFbtn_${showFbtn}`} onClick={() => { unFollowAuthor() }}>unfollow</div>
+                    {auth.currentUser && auth.currentUser?.uid !== userId ? <div className="message" onClick={() => {setOpenChat(true)}}>Message</div>
+                     : <div className="message" style={{ background: "#ff7ba861", border: 'none' }}>Message</div>}
+                    &nbsp;
+                    {auth.currentUser && hasFollow ? <div className={`followed showFbtn_${showFbtn}`} onClick={() => { unFollowAuthor() }}>unfollow</div>
                             : <div className={`follow showFbtn_${showFbtn}`} onClick={() => { followAuthor() }}>Follow</div>}
                         <div className={`followed totalFollowers_${showFbtn}`} onClick={() => { followAuthor() }}>Following</div>
-                    &nbsp;&nbsp;
+                    &nbsp;
                     <div className="followers">{totalFollowers}</div>
                     </div>
                 </div>
-                <div className="report">
-                    <img src="/images/Icon material-flag.png" className="flag" alt="" /> Report this Business</div>
+                {auth.currentUser && auth.currentUser?.uid !== userId &&
+                <div className="report" onClick={() => { setShowReportBoard(true) }}>
+                    <img src="/images/Icon material-flag.png" className="flag" alt="" /> 
+                    Report this Business
+                </div>}
             </div>
         </div>
 

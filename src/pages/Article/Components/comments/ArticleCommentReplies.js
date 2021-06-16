@@ -3,27 +3,32 @@ import { auth, db } from '../../../../firebase';
 import firebase from 'firebase';
 import Reactions from './Reactions';
 import RepliesReactions from './RepliesReactions';
+import ReportBoard from '../../../../components/ReportBoard';
+import Modify from '../Modify';
 
-function ArticleCommentReplies({ articleId, commentId, totalReplies }) {
+function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUserId, commentText }) {
     const [replies, setReplies] = useState([]);
     const [newReply, setReply] = useState('');
     const [showReplies, setShowReplies] = useState(false)
+    const initialLimit = 3;
+    const [limit, setLimit] = useState(initialLimit);
 
     // Get all Replies and total Replies
     useEffect(() => {
         if (showReplies) {
             if (articleId) {
-                const repliesRef = db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies');
-                const query = repliesRef.orderBy('createdAt', 'desc');
-                query.onSnapshot((snapshot) => {
-                    let r = snapshot.docs.map((doc) => ({ replyId: doc.id, reply: doc.data() }))
-                    setReplies(r);
-                });
+                db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies')
+                    .orderBy('createdAt', 'desc')
+                    .limit(limit)
+                    .onSnapshot((snapshot) => {
+                        let r = snapshot.docs.map((doc) => ({ replyId: doc.id, reply: doc.data() }))
+                        setReplies(r);
+                    });
 
             }
         }
         return () => { setReplies([]) }
-    }, [articleId, commentId, showReplies]);
+    }, [articleId, commentId, limit, showReplies]);
 
     const replyComment = () => {
         if (auth.currentUser?.displayName) {
@@ -32,6 +37,7 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies }) {
                     reply: newReply,
                     totalReplies: totalReplies + 1,
                     userName: auth.currentUser.displayName,
+                    userId: auth.currentUser.uid,
                     photoURL: auth.currentUser.photoURL,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 });
@@ -45,25 +51,55 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies }) {
         setReply('');
     }
 
+    const [elipsisInfoComment, setElipsisInfoComment] = useState(false)
+    const [showReportBoard, setShowReportBoard] = useState(false)
+
+    // const [replyUserId, setReplyUserId] = useState('')
+    // const [text, setText] = useState('')
+    // useEffect(() => {
+    //     if (replies) {
+    //         setText(replies.map(({ reply }) => reply.reply))
+    //         setReplyUserId(replies.map(({ reply }) => reply.userId))
+    //     }
+    // }, [replies]);
+
     return (
         <>
+            {showReportBoard && <ReportBoard
+                type="comment"
+                id={commentId}
+                setShowReportBoard={setShowReportBoard}
+            />}
             <div className="replies-data-js d-flex align-center">
                 {commentId && <Reactions articleId={articleId} commentId={commentId} colctn={'comments'} />}
-                <span className="rxt" onClick={() => { setShowReplies(!showReplies) }}>
-                    Replies <span>{totalReplies}</span> {showReplies ? <span className="fa fa-angle-up"></span> : <span className="fa fa-angle-down"></span>}
+
+                <span className="rxt" onClick={() => { setShowReplies(!showReplies) }} style={{ display: 'flex', alignItems: 'center' }}>
+                    Replies <span style={{ marginLeft: 5 }}>{totalReplies}</span>
+                    {showReplies ? <span className="fa fa-angle-up" style={{ fontSize: '1.2rem', marginLeft: 5 }}></span> : <span className="fa fa-angle-down" style={{ fontSize: '1.2rem', marginLeft: 5 }}></span>}
                 </span>
-                <span className="reportBtn">
-                    <img src="/images/Group 1192.svg" alt="elipsis hairrrs" />
-                    <div className="elipsis--info-reply">
-                        <ul>
-                            <li>Report</li>
-                        </ul>
-                    </div>
+
+                <span className="reportBtn" id={`${commentId}_reported`}>
+                    <img src="/images/Group 1192.svg" alt="elipsis icon" onClick={() => { setElipsisInfoComment(!elipsisInfoComment) }} />
+                    {elipsisInfoComment &&
+                        <div className="elipsis--info-comment">
+                            <ul style={{ display: 'flex' }}>
+                                {auth.currentUser.uid !== commentUserId &&
+                                <li style={{ margin: '5px' }} onClick={() => { setShowReportBoard(true) }}>Report</li>}
+                                <Modify
+                                    modal={setElipsisInfoComment}
+                                    type={'comment'}
+                                    articleId={articleId}
+                                    itemId={commentId}
+                                    itemUserId={commentUserId}
+                                    text={commentText} />
+                            </ul>
+                        </div>
+                    }
                 </span>
             </div>
             {showReplies &&
                 <>
-                    {replies.map(({ replyId, reply }) => (
+                    {replies ? replies.map(({ replyId, reply }) => (
                         <div key={replyId} className="replies--user">
                             <div className="img-comment-replies">
                                 <div className="user-data">
@@ -71,26 +107,26 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies }) {
                                 </div>
                                 <div className="post--details">
                                     <div className="username">{reply.userName}</div>
-                                    <comment key={replyId}>{reply.reply}</comment>
+                                    <comment key={replyId}>{reply.reply ? reply.reply : 'Loading ...'}</comment>
                                 </div>
                             </div>
                             <div className="replies-data-js d-flex align-center">
-                                <RepliesReactions articleId={articleId} commentId={commentId} replyId={replyId} />
-                                <span className="reportBtn">
-                                    <img src="/images/Group 1192.svg" alt="elipsis hairrrs" />
-                                    <div className="elipsis--info-reply">
-                                        <ul>
-                                            <li>Report</li>
-                                        </ul>
-                                    </div>
-                                </span>
+                                <RepliesReactions
+                                    articleId={articleId}
+                                    commentId={commentId}
+                                    replyId={replyId}
+                                    replyUserId={reply.userId}
+                                    reply={reply.reply} />
                             </div>
                         </div>
-                    ))}
+                    )) : <strong>Loading ...</strong>}
 
                     <div> <br />
-                        <span className="c" onClick={() => { setShowReplies(!showReplies) }}>see less</span> &nbsp;&nbsp;&nbsp;
-                        <span className="c">see more</span>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {totalReplies > limit && <span style={{ marginRight: '10px' }} onClick={() => { setLimit(parseInt(limit) + 5) }} className="c">see older replies</span>}
+                            <span style={{ marginRight: '10px' }} onClick={() => { setLimit(initialLimit); setShowReplies(!showReplies) }} className="c"><i className="fa fa-angle-up" style={{ fontSize: '1.2rem' }}></i></span>
+                            <span>Replies {totalReplies}</span>
+                        </div>
                     </div>
 
                     <div className="reply-box">

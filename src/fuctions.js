@@ -1,4 +1,4 @@
-import { auth, db, storage } from "./firebase";
+import { auth, db } from "./firebase";
 import firebase from "firebase";
 
 var uid = auth.currentUser?.uid
@@ -30,6 +30,20 @@ const getMonthDate = (timestamp) => {
         return `${nMonth}, ${date}`
     }
 }
+
+function formatAMPM(date) {
+    if(date){
+        let dateObj = new Date(date.toDate().toString());
+        var hours = dateObj.getHours();
+        var minutes = dateObj.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+    }
+  }
 
 const getMonthDateYearHour_minute = (timestamp) => {
     let dateObj = new Date(timestamp.toDate().toString());
@@ -211,7 +225,7 @@ function UrlSlug(str, action) {
     }
 }
 export {
-    month, getMonthDate, getMonthDateYearHour_minute,
+    month, getMonthDate, formatAMPM, getMonthDateYearHour_minute,
     getDesc, topFunction, getRandomInt, UrlSlug,
     getUserGeolocationDetails, b64toBlob,
     deleteArticle, save, Unsave, hasSaved, followUser,

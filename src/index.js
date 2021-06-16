@@ -5,6 +5,7 @@ import App from './App';
 import './styles/All.css';
 import './styles/Fix.css';
 import './styles/826.css';
+import './styles/Chat.css';
 import GlobalStore from './contexts/GlobalStore';
 
 ReactDOM.render(

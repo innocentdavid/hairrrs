@@ -383,10 +383,6 @@ label {
 }
 
 .replies { margin-left: 50px }
-.replies .fa-angle-down, .fa-angle-up {
-  font-size: 1rem;
-  margin: 0 5px;
-}
 
 .liked_true, .disLiked_true {
   color: #f40053 !important;

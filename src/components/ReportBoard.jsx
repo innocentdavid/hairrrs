@@ -1,6 +1,12 @@
 import React from 'react';
 
-function ReportBoard() {
+function ReportBoard({ id, type, setShowReportBoard }) {
+    const params = new URLSearchParams(window.location.search);
+    var urlSlug = params.get('title')
+    
+    var link = `/article?title=${urlSlug}?scrollTo=${id}_reported`;
+    console.log({ id, type, link })
+
     return (
         <>
                         <div className="reportboard">
@@ -8,7 +14,7 @@ function ReportBoard() {
                     <div className="header">
                         <div className="title">
                             <span className="txt">Report</span>
-                            <span>&times;</span>
+                            <span onClick={() => { setShowReportBoard(false) }}>&times;</span>
                         </div>
                     </div>
                     <div className="pad">

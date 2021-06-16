@@ -10,7 +10,7 @@ import {
 } from "react-share";
 
 const SocialMediaButtons = (props) => (
-    <div>
+    <div className="show_share" style={{ position: 'absolute', bottom: '35px' }}>
         <FacebookShareButton url={props.url} quote={`${props.text} \n \n`}>
             Facebook
         </FacebookShareButton>

@@ -45,6 +45,7 @@ function Auth() {
                     totalProducts: 0,
                     totalArticles: 0,
                     totalJobs: 0,
+                    verified: false
                 });
                 authUser.user.updateProfile({ displayName: fullName, photoURL: process.env.REACT_APP_DEFAULT_USER_PHOTO_URL });
             })
@@ -67,6 +68,7 @@ function Auth() {
                         totalProducts: 0,
                         totalArticles: 0,
                         totalJobs: 0,
+                        verified: false
                     });
                     setSignUpModal(false);
                     if (!alertMsg) { setSignInModal(false) }

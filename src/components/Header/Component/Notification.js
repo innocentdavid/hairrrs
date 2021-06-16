@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { NotificationContext } from '../../../contexts/GlobalStore'
 import { auth, db } from '../../../firebase'
+import Chat from '../../Chat'
 
 function Notification() {
     const [notificationList] = useContext(NotificationContext)
@@ -15,6 +16,8 @@ function Notification() {
     const deleteList = (id) => {
         db.collection('users').doc(auth.currentUser?.uid).collection('history').doc(id).delete()
     }
+
+    const [openChat, setOpenChat] = useState(false)
 
     return (
         <div className="icon2">
@@ -46,8 +49,9 @@ function Notification() {
                 <hr className="customHr" />
                 <div className="users">
                     {notificationList?.map(({ id, list }) => (
-                        <div key={id} className="people">
-                            <Link to={list.link} className="shielder" style={{ display: 'flex', color: 'black' }}>
+                        <div key={id} className="people" style={{ marginLeft: '20px' }}>
+                            {list.type === 'requestedCalls' && 
+                            <Link to={list.link ? list.link : '/'} className="shielder" style={{ display: 'flex', color: 'black' }}>
                                 <div className="img">
                                     <img src={list.userPhotoURL} alt="hairrrs logo" className="" />
                                 </div>
@@ -64,7 +68,28 @@ function Notification() {
                                         </div>
                                     </div>
                                 </div>
-                            </Link>
+                            </Link>}
+
+                            {list.type === 'message' && 
+                            <div className="shielder" key={list.receiverId} style={{ display: 'flex', color: 'black', margin: '10px 0' }}>
+                                {openChat && <Chat toggle={setOpenChat} userId={list.receiverId} />}
+                                <div className="img">
+                                    <img src={list.userPhotoURL} alt="hairrrs logo" className="" />
+                                </div>
+                                <div className="user0">
+                                    <br />
+                                    <div className="infos">
+                                        <div className="text-1" onClick={() => {setOpenChat(true)}}>
+                                            <span className="txt">{list.text}<span style={{ marginLeft: 10, padding: 5, width: '40px', height: '40px', border: '1px solid #fd0f5f' }}>{list.msgCount}</span></span>
+                                        </div>
+                                        <div
+                                            onClick={(e) => { e.preventDefault(); deleteList(id) }}
+                                            className="delete-icon">
+                                            <img src="/images/saturday-delete-icon.png" alt="delete icon" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>}
                         </div>
                     ))}
                 </div>

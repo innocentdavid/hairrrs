@@ -3,10 +3,10 @@ import { auth, db } from '../../../../firebase';
 import firebase from "firebase";
 import ArticleCommentReplies from './ArticleCommentReplies';
 
-function ArticleComments({ articleId }) {
+function ArticleComments({ articleId, totalComments, articleUid }) {
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState('');
-    const [totalComments, setTotalComments] = useState(0);
+    const [limit, setLimit] = useState(5);
 
 
     // Get all comments and total Comments
@@ -14,16 +14,16 @@ function ArticleComments({ articleId }) {
         const unsubscribe = () => {
             if (articleId) {
                 db.collection('articles').doc(articleId).collection('comments')
-                .orderBy('createdAt', 'desc')
-                .onSnapshot((snapshot) => {
-                    let r = (snapshot.docs.map((doc) => ({ commentId: doc.id, comment: doc.data() })))
-                    setComments(r);
-                    setTotalComments(r.length);
-                })
+                    .orderBy('createdAt', 'desc')
+                    .limit(limit)
+                    .onSnapshot((snapshot) => {
+                        let r = (snapshot.docs.map((doc) => ({ commentId: doc.id, comment: doc.data() })))
+                        setComments(r);
+                    })
             }
         }
         unsubscribe()
-    }, [articleId]);
+    }, [articleId, limit]);
 
     const addComment = () => {
         if (auth.currentUser) {
@@ -48,10 +48,18 @@ function ArticleComments({ articleId }) {
         setComment('');
     }
 
+    const [authUserPhotoURL, setAuthUserPhotoURL] = useState('/images/default-user.png');
+    const currentUser = auth.currentUser
+    useEffect(() => {
+        if (currentUser.photoURL) {
+            setAuthUserPhotoURL(currentUser.photoURL)
+        }
+    }, [currentUser])
+
     return (
         <>
             <div className="comment-box">
-                <img className="user-photo" src={auth.currentUser ? auth.currentUser.photoURL : '/images/default-user.png'} alt={auth.currentUser?.displayName} />
+                {authUserPhotoURL && <img className="user-photo" src={authUserPhotoURL} alt="user-profile-pics - Hairrrs" />}
                 <form action="comment" method="POST" onSubmit={(e) => { e.preventDefault(); addComment() }} >
                     <div className="holder-accord">
                         <textarea onChange={(e) => { setComment(e.target.value) }} value={comment} type="text" name="reply" placeholder="write reply" className="comment-textarea"></textarea>
@@ -75,22 +83,30 @@ function ArticleComments({ articleId }) {
                             <div className="user-data">
                                 <img key={commentId} className="c-photo" src={comment.photoUrl ? comment.photoUrl : '/images/default-user.png'} alt="" />
                             </div>
-                            <div className="post--" style={{ marginLeft: '20px'}}>
+                            <div className="post--" style={{ marginLeft: '20px' }}>
                                 <div className="username">{comment.userName}</div>
                                 <p className="comment">{comment.comment}</p>
                             </div>
                         </div>
 
                         <div className="replies-data show_replies">
-                            <ArticleCommentReplies key={commentId} totalReplies={comment.totalReplies} articleId={articleId} commentId={commentId} />
+                            <ArticleCommentReplies
+                                key={commentId}
+                                commentText={comment.comment}
+                                commentUserId={comment.userId}
+                                totalReplies={comment.totalReplies}
+                                articleId={articleId}
+                                commentId={commentId} />
                         </div>
                     </div>
                 ))}
                 <div>
                     <br />
-                    <span className="c">see more</span>
-                    &nbsp;&nbsp;&nbsp;
-                    <span>Comments {totalComments}</span>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {totalComments > limit && <span style={{ marginRight: '10px' }} onClick={() => { setLimit(parseInt(limit) + 5) }} className="c">see older messages</span>}
+                        {limit > 5 && <span style={{ marginRight: '10px' }} onClick={() => { setLimit(5) }} className="c">see less</span>}
+                        <span>Comments {totalComments}</span>
+                    </div>
                 </div>
             </div>
 

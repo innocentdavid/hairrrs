@@ -11,9 +11,10 @@ import SocialMediaButtons from '../../components/SocialMediaButtons';
 import UserProfile from '../../components/UserProfile';
 import RelatedProduct from '../../components/RelatedProduct';
 import ItemOwner from '../../components/ItemOwner';
+import Chat from '../../components/Chat';
 
 function Product() {
-    var user = UserProfile.getUser().data.user.user
+    var user = UserProfile.getUser();
 
     var titleSlug;
     const history = useHistory();
@@ -82,6 +83,7 @@ function Product() {
                     type: 'requestedCalls',
                     email: user.email,
                     phone: user.phoneNumber,
+                    link: `/product?title=${product.id}`,
                     name: user.displayName,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 })
@@ -146,6 +148,8 @@ function Product() {
         if (productImages && prevwPane) { prevwPane.src = productImages.src }
     }, [prevwPane, productImages]);
 
+    const [openChat, setOpenChat] = useState(false)
+
     return (
         <>
             <Helmet>
@@ -163,6 +167,7 @@ function Product() {
                     {/* <ReportBoard /> */}
 
                     <div>
+                    {openChat && <Chat toggle={setOpenChat} userId={user.uid} />}
                         <div className="layout2a">
                             <div className="according">
                                 <div className="pages-timeline">
@@ -255,7 +260,7 @@ function Product() {
                                 </div>
 
                                 <div className="Contact-user">
-                                    <Link to="#"><div className="chat">Chat</div></Link>
+                                    <div className="chat" onClick={() => {setOpenChat(true)}}>Chat</div>
                                     {hasRequestedCalled ? <div style={{ cursor: 'pointer' }} onClick={() => { deleteRequestcall(product?.id) }} className="Requestcall">Unrequest Call</div>
                                         : <div style={{ cursor: 'pointer' }} onClick={() => { requestcall(product?.id) }} className="Requestcall">Request Call</div>}
                                 </div>

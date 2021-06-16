@@ -15,7 +15,7 @@ var UserProfile = (function () {
 
   var getUser = function () {
     var cacheUser = getUserCache('user')
-    if(cacheUser){ return cacheUser} else { return UserProfile }
+    if(cacheUser){ return cacheUser.data.user.user } else { return UserProfile }
     // return UserProfile  // Or pull this from cookie/localStorage
   };
 

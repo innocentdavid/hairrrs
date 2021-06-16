@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Auth from './components/Auth';
@@ -7,6 +7,18 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { getRandomInt, topFunction } from './fuctions';
 
 function Layout({ children }) {
+    const params = new URLSearchParams(window.location.search);
+    var scrollTo = params.get('scrollTo')
+    var el = document.querySelector(`#${scrollTo}`);
+
+    useEffect(() => {
+        if (el) {
+            el.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    }, [el]);
+
     const location = useLocation();
     const [user] = useAuthState(auth)
 
@@ -16,10 +28,19 @@ function Layout({ children }) {
 
     const locationCheck = () => {
         let locationN = (location.pathname).toLowerCase()
-        if(locationN === '/create-article'){ return false }
-        if(locationN === '/settings'){ return false }
+        if (locationN === '/create-article') { return false }
+        if (locationN === '/settings') { return false }
         return true
     }
+
+    const [cUserPhotoURL, setCUserPhotoURL] = useState(process.env.REACT_APP_DEFAULT_USER_PHOTO_URL)
+    useEffect(() => {
+        if(user && user.photoURL){
+            setCUserPhotoURL(user.photoURL)
+        }
+    }, [user])
+
+
 
     return (
         <>
@@ -39,7 +60,7 @@ function Layout({ children }) {
                                                 {user &&
                                                     <>
                                                         <Link to='/profile'>
-                                                            <img src={user?.photoURL ? user.photoURL : process.env.REACT_APP_DEFAULT_USER_PHOTO_URL} alt={user?.displayName} className="user" />
+                                                            <img src={cUserPhotoURL} alt="" className="user" />
                                                         </Link>
                                                 &nbsp;&nbsp;
                                                 <div className="fullname">
