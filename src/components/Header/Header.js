@@ -46,17 +46,17 @@ function Header() {
 
                     <div className="business-statistics">
                         <div className="stats-0">
-                            <Link to="add-product">
+                            <Link to="add-product" onClick={() => {document.querySelector('.addboard').style.display="none"}}>
                                 <div className="box-3">
                                     <img src="/images/icon-add-product.png" alt="" className="" /><h2>sell product</h2>
                                 </div>
                             </Link>
-                            <Link to="add-job">
+                            <Link to="add-job" onClick={() => {document.querySelector('.addboard').style.display="none"}}>
                                 <div className="box-3">
                                     <img src="/images/icon-add-job.png" alt="" className="" /><h2>upload job vacancy</h2>
                                 </div>
                             </Link>
-                            <Link to="create-article">
+                            <Link to="create-article" onClick={() => {document.querySelector('.addboard').style.display="none"}}>
                                 <div className="box-3">
                                     <img src="/images/icon-add-article.png" alt="" className="" /><h2>Write an article</h2>
                                 </div>

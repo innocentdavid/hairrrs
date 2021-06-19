@@ -166,7 +166,7 @@ function Home() {
             </div>
             {/* Products per catg end */}
 
-            <TrendingArticles />
+            <TrendingArticles limit={3} />
 
             {/* Job vacancy per catg */}
             <div className="layout3">

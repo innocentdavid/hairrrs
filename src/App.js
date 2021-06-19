@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Businesses from './pages/Businesses/Businesses';
 import Home from './pages/Home/Home';
@@ -15,8 +15,23 @@ import Profile from './pages/Profile/Profile';
 import BusinessProfile from './pages/BusinessProfile/BusinessProfile';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import Articles from './pages/Articles/Articles';
+import { auth, db } from './firebase';
+import UserProfile from './components/UserProfile';
 
 function App() {
+// useEffect for signing up users
+useEffect(() => {
+  const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+      if (authUser) {
+          db.collection('users').doc(authUser.uid)
+              .onSnapshot(user => {
+                  UserProfile.setUser(user.data());
+              });
+      }
+  })
+
+  return () => { unsubscribe() }
+}, []);
 
   return (
     <>

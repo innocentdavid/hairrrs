@@ -99,15 +99,13 @@ function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal
             setProgress(progress)
         }, (error) => { /*console.log(error.message)*/ },
             () => {
+                setShowProgBar(false)
                 storage
                 .ref(`images/${auth.currentUser.uid}/${fileName}`)
                 .getDownloadURL()
                 .then(url => {
                     db.collection('users').doc(auth.currentUser.uid).collection('images').add({ url, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
                 });
-                if(progress === 100){
-                    setShowProgBar(false)
-                }
             }
         );
     };

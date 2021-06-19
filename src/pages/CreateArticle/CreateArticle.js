@@ -9,6 +9,13 @@ import ImageLib from '../../components/ImageLib';
 
 function CreateArticle() {
   var history = useHistory()
+  const currentUser = auth.currentUser
+  useEffect(() => {
+    if (!currentUser) {
+      history.push('/')
+    }
+  }, [currentUser, history])
+
   var mode = 'create';
   var articleToEditId;
   const params = new URLSearchParams(window.location.search);
@@ -209,7 +216,6 @@ function CreateArticle() {
                   window.document.execCommand('insertText', false, e.clipboardData.getData('text'))
                 }}
               />
-
 
 
 

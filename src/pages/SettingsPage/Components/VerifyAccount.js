@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { auth, db, storage } from '../../firebase'
+import { auth, db, storage } from '../../../firebase'
 import firebase from 'firebase';
 
 function VerifyAccount({ user }) {
@@ -14,11 +14,10 @@ function VerifyAccount({ user }) {
       if (user.verified) {
         setIsVerify(true)
       }
-      if (user.hasRequested) {
+      if (user.hasRequestedForAccVerification) {
         setHasRequested(true)
       }
     }
-
   }, [user])
 
   const verifyAccount = () => {
@@ -37,10 +36,7 @@ function VerifyAccount({ user }) {
           },
           () => {
             // complete function...
-            storage
-              .ref('VerificationFiles')
-              .child(docForVerification.name)
-              .getDownloadURL()
+            storage.ref('VerificationFiles').child(docForVerification.name).getDownloadURL()
               .then(url => {
                 let email = user.email;
                 let displayName = user.displayName;
@@ -48,12 +44,15 @@ function VerifyAccount({ user }) {
 
                 db.collection('users').doc(auth.currentUser.uid).update({
                   reqVerificationDate: firebase.firestore.FieldValue.serverTimestamp(),
-                  docForVerification: url
+                  docForVerification: url,
+                  hasRequestedForAccVerification: true
                 });
                 db.collection('verifyAccount').doc(auth.currentUser.uid).set(data)
 
                 setProgress(0);
                 setDocForVerification(null);
+                alert('success! Your account will be verified soon');
+                // setHasRequested(true)
               });
           }
         );
@@ -104,7 +103,7 @@ function VerifyAccount({ user }) {
         </div>
       </> :
         <>
-          {!hasRequested ? <strong>Verified!</strong> : <strong>Your verification is still in process</strong>}
+          {!hasRequested ? <strong>Verified!</strong> : <strong>Your verification is in process ... <img src="/images/kloader.gif" alt="" width={20} height={20} /></strong>}
         </>
       }
 

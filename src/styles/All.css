@@ -25,6 +25,15 @@ body {
   letter-spacing: 0.5px
 }
 
+.authModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 999999;
+}
+
 button {
   background: white !important;
   color: black !important;
@@ -34,6 +43,7 @@ button {
   margin: 10px 0 !important;
   transition: .2s !important
 }
+
 button.disabledBtn {
   color: #a5a5a5 !important;
   border: none !important
@@ -644,8 +654,8 @@ div#mainCont {
 
 .layout1 {
   position: fixed;
-  top: 130px;
-  left: 20px;
+  top: 140px;
+  left: 10px;
   margin-bottom: 10px;
   box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11);
   border-radius: 5px;
@@ -657,9 +667,13 @@ div#mainCont {
   border-radius: 0px 0px 5px 5px;
 }
 
+.mt-130 {
+  margin-top: 130px
+}
+
 .layout1 .accord--profile {
   background: white;
-  margin-bottom: 20px;
+  margin: 20px 0;
   padding: 20px;
 }
 
@@ -696,7 +710,6 @@ div#mainCont {
 .profile a {
   color: #f40053;
   text-decoration: none;
-  display: flex;
   padding: 5px;
   font-weight: 800;
   text-align: center;
@@ -712,11 +725,6 @@ div#mainCont {
   margin-bottom: 0;
   padding-bottom: 10px;
   border-bottom: 1px solid #eeeeee;
-}
-
-.profile ul a {
-  justify-content: left;
-  text-align: center;
 }
 
 .signin {
@@ -744,7 +752,6 @@ div#mainCont {
 }
 
 .signin-modal {
-  display: none;
   position: fixed;
   background: white;
   height: 100vh;
@@ -5651,8 +5658,6 @@ textarea.comment-textarea {
   height: 100vh;
   background: rgba(0, 0, 0, 0.637);
   z-index: 44;
-  top: 0;
-  left: 0;
   display: flex;
 }
 
@@ -5683,8 +5688,6 @@ textarea.comment-textarea {
   height: 100vh;
   background: rgba(0, 0, 0, 0.637);
   z-index: 44;
-  top: 0;
-  left: 0;
   display: flex;
 }
 
@@ -5710,12 +5713,75 @@ textarea.comment-textarea {
   display: none;
 }
 
+.inputError {
+  border: 1px solid red !important
+}
+
+
+
+
+
+.dropbtn {
+  background-color: #ebebeb;
+  color: #969696;
+  padding: 8px;
+  font-size: 12px;
+  width: fit-content;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center
+}
+
+.dropbtn:hover {
+  background: red
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border: 1px solid #dbdbdb;
+}
+
+.dropdown-content span {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+
+.dropdown-content span:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block !important;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #b6b6b6;
+  color: black;
+}
+
+
+
+
+
 .contnr-1 {
   background: white;
   width: 100%;
   height: auto;
   padding-bottom: 30px;
-  margin-top: -25px;
   box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11);
 }
 
@@ -7885,7 +7951,6 @@ seller {
 }
 
 .following-tab {
-  display: none;
   position: fixed;
   background: rgba(0, 0, 0, 0.637);
   color: black;
@@ -7997,7 +8062,6 @@ seller {
 }
 
 .followers-tab {
-  display: none;
   position: fixed;
   background: rgba(0, 0, 0, 0.637);
   color: black;
@@ -8104,7 +8168,6 @@ seller {
 }
 
 .Share-Analysis {
-  display: none;
   position: fixed;
   background: rgba(0, 0, 0, 0.637);
   color: black;
@@ -8345,7 +8408,6 @@ seller {
 }
 
 .resume-cv {
-  display: none;
   position: fixed;
   background: rgba(0, 0, 0, 0.637);
   color: black;
@@ -8571,7 +8633,6 @@ seller {
 }
 
 .Analystics {
-  display: none;
   position: fixed;
   background: rgba(0, 0, 0, 0.637);
   color: black;

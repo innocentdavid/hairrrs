@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import Auth from './components/Auth/Auth';
 import Header from './components/Header/Header';
-import Auth from './components/Auth';
+import SideProfileSection from './SideProfileSection';
+import { topFunction } from './fuctions';
 import { auth } from './firebase';
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { getRandomInt, topFunction } from './fuctions';
 
 function Layout({ children }) {
     const params = new URLSearchParams(window.location.search);
@@ -20,12 +20,6 @@ function Layout({ children }) {
     }, [el]);
 
     const location = useLocation();
-    const [user] = useAuthState(auth)
-
-    const [signOutBox, setSignOutBox] = useState(false);
-
-    const handleDisplay_signOutBox = () => { setSignOutBox(!signOutBox) }
-
     const locationCheck = () => {
         let locationN = (location.pathname).toLowerCase()
         if (locationN === '/create-article') { return false }
@@ -33,18 +27,53 @@ function Layout({ children }) {
         return true
     }
 
-    const [cUserPhotoURL, setCUserPhotoURL] = useState(process.env.REACT_APP_DEFAULT_USER_PHOTO_URL)
-    useEffect(() => {
-        if(user && user.photoURL){
-            setCUserPhotoURL(user.photoURL)
-        }
-    }, [user])
+    const [openAuthModal, setOpenAuthModal] = useState(false)
+    const [openLogInOrReg, setOpenLogInOrReg] = useState(false)
+    const [openLoading, setOpenLoading] = useState(false)
 
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((authUser) => {
+            console.log(authUser)
+            if (authUser) {
+                setOpenLogInOrReg(false)
+                setOpenLoading(false)
+            }else{
+                setOpenLogInOrReg(true)
+            }
+        })      
+        return () => { unsubscribe() }
+      }, []);
 
 
     return (
         <>
+            {openLogInOrReg && <div style={{
+                position: 'fixed',
+                top: "160px",
+                left: 5,
+                width: '250px',
+                background: "white",
+                marginRight: "10px",
+                paddingTop: "20px",
+                paddingBottom: "40px",
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
+                zIndex: 21
+            }}>
+                <button
+                    onClick={() => { setOpenAuthModal(true); setOpenLoading(true) }}
+                    className="signin"
+                    style={{ margin: "20px 0", cursor: 'pointer' }}
+                >login / reg</button>
+                
+                {openLoading && <img src="/images/kloader.gif" alt="" style={{ position: 'fixed', zIndex: '26', width: '100px', height: '100px' }} />}
+            </div>}
+
+            {openAuthModal && <Auth setOpenAuthModal={setOpenAuthModal} setOpenLogInOrReg={setOpenLogInOrReg} />}
+
             <Header />
+
             <div className="layout">
 
                 {/* SideBar */}
@@ -55,46 +84,13 @@ function Layout({ children }) {
                                 <div className="f-sidebar">
                                     <div className="f-child"></div>
                                     <div className="layout1">
-                                        <div className="accord--profile">
-                                            <div className="user--photo">
-                                                {user &&
-                                                    <>
-                                                        <Link to='/profile'>
-                                                            <img src={cUserPhotoURL} alt="" className="user" />
-                                                        </Link>
-                                                &nbsp;&nbsp;
-                                                <div className="fullname">
-                                                            <div className="d-flex justify-center align-items-center">{user.displayName}</div>
-                                                            {signOutBox ? <i className="fa fa-angle-up" aria-hidden="true" onClick={handleDisplay_signOutBox} ></i>
-                                                                : <i className="fa fa-angle-down" aria-hidden="true" onClick={handleDisplay_signOutBox} ></i>}
-                                                        </div>
-                                                    </>
-                                                }
-                                            </div>
-                                            {auth.currentUser &&
-                                                <div className={`display_signOutBox slideOutLeftAnim_${signOutBox} display_signOutBox_${signOutBox}`}>
-                                                    <div className="signOutBox">
-                                                        <Auth key={user} />
-                                                    </div>
-                                                </div>
-                                            }
-                                            <div className="profile">
-                                                <ul>
-                                                    <Link to="/profile">Analystics</Link>
-                                                    <Link to="/profile">Products</Link>
-                                                    <Link to="/profile">Job Vacancies</Link>
-                                                    <Link to="/profile">Articles</Link>
-                                                </ul>
-                                            </div>
-                                            <div className="signclass">
-                                                {!auth.currentUser && <Auth key={getRandomInt(10000000000)} />}
-                                            </div>
-                                        </div>
-                                        <div className="layout1a">
 
+                                        {!openLogInOrReg && <SideProfileSection setOpenLogInOrReg={setOpenLogInOrReg} />}
+
+                                        <div className={openLogInOrReg ? "layout1a mt-130" : "layout1a" }>
                                             <Link to="#" ><div className="shopper9">
                                                 <div className="user-display">
-                                                    <img src="/images/user.png" alt="" />
+                                                    <img src="/images/user?.png" alt="" />
                                                     <span className="tooltiptext">Chizzyfix</span>
                                                 </div>
                                                 <div className="imgbox1">
@@ -118,8 +114,8 @@ function Layout({ children }) {
                             </div>
                         }
                     </div>
+                    {/* main page */}
                     <div className="div2">
-                        {/* main page */}
                         <div id="mainCont">{children}</div>
                     </div>
                 </div>
