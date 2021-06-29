@@ -6,6 +6,7 @@ import './styles/All.css';
 import './styles/Fix.css';
 import './styles/826.css';
 import './styles/Chat.css';
+import './styles/Attachment.css';
 import GlobalStore from './contexts/GlobalStore';
 
 ReactDOM.render(

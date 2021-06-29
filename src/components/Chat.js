@@ -59,7 +59,8 @@ function Chat({ toggle, userId }) {
       userHistoryRef.get().then(doc => {
         if (!doc.exists) {
           userHistoryRef.set({
-            text: `You have new message from ${currentUser.displayName}`,
+            // text: `You have new message from ${currentUser.displayName}`,
+            text: newMessage.slice(0, 25),
             msgCount: 1,
             type: 'message',
             seen: false,
@@ -85,11 +86,6 @@ function Chat({ toggle, userId }) {
   //     setUsersInChat([...usersInChat, user])
   //   }
   // }
-
-  // if(usersInChat){
-  //   console.log(usersInChat)
-  // }
-
 
 
   return (

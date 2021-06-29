@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { auth, db } from '../../firebase';
 import firebase from "firebase";
-import UserProfile from '../UserProfile';
 import { getRandomInt } from '../../fuctions';
 import SignIn from './SignIn';
 import SignUp from './SignUp';

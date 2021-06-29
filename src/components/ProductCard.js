@@ -2,46 +2,55 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import { SaveListContext } from '../contexts/GlobalStore';
 import { db } from '../firebase';
-import { hasSaved, save, Unsave } from '../fuctions';
+import { hasSaved, save, Unsave, UrlSlug } from '../fuctions';
 
 function ProductCard({ catg }) {
     const [products, setProducts] = useState([])
     const [saveList] = useContext(SaveListContext)
 
     useEffect(() => {
-        db.collection('products').where('category', '==', catg).orderBy('createdAt', 'desc').get().then(doc => {
-            let r = doc.docs.map(doc => ({ product: doc.data(), id: doc.id }))
-            setProducts(r)
-        })
+        db.collection('products')
+            .where('category', '==', catg)
+            .orderBy('createdAt', 'desc')
+            .onSnapshot((snapshot) => {
+                let r = snapshot.docs.map(doc => ({ product: doc.data(), id: doc.id }))
+                setProducts(r)
+            })
     }, [catg]);
+
     return (<>
         {products?.map(({ product, id }) => (
-            <Link key={id} to={`product?title=${id}`} className="products" >
+            <Link key={id} to={`product?title=${product?.title && UrlSlug(product?.title, 'encode')}`} className="products" >
                 <div className="shopper">
                     <div className="imgbox">
-                        <img src={product.featuredImage} alt="images" className="images" />
+                        {product?.productImages[0]?.src && <img
+                            style={{ width: '119px' }}
+                            src={product?.productImages[0]?.src}
+                            alt="images" className="images" />}
                         <div className="details">
-                            <h2>{product.title}</h2>
-                            <span>{product.price}</span>
-                            <div className="seller">{product.sellerName}</div>
+                            <h2>{product?.title}</h2>
+                            <span>{product?.price}</span>
+                            <div className="seller">{product?.sellerName}</div>
                             <div className="likes--save">
                                 <div className="promo-validity">
-                                    <div className="goldpromotion">{product.promotion}</div>
+                                    <div className="goldpromotion">{product?.promotion}</div>
                                 </div>
-                                <div style={{}}>{hasSaved(saveList, id) ?
-                                    <img
-                                        onClick={(e) => { e.preventDefault(); Unsave(id) }} 
-                                        src="/images/circle-arrow-down-color.svg"
-                                        alt=""
-                                        className="group84" 
-                                    />
-                                    : <img
-                                        onClick={(e) => { e.preventDefault(); save(id, product.featuredImage, product.title, `/product?title=${product.title}`, 'product') }}
-                                        src="/images/saturday save icon.svg"
-                                        alt=""
-                                        className="group84" 
-                                    />
-                                }</div>
+                                <div style={{}}>
+                                    {hasSaved(saveList, id) ?
+                                        <img
+                                            onClick={(e) => { e.preventDefault(); Unsave(id) }}
+                                            src="/images/circle-arrow-down-color.svg"
+                                            alt=""
+                                            className="group84"
+                                        />
+                                        : <img
+                                            onClick={(e) => { e.preventDefault(); save(id, product?.productImages[0]?.src, product?.title, `/product?title=${product?.title}`, 'product') }}
+                                            src="/images/saturday save icon.svg"
+                                            alt=""
+                                            className="group84"
+                                        />
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>

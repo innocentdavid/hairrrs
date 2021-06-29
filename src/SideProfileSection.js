@@ -27,7 +27,7 @@ function SideProfileSection({ setOpenLogInOrReg }) {
   }
 
   return (<>
-    <div className="accord--profile">
+    {user?.uid && <div className="accord--profile">
       <div className="user--photo">
           <Link to='/profile' className="d-flex align-items-center" style={{ position: 'relative' }}>
             <img src={user?.photoURL} alt="" className="user" />
@@ -61,7 +61,7 @@ function SideProfileSection({ setOpenLogInOrReg }) {
           <Link to="/profile">Job Vacancies</Link><br />
           <Link to="/profile">Articles</Link>
         </div>
-    </div>
+    </div>}
   </>)
 }
 

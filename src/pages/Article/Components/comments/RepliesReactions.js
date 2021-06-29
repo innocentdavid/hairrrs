@@ -11,7 +11,10 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
     // check if current user has likedReply or unlike this comment
     useEffect(() => {
         function isCuserLikedOrDisLiked(collection, stateToUpdate) {
-            db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies').doc(replyId).collection(collection).doc(auth.currentUser.uid).get().then((doc) => {
+            db.collection('articles').doc(articleId).collection('comments')
+            .doc(commentId).collection('replies').doc(replyId)
+            .collection(collection).doc(auth.currentUser.uid).get()
+            .then((doc) => {
                 if (doc.exists) {
                     stateToUpdate(true);
                 }
@@ -25,7 +28,9 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
     }, [articleId, commentId, replyId])
 
     function getTotalCommentReplyReactions(reaction) {
-        db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies').doc(replyId).collection(reaction).onSnapshot((snapshot) => {
+        db.collection('articles').doc(articleId).collection('comments')
+        .doc(commentId).collection('replies').doc(replyId)
+        .collection(reaction).onSnapshot((snapshot) => {
             const result = snapshot.docs.map(doc => doc.data()).length;
             const div = document.querySelector(`#${reaction}_${replyId}`);
             if (div) { div.textContent = result }
@@ -36,14 +41,20 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
         if (auth.currentUser) {
             const uid = auth.currentUser.uid
             if (disLikedReply) {
-                db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies').doc(replyId).collection('disLikes').doc(uid).delete();
+                db.collection('articles').doc(articleId).collection('comments')
+                .doc(commentId).collection('replies').doc(replyId)
+                .collection('disLikes').doc(uid).delete();
                 setDisLikedReply(false)
             }
             if (likedReply) {
-                db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies').doc(replyId).collection('likes').doc(uid).delete();
+                db.collection('articles').doc(articleId).collection('comments')
+                .doc(commentId).collection('replies').doc(replyId)
+                .collection('likes').doc(uid).delete();
                 setLikedReply(false)
             } else {
-                db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies').doc(replyId).collection('likes').doc(uid).set({
+                db.collection('articles').doc(articleId).collection('comments')
+                .doc(commentId).collection('replies').doc(replyId)
+                .collection('likes').doc(uid).set({
                     userName: auth.currentUser.displayName,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
@@ -58,14 +69,20 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
         if (auth.currentUser) {
             const uid = auth.currentUser.uid
             if (likedReply) {
-                db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies').doc(replyId).collection('likes').doc(uid).delete();
+                db.collection('articles').doc(articleId).collection('comments')
+                .doc(commentId).collection('replies').doc(replyId)
+                .collection('likes').doc(uid).delete();
                 setLikedReply(false)
             }
             if (disLikedReply) {
-                db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies').doc(replyId).collection('disLikes').doc(uid).delete();
+                db.collection('articles').doc(articleId).collection('comments')
+                .doc(commentId).collection('replies').doc(replyId)
+                .collection('disLikes').doc(uid).delete();
                 setDisLikedReply(false)
             } else {
-                db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('replies').doc(replyId).collection('disLikes').doc(uid).set({ userName: auth.currentUser.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                db.collection('articles').doc(articleId).collection('comments')
+                .doc(commentId).collection('replies').doc(replyId)
+                .collection('disLikes').doc(uid).set({ userName: auth.currentUser.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
                 setDisLikedReply(true)
             }
         } else {

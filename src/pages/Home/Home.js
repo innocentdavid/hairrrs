@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
+import LatestJobVacancy from '../../components/LatestJobVacancy';
 import ProductCard from '../../components/ProductCard';
 import TrendingArticles from '../../components/TrendingArticles';
 import { db } from '../../firebase';
 
 function Home() {
     const [productCategories, setProductCategories] = useState([]);
+    const [jobCategories, setJobCategories] = useState([]);
 
     // setProductCategories
     useEffect(() => {
@@ -14,6 +16,17 @@ function Home() {
             db.collection('categories').onSnapshot((snapshot) => {
                 let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
                 setProductCategories(r);
+            })
+        }
+        sub();
+    }, [])
+
+    // setJobCategories
+    useEffect(() => {
+        const sub = () => {
+            db.collection('jobCategories').onSnapshot((snapshot) => {
+                let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
+                setJobCategories(r);
             })
         }
         sub();
@@ -70,7 +83,7 @@ function Home() {
                                         <img src="/images/9555bcdb781e5cf8ab9ef3504a952220.png" alt="model on afro hair" className="tooltip-image" />
                                         <div className="Catgs mt-1">
                                             {productCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/products/${data.category}`}>{data.category}</Link></div>
+                                                <div key={id}><Link to={`/products?category=${data.category}`}>{data.category}</Link></div>
                                             ))}
                                         </div>
                                     </span>
@@ -92,7 +105,7 @@ function Home() {
                                         <img src="/images/businesses img .png" alt="model on afro hair" className="tooltip-image" />
                                         <div className="Catgs mt-1">
                                             {productCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/products/${data.category}`}>{data.category}</Link></div>
+                                                <div key={id}><Link to={`/businesses?category=${data.category}`}>{data.category}</Link></div>
                                             ))}
                                         </div>
                                     </span>
@@ -112,8 +125,8 @@ function Home() {
                                     <span className="cats">
                                         <img src="/images/unnamed (2).png" alt="model on afro hair" className="tooltip-image" />
                                         <div className="Catgs mt-1">
-                                            {productCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/products/${data.category}`}>{data.category}</Link></div>
+                                            {jobCategories?.map(({ id, data }) => (
+                                                <div key={id}><Link to={`/jobs?category=${data.value}`}>{data.label}</Link></div>
                                             ))}
                                         </div>
                                     </span>
@@ -134,7 +147,7 @@ function Home() {
                                         <img src="/images/Articles img.png" alt="model on afro hair" className="tooltip-image" />
                                         <div className="Catgs mt-1">
                                             {productCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/products/${data.category}`}>{data.category}</Link></div>
+                                                <div key={id}><Link to={`/articles?category=${data.category}`}>{data.category}</Link></div>
                                             ))}
                                         </div>
                                     </span>
@@ -146,8 +159,7 @@ function Home() {
                 </div>
             </div>
 
-            {/* Products per catg */}
-            <div className="layout3">
+            <div className="layout3" style={{ paddingLeft: 15 }}>
                 {featuredCatg.map(catg => (
                     <div key={catg} className="subcategories">
                         <div className="trenz">
@@ -164,52 +176,11 @@ function Home() {
                     </div>
                 ))}
             </div>
-            {/* Products per catg end */}
 
             <TrendingArticles limit={3} />
 
             {/* Job vacancy per catg */}
-            <div className="layout3">
-                <div className="subcategories9">
-                    <div className="trenz">
-                        <h1>Job vacancies</h1>
-                    </div>
-
-                    <div className="shelf-jv">
-                        {/* jv */}
-                        <div className="jv">
-                            <Link to="jobvacancies-application" >
-                                <div className="shopper-jv">
-                                    <div className="imgbox">
-                                        <div className="view-image-2">
-                                            <img src="/images/signin img.png" alt="" className="images" />
-                                            <div className="verified">&#10004;</div>
-                                        </div>
-                                        <div className="details-00">
-                                            <h2>Hairstylists and braids</h2>
-                                            <span className="info"><i>A hairstylist is needed for immediate
-                                                employment at Ntu...</i></span>
-
-                                            <div className="time-location">
-                                                <img src="/images/Icon material-access-time.png" alt="" className="time" />Full time
-                                                    <img src="/images/Icon material-location-searching.png" alt="" className="Location" />Lagos, Nigeria
-                                                </div>
-                                            <div className="promo-validity">
-                                                <div className="goldpromotion">Gold promotion</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-                        {/* jv */}
-                    </div>
-
-                    <div className="seemore-class">
-                        <Link to="jobvacancies" ><div className="seemore">see more</div></Link>
-                    </div>
-                </div>
-            </div>
+            <LatestJobVacancy />
             {/* Job vacancy per catg end */}
         </>
     )

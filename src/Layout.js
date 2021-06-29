@@ -23,6 +23,8 @@ function Layout({ children }) {
     const locationCheck = () => {
         let locationN = (location.pathname).toLowerCase()
         if (locationN === '/create-article') { return false }
+        if (locationN === '/add-product') { return false }
+        if (locationN === '/add-job') { return false }
         if (locationN === '/settings') { return false }
         return true
     }
@@ -33,7 +35,6 @@ function Layout({ children }) {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((authUser) => {
-            console.log(authUser)
             if (authUser) {
                 setOpenLogInOrReg(false)
                 setOpenLoading(false)

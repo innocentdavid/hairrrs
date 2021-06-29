@@ -167,7 +167,12 @@ input[title]:hover::after {
   position: relative;
   display: inline-flex; 
   justify-content: center;
+  width: 100%;
 }
+
+.mr-1 { margin-right: 1rem !important }
+.mr-2 { margin-right: 2rem !important }
+.mr-3 { margin-right: 3rem !important }
 
 .otherPageMainCont { display: inline-flex }
 
@@ -343,6 +348,8 @@ label {
   cursor: pointer;
 }
 
+.d-flex { display: flex }
+.justify-between { justify-content: space-between }
 .justify-center { justify-content: center }
 .align-center { align-content: center }
 .align-items-center { align-items: center }
@@ -434,8 +441,6 @@ label {
   animation: slideInUp .4s ease-in-out;
 }
 
-.d-flex { display: flex }
-
 .c-photo, .user-photo { width: 35px; height: 35px; border-radius: 50% }
 .reply-box .user-photo { width: 45px; height: 35px; border-radius: 50% }
 
@@ -447,4 +452,19 @@ label {
   animation-duration: 1s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
 }

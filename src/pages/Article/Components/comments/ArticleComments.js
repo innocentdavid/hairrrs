@@ -3,7 +3,7 @@ import { auth, db } from '../../../../firebase';
 import firebase from "firebase";
 import ArticleCommentReplies from './ArticleCommentReplies';
 
-function ArticleComments({ articleId, totalComments, articleUid }) {
+function ArticleComments({ articleId, totalComments }) {
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState('');
     const [limit, setLimit] = useState(5);
@@ -28,16 +28,14 @@ function ArticleComments({ articleId, totalComments, articleUid }) {
     const addComment = () => {
         if (auth.currentUser) {
             if (comment !== '') {
-                db.collection('articles').doc(articleId).collection('comments')
-                    .add({
-                        id: articleId,
-                        comment,
-                        totalReplies: 0,
-                        userName: auth.currentUser.displayName,
-                        userId: auth.currentUser.uid,
-                        photoUrl: auth.currentUser.photoURL ? auth.currentUser.photoURL : '/images/default-user.png',
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    });
+                var data = {
+                    id: articleId,
+                    comment,
+                    totalReplies: 0,
+                    user: {uid: auth.currentUser.uid, displayName: auth.currentUser.displayName, photoUrl: auth.currentUser.photoURL },
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                }
+                db.collection('articles').doc(articleId).collection('comments').add(data);
                 db.collection('articles').doc(articleId).update({
                     totalComments: totalComments + 1
                 });
@@ -81,10 +79,10 @@ function ArticleComments({ articleId, totalComments, articleUid }) {
                     <div key={commentId} className="comments-post">
                         <div key={commentId} className="img-comment">
                             <div className="user-data">
-                                <img key={commentId} className="c-photo" src={comment.photoUrl ? comment.photoUrl : '/images/default-user.png'} alt="" />
+                                <img key={commentId} className="c-photo" src={comment?.user?.photoUrl ? comment.user.photoUrl : '/images/default-user.png'} alt="" />
                             </div>
                             <div className="post--" style={{ marginLeft: '20px' }}>
-                                <div className="username">{comment.userName}</div>
+                                <div className="username">{comment?.user?.displayName}</div>
                                 <p className="comment">{comment.comment}</p>
                             </div>
                         </div>
@@ -93,7 +91,7 @@ function ArticleComments({ articleId, totalComments, articleUid }) {
                             <ArticleCommentReplies
                                 key={commentId}
                                 commentText={comment.comment}
-                                commentUserId={comment.userId}
+                                commentUserId={comment?.user?.uid}
                                 totalReplies={comment.totalReplies}
                                 articleId={articleId}
                                 commentId={commentId} />

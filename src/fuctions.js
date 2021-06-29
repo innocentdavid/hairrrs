@@ -32,31 +32,36 @@ const getMonthDate = (timestamp) => {
 }
 
 function formatAMPM(date) {
-    if(date){
+    if (date) {
         let dateObj = new Date(date.toDate().toString());
         var hours = dateObj.getHours();
         var minutes = dateObj.getMinutes();
         var ampm = hours >= 12 ? 'pm' : 'am';
         hours = hours % 12;
         hours = hours ? hours : 12; // the hour '0' should be '12'
-        minutes = minutes < 10 ? '0'+minutes : minutes;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
         var strTime = hours + ':' + minutes + ' ' + ampm;
         return strTime;
     }
-  }
+}
 
 const getMonthDateYearHour_minute = (timestamp) => {
-    let dateObj = new Date(timestamp.toDate().toString());
-    var nMonth = month[dateObj.getMonth()];
-    let date = dateObj.getDate();
-    let year = dateObj.getFullYear();
+    if (timestamp) {
+        let dateObj = new Date(timestamp.toDate().toString());
+        var nMonth = month[dateObj.getMonth()];
+        let date = dateObj.getDate();
+        let year = dateObj.getFullYear();
 
-    let newDate = new Date(timestamp * 1000)
-    let Hours = newDate.getHours()
-    let Minutes = newDate.getMinutes()
-    const Hour_minute = Hours + ':' + Minutes
+        let newDate = new Date(timestamp * 1000)
 
-    return `${nMonth} ${date} ${year} ${Hour_minute}`
+        let Hours = newDate.getHours()
+        let Minutes = newDate.getMinutes()
+        const Hour_minute = Hours + ':' + Minutes
+        let time = formatAMPM(timestamp)
+
+        return `${nMonth} ${date} ${year} ${Hour_minute}`
+    }
+    return ''
 }
 
 function strip(html) {
@@ -84,6 +89,18 @@ const topFunction = () => {
 
 const getRandomInt = (limit) => {
     return Math.floor(Math.random() * limit) + 1;
+}
+
+function makeid(length) {
+    var result = '';
+    // var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    return result;
 }
 
 const getUserGeolocationDetails = () => {
@@ -218,9 +235,9 @@ function pasteHtmlAtCaret(html) {
 }
 
 function UrlSlug(str, action) {
-    if(action === 'encode'){
+    if (action === 'encode') {
         return str.replace(/\s+/g, '-')
-    }else{
+    } else {
         return str.replace(/-/g, ' ')
     }
 }
@@ -229,5 +246,5 @@ export {
     getDesc, topFunction, getRandomInt, UrlSlug,
     getUserGeolocationDetails, b64toBlob,
     deleteArticle, save, Unsave, hasSaved, followUser,
-    unFollowUser, hasFollowed, pasteHtmlAtCaret
+    unFollowUser, hasFollowed, pasteHtmlAtCaret, makeid
 };

@@ -12,12 +12,12 @@ import FollowersTab from './Components/FollowersTab';
 
 function Profile() {
     const history = useHistory();
-    if (!auth.currentUser) { history.push('/') }
 
     const [user, setUser] = useState([])
     const [currentUser, setCurrentUser] = useState([])
     auth.onAuthStateChanged(user => {
         setCurrentUser(user)
+        if (!user) { history.push('/') }
     })
 
     useEffect(() => {

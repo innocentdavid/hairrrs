@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { db, storage } from '../../../firebase'
+import { auth, db, storage } from '../../../firebase'
 
 function ProfilePics({ user }) {
   const [photoURLPrevw, setPhotoURLPrevw] = useState(null)
@@ -27,6 +27,10 @@ function ProfilePics({ user }) {
           storage.ref('images').child(photoURL.name).getDownloadURL()
             .then(url => {
               db.collection('users').doc(user.uid).update({ photoURL: url })
+              auth.currentUser.updateProfile({ 
+                photoURL: url
+              })
+              // photoURL.replace(url)
               setPhotoURL(false)
               setUpdating(false)
             });

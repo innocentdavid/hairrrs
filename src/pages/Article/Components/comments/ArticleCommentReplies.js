@@ -33,14 +33,15 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUser
     const replyComment = () => {
         if (auth.currentUser?.displayName) {
             if (newReply !== '') {
-                db.collection('articles').doc(articleId).collection('comments').doc(`${commentId}`).collection('replies').add({
+                var data = {
                     reply: newReply,
                     totalReplies: totalReplies + 1,
-                    userName: auth.currentUser.displayName,
-                    userId: auth.currentUser.uid,
-                    photoURL: auth.currentUser.photoURL,
+                    user: {uid: auth.currentUser.uid, displayName: auth.currentUser.displayName, photoURL: auth.currentUser.photoURL },
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                });
+                }
+                console.log(data)
+                db.collection('articles').doc(articleId).collection('comments')
+                .doc(`${commentId}`).collection('replies').add(data);
                 db.collection('articles').doc(articleId).collection('comments').doc(`${commentId}`).update({
                     totalReplies: totalReplies + 1
                 });
@@ -59,7 +60,7 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUser
     // useEffect(() => {
     //     if (replies) {
     //         setText(replies.map(({ reply }) => reply.reply))
-    //         setReplyUserId(replies.map(({ reply }) => reply.userId))
+    //         setReplyUserId(replies.map(({ reply }) => reply?.user?.uid))
     //     }
     // }, [replies]);
 
@@ -103,10 +104,11 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUser
                         <div key={replyId} className="replies--user">
                             <div className="img-comment-replies">
                                 <div className="user-data">
-                                    <img key={replyId} className="c-photo" src={reply.photoURL ? reply.photoURL : '/images/default-user.png'} alt="" />
+                                    {reply?.user?.photoURL && <img className="c-photo" src={reply.user.photoURL} alt="" />}
+                                    {!reply?.user?.photoURL && <img className="c-photo" src='/images/default-user.png' alt="" />}
                                 </div>
                                 <div className="post--details">
-                                    <div className="username">{reply.userName}</div>
+                                    <div className="username">{reply?.user?.displayName}</div>
                                     <comment key={replyId}>{reply.reply ? reply.reply : 'Loading ...'}</comment>
                                 </div>
                             </div>
@@ -115,7 +117,7 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUser
                                     articleId={articleId}
                                     commentId={commentId}
                                     replyId={replyId}
-                                    replyUserId={reply.userId}
+                                    replyUserId={reply?.user?.uid}
                                     reply={reply.reply} />
                             </div>
                         </div>

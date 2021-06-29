@@ -17,6 +17,9 @@ import SettingsPage from './pages/SettingsPage/SettingsPage';
 import Articles from './pages/Articles/Articles';
 import { auth, db } from './firebase';
 import UserProfile from './components/UserProfile';
+import Job from './pages/Job/Job';
+import Jobs from './pages/Jobs/Jobs';
+import ApplyForJob from './ApplyForJob/ApplyForJob';
 
 function App() {
 // useEffect for signing up users
@@ -47,6 +50,9 @@ useEffect(() => {
             <Route path='/business-profile' exact component={BusinessProfile} />
             <Route path='/add-product' exact component={AddProduct} />
             <Route path='/add-job' exact component={AddJob} />
+            <Route path='/apply' exact component={ApplyForJob} />
+            <Route path='/job' exact component={Job} />
+            <Route path='/jobs' exact component={Jobs} />
             <Route path='/products' exact component={Products} />
             <Route path='/product' exact component={Product} />
             <Route path='/businesses' exact component={Businesses} />

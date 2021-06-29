@@ -1,27 +1,64 @@
-import React, { useState } from 'react'
-import { auth, db } from '../../firebase';
+import React, { useEffect, useState } from 'react'
+import { db } from '../../firebase';
 import firebase from 'firebase';
 import ImageLib from '../../components/ImageLib';
+import CustomSelectDropDown from '../../components/CustomSelectDropDown';
+import { makeid, UrlSlug } from '../../fuctions';
+import UserProfile from '../../components/UserProfile';
+import { useHistory } from 'react-router-dom';
+import LocationSearchInput from '../../components/LocationSearchInput';
 
 function AddProduct() {
+    var history = useHistory()
+    var user = UserProfile.getUser()
+    const params = new URLSearchParams(window.location.search);
+    const [openLoading, setOpenLoading] = useState(false)
+
+    const [productId, setProductId] = useState(null)
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('edit')) {
+            setOpenLoading(true)
+            setProductId(params.get('edit'));
+        }
+    }, [])
+
     const [openImageLib, setOpenImageLib] = useState(false);
     const closeInsertImageModal = () => { setOpenImageLib(false) }
 
     const [categories, setCategories] = useState([])
+    useEffect(() => {
+        db.collection('productCategories')
+            .onSnapshot((snapshot) => {
+                let r = snapshot.docs.map(doc => doc.data())
+                setCategories(r)
+            })
+    }, [])
+
+    const [types, setTypes] = useState([])
+    useEffect(() => {
+        db.collection('productTypes')
+            .onSnapshot((snapshot) => {
+                let r = snapshot.docs.map(doc => doc.data())
+                setTypes(r)
+            })
+    }, [])
 
     const [category, setCategory] = useState('')
     const [title, setTitle] = useState('')
     const [type, setType] = useState('')
-    const [location, setLocation] = useState('')
+    const [rigion, setRigion] = useState('')
     const [address, setAddress] = useState('')
     const [price, setPrice] = useState('')
     const [productDesc, setProductDesc] = useState('')
     const [negotiable, setNegotiable] = useState(false)
 
+
     const check = (data, errSection, error) => {
-        if (data !== '' && data !== null && data) { 
-            document.querySelector(errSection).textContent = ''; 
-            return true 
+        if (data !== '' && data !== null && data) {
+            document.querySelector(errSection).textContent = '';
+            return true
         } else {
             document.querySelector(errSection).textContent = error;
             return false
@@ -35,80 +72,142 @@ function AddProduct() {
         let typeCheck = check(type, '.typeErrSection', 'You should set a type for your product')
         let priceCheck = check(price, '.priceErrSection', 'You should set a price for your product')
         let addressCheck = check(address, '.addressErrSection', 'You should set an address')
-        let locationCheck = check(location, '.locationErrSection', 'You should set your location')
+        let rigionCheck = check(rigion, '.rigionErrSection', 'You should set your rigion')
         let images = document.querySelector('.add-images').firstChild
         let imagesCheck = check(images, '.imagesErrSection', 'You have not added any image')
 
-        if (imagesCheck && titleCheck && productDescCheck && locationCheck && categoryCheck && typeCheck && priceCheck && addressCheck) { return true } else { alert(`An error has occured 😢, please fix the error and try again 😘`); return false }
+        if (imagesCheck && titleCheck && productDescCheck && rigionCheck && categoryCheck && typeCheck && priceCheck && addressCheck) { return true } else { alert(`An error has occured 😢, please fix the error and try again 😘`); return false }
+    }
+
+    const [productImagesNew, setProductImagesNew] = useState([])
+
+    const getProductImagesNew = async () => {
+        let images = document.querySelectorAll('.pImg')
+        if (images) {
+            images.forEach(img => {
+                if (img.src) {
+                    productImagesNew.push({ src: img.src })
+                }
+            });
+        }
+        return 'success'
     }
 
     const addProduct = async () => {
-        let loader = document.querySelector('.loader')
-        if (loader) { loader.style.display = 'grid' }
+        setOpenLoading(true)
 
+        await getProductImagesNew();
 
-        let id = title.replace(/\s+/g, '-');
+        if (productImagesNew) {
+            const data = {
+                title,
+                price,
+                productDesc,
+                seller: { displayName: user?.displayName, uid: user?.uid, photoURL: user?.photoURL, phoneNumber: user.phoneNumber },
+                negotiable,
+                type,
+                rigion,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                category,
+                productImages: productImagesNew,
+                promotion: 'Regular',
+                country: 'Nigeria',
+                address,
+                quantity: 1
+            }
 
-        let addImagesFirstChild = document.querySelector('.add-images').firstChild
-        var featuredImage = '';
-        if (addImagesFirstChild) { featuredImage = addImagesFirstChild.src }
+            if (params.has('edit')) {
+                await db.collection('products').doc(params.get('edit')).update(data);
+            } else {
+                await db.collection('products').doc().set(data);
+            }
 
-        let productImagesC = []
-        let pImgs = document.querySelectorAll('.pImg')
-        if (pImgs) {
-            pImgs.forEach(img => {
-                productImagesC.push(img?.src)
-            });
+            setTitle(''); setType(''); setPrice(''); setRigion(''); setAddress('');
+            setProductDesc(''); setNegotiable('');
+            let hp = document.querySelector('.holder-promo')
+            if (hp) {
+                hp.style.display = 'none'
+            }
+
+            // window.location = `/product?title=${title && UrlSlug(title, 'encode')}`
+            history.push(`/product?title=${title && UrlSlug(title, 'encode')}`)
+            setOpenLoading(false)
         }
-        let productImages = productImagesC;
-
-        const data = {
-            id,
-            title,
-            price,
-            productDesc,
-            sellerName: auth.currentUser?.displayName,
-            sellerId: auth.currentUser?.uid,
-            sellerPhotoURL: auth.currentUser?.photoURL,
-            negotiable,
-            type,
-            location,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            category,
-            featuredImage,
-            productImages,
-            promotion: 'Regular',
-            country: 'Nigeria',
-            address: 'Lagos Island(Eko), Lagos Nigeria',
-            phone: '+234 811 265 904',
-        }
-        
-        await db.collection('products').doc(id).set(data);
-        window.location=`/product?title=${id}`
-
-        setTitle(''); setType(''); setPrice(''); setLocation(''); setAddress('');
-        setProductDesc(''); setNegotiable('');
-
-        document.querySelector('.loader').style.display = 'none'
-        document.querySelector('.holder-promo').style.display = 'none'
-
-
-        // console.log('Added');
     }
 
     const handleSubmit = () => {
         addProduct()
     }
 
+    let removeImage = document.querySelectorAll('.removeImage')
+    removeImage.forEach(el => {
+        el.addEventListener('click', async (e) => {
+            let id = e.target.dataset.id
+            let elm = document.querySelector(`#${id}`)
+            if (elm) {
+                elm.remove()
+            }
+        })
+    });
+
+
+    // edit
+
+    const [productImages, setProductImages] = useState(null)
+
+    useEffect(() => {
+        if (productId) {
+            db.collection('products').doc(productId)
+                .onSnapshot((snapshot) => {
+                    if (snapshot.exists) {
+                        let r = snapshot.data()
+
+                        if (r.productImages) {
+                            setProductImagesNew(r.productImages)
+
+                            let data = []
+                            r?.productImages?.forEach(img => {
+                                data.push({
+                                    id: makeid(5),
+                                    src: img?.src
+                                })
+                            });
+                            if (data) {
+                                setProductImages(data)
+                            }
+                        }
+
+                        setCategory(r.category)
+                        setTitle(r.title)
+                        setType(r.type)
+                        setPrice(r.price)
+                        setProductDesc(r.productDesc)
+                        setRigion(r.rigion)
+                        setAddress(r.address)
+                        setNegotiable(r.negotiable)
+                    } else {
+                        // history.push('/products')
+                    }
+                })
+        }
+    }, [productId])
+
+    useEffect(() => {
+        if (title) {
+            setOpenLoading(false)
+        }
+    }, [title])
+
     return (
         <form>
-            <div className="loader">
+            {openLoading && <div className="loader" style={{ display: 'grid' }}>
                 <img src="/images/loading.svg" alt="" />
-            </div>
+            </div>}
+
             {openImageLib && <ImageLib
                 title={'Hairrs'}
                 closeInsertImageModal={closeInsertImageModal}
-                inserImgCaller = 'AddProduct'
+                inserImgCaller='AddProduct'
             />}
 
             <div className="layout" style={{ marginTop: 0 }}>
@@ -126,7 +225,14 @@ function AddProduct() {
                                 </div>
                                 <div className="imagesErrSection errSection"></div>
                                 {/* product images */}
-                                <div className="add-images"></div>
+                                <div className="add-images Product-add-images">
+                                    {productImages?.map(({ id, src }) => (
+                                        <div key={id} id={id} style={{ position: 'relative' }} draggable>
+                                            <span data-id={id} className="removeImage">+</span>
+                                            <img className="jImg" src={src} alt="" />
+                                        </div>
+                                    ))}
+                                </div>
                                 {/* product images */}
                                 <div className="add-title">
                                     <input
@@ -146,75 +252,33 @@ function AddProduct() {
                                     <div className="productDescErrSection errSection"></div>
                                 </div>
 
-                                <div className="selection">
-                                    <div className="selector">
-                                        <input
-                                            value={category}
-                                            onChange={(e) => { document.querySelector('.categoryErrSection').textContent = ''; setCategory(e.target.value) }}
-                                            type="text" placeholder="Category" />
-                                        <div id="selecticon">&#10094;</div>
-                                    </div>
-                                    <div className="options">
-                                        <ul>
-                                            <option value="1">category</option>
-                                            <option value="2">category</option>
-                                            <option value="3">category</option>
-                                            <option value="4">category</option>
-                                            <option value="5">category</option>
-                                            <option value="6">category</option>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <CustomSelectDropDown options={categories} setState={setCategory} dValue={category} label={'category'} />
                                 <div className="categoryErrSection errSection"></div>
+                                <br />
 
-                                <div className="selection">
-                                    <div className="selector">
-                                        <input
-                                            value={type}
-                                            onChange={(e) => { document.querySelector('.typeErrSection').textContent = ''; setType(e.target.value) }}
-                                            type="text" placeholder="Type" />
-                                        <div id="selecticon">&#10094;</div>
-                                    </div>
-                                    <div className="options">
-                                        <ul>
-                                            <option value="1">Type</option>
-                                            <option value="2">Type</option>
-                                            <option value="3">Type</option>
-                                            <option value="4">Type</option>
-                                            <option value="5">Type</option>
-                                            <option value="6">Type</option>
-                                        </ul>
-                                    </div>
-                                </div>
+                                {/* types */}
+                                <CustomSelectDropDown options={types} setState={setType} dValue={type} label={'type'} />
                                 <div className="typeErrSection errSection"></div>
+                                <br />
 
                                 <div className="selection">
                                     <div className="selector">
                                         <input
-                                            value={location}
-                                            onChange={(e) => { document.querySelector('.locationErrSection').textContent = ''; setLocation(e.target.value) }}
-                                            type="text" placeholder="Location" />
+                                            value={rigion}
+                                            onChange={(e) => { document.querySelector('.rigionErrSection').textContent = ''; setRigion(e.target.value) }}
+                                            type="text" placeholder="Rigion" />
                                         <div id="selecticon">&#10094;</div>
                                     </div>
-                                    <div className="options">
-                                        <ul>
-                                            <option value="1">Location</option>
-                                            <option value="2">Location</option>
-                                            <option value="3">Location</option>
-                                            <option value="4">Location</option>
-                                            <option value="5">Location</option>
-                                            <option value="6">Location</option>
-                                        </ul>
-                                    </div>
                                 </div>
-                                <div className="locationErrSection errSection"></div>
+                                <div className="rigionErrSection errSection"></div>
 
                                 <div className="add-title">
-                                    <input
+                                    <LocationSearchInput setLocation={setAddress} />
+                                    {/* <input
                                         value={address}
                                         onChange={(e) => { document.querySelector('.addressErrSection').textContent = ''; setAddress(e.target.value) }}
                                         type="text"
-                                        placeholder="Address" />
+                                        placeholder="Address" /> */}
                                     <span className="addressErrSection errSection"></span>
                                 </div>
 
@@ -232,7 +296,7 @@ function AddProduct() {
                                         checked={negotiable}
                                         onChange={() => setNegotiable(!negotiable)}
                                         type="checkbox" /> Negotiable
-                            </div>
+                                </div>
 
                                 <button onClick={() => { if (checkInputs()) { document.querySelector('.holder-promo').style.display = 'block' } }} type="button" className="nextbtn">Next</button>
 
@@ -240,29 +304,9 @@ function AddProduct() {
                         </div>
                     </div>
                 </div>
-                <div className="floater">
-                    <div className="support"><span>Support</span>
-                        <img src="images/support-icon.svg" alt="Ohyanga comment icon" />
-                    </div>
-                    <div className="scrolltotop">
-                        <img src="images/Icon feather-chevron-down.svg" alt="scroll up / button" />
-                    </div>
-                </div>
-
-
-
-
-
 
 
                 {/* step 2 */}
-
-
-
-
-
-
-
 
 
 

@@ -40,7 +40,7 @@ button {
   padding: 5px 10px !important;
   border: 1px solid #c10041 !important;
   border-radius: 3px !important;
-  margin: 10px 0 !important;
+  margin: 10px 0;
   transition: .2s !important
 }
 
@@ -59,17 +59,23 @@ button:hover {
   color: white !important
 }
 
+.rotate-true {
+  transition: all 2s;
+  transform: rotate(180deg)
+}
+
 .headerAd {
   background-color: #c10041;
   width: 100%;
   height: 50px;
   margin-top: 0;
+  z-index: 9999999999999999;
 }
 
 .headerAd img {
   width: 100%;
   position: fixed;
-  z-index: 2;
+  z-index: 9999999999999999;
 }
 
 .logo {
@@ -1992,6 +1998,11 @@ input[type="date"]::-webkit-inner-spin-button {
 
 .infos {
   display: flex;
+  align-items: center;
+}
+
+.infos .add-p {
+  margin-right: 10px;
 }
 
 .add-images {
@@ -4286,6 +4297,7 @@ input[type=range]::-webkit-slider-thumb {
 .shopper-jv .view-image-2 img {
   border-radius: 50%;
   width: 60px;
+  height: 60px;
   margin: 20px;
 }
 
@@ -4528,14 +4540,13 @@ h1 {
 }
 
 .promo-validity .group84 {
-  margin-left: 15px;
-  margin-top: -2px;
-  width: 22px;
   height: 22px;
-  z-index: 0;
+  width: 22px;
 }
 
-price {
+.w-100 { width: 100% }
+
+.price {
   margin-left: 10px;
   font-weight: 800;
 }
@@ -5171,6 +5182,7 @@ textarea.comment-textarea {
 
 .report-1 {
   display: flex;
+  align-items: center;
   width: 100%;
 }
 
@@ -5396,9 +5408,6 @@ textarea.comment-textarea {
   padding: 7px 95px;
   border-radius: 5px;
   font-size: 10px;
-  margin-left: 0px;
-  text-align: center;
-  margin-top: -3px;
 }
 
 .report img {
@@ -5583,9 +5592,10 @@ textarea.comment-textarea {
 }
 
 .views-container-2 {
-  width: 530px;
-  margin-top: 4px;
   font-weight: 800;
+  display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .views-container .views {
@@ -5715,6 +5725,10 @@ textarea.comment-textarea {
 
 .inputError {
   border: 1px solid red !important
+}
+
+.uploadCounterSection {
+  color: red;
 }
 
 
@@ -7339,6 +7353,20 @@ form .reply-area {
   border-radius: 8px;
 }
 
+.filterCont {
+  position: absolute;
+  top: 60px;
+  right: 110px;
+  background: white;
+  color: black;
+  height: 480px;
+  width: 250px;
+  margin-left: 16px;
+  box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11);
+  border-radius: 8px;
+  z-index: 2;
+}
+
 .filter {
   background: #f9f9f9;
   color: black;
@@ -7609,16 +7637,6 @@ form .reply-area {
   margin-left: 5px;
   color: #f40053;
   font-size: 12px;
-}
-
-.p1 .save--icon {
-  height: 22px;
-  width: 10px;
-}
-
-.details-1 .promo-validity .group84 {
-  width: 25px;
-  height: 25px;
 }
 
 .informations .details-1 {
@@ -9426,11 +9444,11 @@ seller {
     margin-right: 50px;
   }
 
-  .icon2 {
+  /* .icon2 {
     cursor: pointer;
     margin-left: 40%;
     z-index: 20;
-  }
+  } */
 
   .icon2 img {
     height: 20px;
@@ -9603,13 +9621,14 @@ seller {
     width: 100%;
     height: 25px;
     margin-top: 0;
+    z-index: 99999999999;
   }
 
   .headerAd img {
     width: 100%;
     height: 25px;
     position: fixed;
-    z-index: 2;
+    z-index: 99999999999;
   }
 
   .header nav {
@@ -9954,7 +9973,8 @@ seller {
 
 
 
-.imgCheckBox {
+.imgCheckBox,
+.imgRadio {
   display: none;
 }
 
@@ -9992,16 +10012,40 @@ label img {
   border-color: #ddd
 }
 
-:checked+label:before {
-  content: "✓";
-  background-color: grey;
-  transform: scale(1)
-}
-
 :checked+label img {
+  border: 1px solid red;
   transform: scale(0.9);
   /* box-shadow: 0 0 5px #333; */
   z-index: -1
+}
+
+.removeImage {
+  position: absolute;
+  transform: rotate(45deg);
+  z-index: 2;
+  right: 10px;
+  top: 10px;
+  background: black;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.select__control {
+  border: none !important;
+  background: none !important;
+}
+
+.basic-multi-select:focus-visible {
+  outline: none !important
+}
+
+.select__control:focus-visible {
+  outline: none !important
 }
 
 .errSection {

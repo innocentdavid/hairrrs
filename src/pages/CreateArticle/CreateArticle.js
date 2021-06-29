@@ -154,7 +154,9 @@ function CreateArticle() {
 
     if (title && auth.currentUser) {
       let data = {
-        UrlSlug, title, article, category, articleCover: articleCover, userId: auth.currentUser.uid, authorName: auth.currentUser.displayName, authorPhotoURL: auth.currentUser.photoURL, createdAt: firebase.firestore.FieldValue.serverTimestamp(), totalLikes: 0, totalDisLikes: 0, totalComments: 0
+        UrlSlug, title, article, category, articleCover: articleCover, 
+        author: { uid: auth.currentUser.uid, displayName: auth.currentUser.displayName, photoURL: auth.currentUser.photoURL },
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(), totalLikes: 0, totalDisLikes: 0, totalComments: 0
       }
 
       if (mode === 'update') {

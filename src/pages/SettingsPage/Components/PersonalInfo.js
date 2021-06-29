@@ -36,12 +36,13 @@ function PersonalInfo({ user }) {
     check(dob, setDobError)
     await check(gender, setGenderError)
     if (
-      !firstNameError &&
-      !lastNameError &&
-      !phoneNumberError &&
-      !dobError &&
-      !genderError
+      check(firstName, setFirstNameError) &&
+      check(lastName, setLastNameError) &&
+      check(phoneNumber, setPhoneNumberError) &&
+      check(dob, setDobError) &&
+      check(gender, setGenderError)
     ) {
+      setError('')
       setUpdating(true)
       if (user.uid) {
         let data = {
@@ -52,7 +53,7 @@ function PersonalInfo({ user }) {
         setHasChanged(false)
         setUpdating(false)
       } else { setUpdating(false); setError('You are not logged-in!'); console.log('You are not logged-in!') }
-    }else{ setError('please correct above error and try again') }
+    } else { setError('please correct above error and try again') }
   }
 
   function check(field, setErrorSection) {

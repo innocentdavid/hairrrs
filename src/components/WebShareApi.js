@@ -26,14 +26,14 @@ function WebShareApi({ url, title, text }) {
         <div>
             {showShareAlt && <SocialMediaButtons url={url} text={text} />}
             {!isMobile &&
-                <img src="/images/saturday feather-share-2.svg" alt="share icon" onClick={() => { setShowShareAlt(!showShareAlt) }} />
+                <button onClick={() => { setShowShareAlt(!showShareAlt) }}><img src="/images/saturday feather-share-2.svg" alt="share icon" /></button>
             }
 
             {isMobile && <RWebShare
                 data={{ text, url, title }}
             // onClick={() => console.info("share successful!")}
             >
-                <img src="/images/saturday feather-share-2.svg" alt="share icon" />
+                <button><img src="/images/saturday feather-share-2.svg" alt="share icon" /></button>
             </RWebShare>}
         </div>
     );

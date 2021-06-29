@@ -30,7 +30,9 @@ function Article() {
 
   useEffect(() => {
     const fetchArticle = async () => {
-      const response = db.collection('articles').where('UrlSlug', '==', articleUrlSlug);
+      const response = db.collection('articles')
+      .where('UrlSlug', '==', articleUrlSlug);
+
       const data = await response.get();
 
       if (data.empty) {
@@ -155,14 +157,14 @@ function Article() {
   // set page viewed
   var totalPageView = document.querySelector('#totalPageViewSection');
   useEffect(() => {
-    if (totalPageView?.textContent) {
+    if (totalPageView?.textContent && article?.author?.uid !== authUser.uid) {
       let UpdatedViewCount = parseInt(totalPageView.textContent) + 1
       var pageUrl = window.location.href;
       if (pageUrl) {
         var storedPages = JSON.parse(localStorage.getItem(pageUrl));
       }
       if (authUser) {
-        if (articleId && article.userId !== authUser.uid && pageUrl) {
+        if (articleId && article?.author?.uid !== authUser.uid && pageUrl) {
           if (!storedPages) {
             localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
             document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
@@ -183,7 +185,7 @@ function Article() {
   // localStorage.clear()
 
   useEffect(() => {
-    if(articleId){
+    if (articleId) {
       db.collection('articles').doc(articleId).collection('comments').where('createdAt', '<', new Date(Date.now() + 10000)).get().then(doc => {
         console.log(doc.docs.map(doc => ({ doc: doc.data() })))
       })
@@ -224,10 +226,10 @@ function Article() {
                   <div style={{ position: 'relative', margin: '10px 0' }}>
                     <div>
                       {article?.category ? <Link to={`/articles?category=${UrlSlug(article.category, 'encode')}`} className="category">{article?.category}</Link> : <span>...</span>}
-                                                &nbsp;&nbsp;&nbsp;
-                                                <span>{getMonthDate(article?.createdAt)}</span>
+                      &nbsp;&nbsp;&nbsp;
+                      <span>{getMonthDate(article?.createdAt)}</span>
                     </div>
-                    {auth.currentUser?.uid === article?.userId &&
+                    {auth.currentUser?.uid === article?.author?.uid &&
                       <>
                         <button style={{ position: 'absolute', top: -15, right: 50 }}>
                           <Link style={{ color: 'inherit' }} to={`/create-article?update=${articleId}`}>Edit</Link>
@@ -248,17 +250,17 @@ function Article() {
                   <div className="comments_likes_dislikes">
                     <div className="likes">
                       {totalLikes} Likes
-                                        </div>
-                                        &nbsp;&nbsp;
+                    </div>
+                    &nbsp;&nbsp;
 
-                                        <div className="dislikes">
+                    <div className="dislikes">
                       {totalDisLikes} Dislikes
-                                        </div>
-                                        &nbsp;&nbsp;
+                    </div>
+                    &nbsp;&nbsp;
 
-                                        <div className="comments">
+                    <div className="comments">
                       {totalComments} Comments
-                                        </div>
+                    </div>
                   </div>
                   <div className="viewsCont">
                     <div><img src="/images/views.png" alt="" /></div>
@@ -303,6 +305,7 @@ function Article() {
                         </div>
 
                         <div className="children">
+                          {/* save */}
                           <div className="reach">{hasSaved(saveList, articleId) ?
                             <div onClick={() => { Unsave(articleId) }} style={{ display: 'flex' }}>
                               <div className="icon">
@@ -315,13 +318,15 @@ function Article() {
                                 <img src="/images/saturday save icon.svg" alt="" />
                               </div>
                               <div className="text">save</div>
-                            </div>}</div>
+                            </div>}
+                          </div>
 
+                          {/* share */}
                           <div className="reach" style={{ position: 'relative' }}>
                             <WebShareApi url={`ntutu-fdb00.web.app/article?title=${articleUrlSlug}`} title={article?.title} text={`${article?.title} \n \n`} />
                           </div>
 
-                          {auth.currentUser.uid !== article.userId && <div className="reach" id={`${articleId}_reported`}>
+                          {auth.currentUser.uid !== article?.author?.uid && <div className="reach" id={`${articleId}_reported`}>
                             <img src="/images/Group 1192.svg" alt="elipsis icon" onClick={() => { setElipsisInfoComment(!elipsisInfoComment) }} />
                             {elipsisInfoComment &&
                               <div className="elipsis--info-comment">
@@ -341,7 +346,6 @@ function Article() {
                       {articleId &&
                         <ArticleComments
                           key={articleUrlSlug}
-                          articleUid={article.uid}
                           totalComments={totalComments}
                           articleId={articleId} />}
 
@@ -356,7 +360,7 @@ function Article() {
             </div>
           </div>
 
-          {article && <ItemOwner userId={article.userId} />}
+          {article && <ItemOwner userId={article?.author?.uid} />}
         </div>
         : <h1>loading ...</h1>}
     </>
