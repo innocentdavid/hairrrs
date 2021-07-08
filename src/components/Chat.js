@@ -4,8 +4,9 @@ import firebase from 'firebase'
 import UserProfile from './UserProfile'
 import { formatAMPM } from '../fuctions'
 
-function Chat({ toggle, userId }) {
+function Chat({ toggle, userId, msgId }) {
   const [user, setUser] = useState(null);
+
   useEffect(() => {
     if (!user && userId)
       db.collection('users').doc(userId)
@@ -13,6 +14,18 @@ function Chat({ toggle, userId }) {
           setUser(doc.data());
         });
   }, [user, userId]);
+
+  useEffect(() => {
+    const markMessageRead = (id) => {
+      if (msgId) {
+        db.collection('users').doc(userId).collection('history').doc(id).delete()
+      }
+    }
+
+    return () => {
+      markMessageRead(msgId)
+    }
+  }, [msgId, userId])
 
   const currentUser = UserProfile.getUser()
   // const currentUser = auth.currentUser
@@ -31,6 +44,20 @@ function Chat({ toggle, userId }) {
       });
     }
   }, [currentUser, user])
+
+
+  // useEffect(() => {
+  //   if (currentUser && user) {
+  //     db.collection('chats').doc(currentUser.uid).collection(user.uid)
+  //       .orderBy('createdAt', 'desc')
+  //     .onSnapshot((snapshot) => {
+  //       if(!snapshot.empty){
+  //         let r = snapshot.docs.map(doc => ({ message: doc.data(), id: doc.id }))
+  //         setMessages(r)
+  //       }
+  //     });
+  //   }
+  // }, [currentUser, user])
 
   const [newMessage, setNewMessage] = useState('')
   const addChat = (type) => {
@@ -139,9 +166,9 @@ function Chat({ toggle, userId }) {
               type="text" placeholder="write message" />
           </div>
           {newMessage ?
-            <div className="sendBtn" onClick={() => { addChat('text') }}>
+            <button className="sendBtn" onClick={() => { addChat('text') }}>
               <img src="images/Icon-send.svg" alt="" />
-            </div>
+            </button>
             : <div className="sendBtn">
               <img src="images/Icon-send.svg" alt="" style={{ transform: "scale(.3)" }} />
             </div>}

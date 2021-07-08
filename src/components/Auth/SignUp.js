@@ -16,16 +16,23 @@ function SignUp({ defaults, signInWithGoogle, toggleShowAuthModal, setOpenAuthMo
   const signUp = () => {
     auth.createUserWithEmailAndPassword(email, password)
       .then((authUser) => {
-        console.log(authUser.user)
-        db.collection('users').doc(authUser.user.uid).set({
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          displayName: fullName,
-          userName: "New user_" + getRandomInt(1000),
-          uid: authUser.user.uid,
-          email: authUser.user.email,
-          photoURL: process.env.REACT_APP_DEFAULT_USER_PHOTO_URL,
-          defaults
-        });
+        fetch('https://api.ipdata.co/?api-key=f4332401282ddc4b12019f87256936ad24586eca9f5ce05ad5c079db')
+          .then(res => res.json())
+          .then(d2 => {
+            let d1 = {
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              displayName: fullName,
+              userName: "New user_" + getRandomInt(1000),
+              uid: authUser.user.uid,
+              email: authUser.user.email,
+              photoURL: process.env.REACT_APP_DEFAULT_USER_PHOTO_URL
+            }
+
+            let a = { ...d1, ...d2, ...defaults };
+            let data = a;
+
+            db.collection('users').doc(authUser.user.uid).set(data);
+          })
         authUser.user.updateProfile({ displayName: fullName, photoURL: process.env.REACT_APP_DEFAULT_USER_PHOTO_URL });
       })
       .catch((error) => { setAlertMsg(error.message); setAlertModal(true) });

@@ -2,34 +2,57 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import { SaveListContext } from '../contexts/GlobalStore';
 import { db } from '../firebase';
-import { hasSaved, save, Unsave, UrlSlug } from '../fuctions';
+import { getFormattedValue, hasSaved, save, topFunction, Unsave, UrlSlug } from '../fuctions';
+import MyImage from './MyImage';
 
 function ProductCard({ catg }) {
     const [products, setProducts] = useState([])
     const [saveList] = useContext(SaveListContext)
+
+    let a = `featuredCatgProducts_${catg}`;
+    let storageId = a.toString()
+    const storedArticles = localStorage.getItem(storageId)
+    useEffect(() => {
+        if (storedArticles) {
+            const data = JSON.parse(storedArticles)
+            setProducts(data)
+        }
+    }, [storedArticles])
 
     useEffect(() => {
         db.collection('products')
             .where('category', '==', catg)
             .orderBy('createdAt', 'desc')
             .onSnapshot((snapshot) => {
-                let r = snapshot.docs.map(doc => ({ product: doc.data(), id: doc.id }))
-                setProducts(r)
+                if(!snapshot.empty){
+                    let r = snapshot.docs.map(doc => ({ product: doc.data(), id: doc.id }))
+                    setProducts(r)
+                    localStorage.setItem(storageId, JSON.stringify(r));
+                }
             })
-    }, [catg]);
+    }, [catg, storageId]);
 
     return (<>
         {products?.map(({ product, id }) => (
-            <Link key={id} to={`product?title=${product?.title && UrlSlug(product?.title, 'encode')}`} className="products" >
+            <Link 
+            key={id} 
+            onClick={() => { topFunction() }}
+            to={`product?title=${product?.title && UrlSlug(product?.title, 'encode')}`} 
+            className="products" >
                 <div className="shopper">
                     <div className="imgbox">
-                        {product?.productImages[0]?.src && <img
-                            style={{ width: '119px' }}
+                        {product?.productImages[0]?.src &&
+                            <MyImage
                             src={product?.productImages[0]?.src}
-                            alt="images" className="images" />}
+                            width= '119px'
+                            height='100%'
+                            alt="images"
+                            className="images"
+                            />
+                        }
                         <div className="details">
                             <h2>{product?.title}</h2>
-                            <span>{product?.price}</span>
+                            <span>{product?.price && getFormattedValue(product?.price, product?.currency) }</span>
                             <div className="seller">{product?.sellerName}</div>
                             <div className="likes--save">
                                 <div className="promo-validity">

@@ -51,7 +51,7 @@ function Jobs() {
                         <div className="verified">✔</div>
                       </div>
                       <div className="details-00">
-                        <h2>{job.title}</h2>
+                        <h2>{job.title} Needed</h2>
                         <info><i>{job && job?.jobDesc && getDesc(job?.jobDesc, 65)}</i></info>
                         <div className="time-location">
                           <img src="images/Icon material-access-time.png" className="time" alt="" />{job?.type}

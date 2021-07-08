@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { auth, db } from '../../../firebase'
+import { formatAMPM } from '../../../fuctions'
 import Chat from '../../Chat'
+import UserProfile from '../../UserProfile'
 
 function Messages() {
+    const user = UserProfile.getUser();
+
+    const [openMessages, setOpenMessages] = useState(false)
     const [messageNofication, setMessageNofication] = useState([])
     const [totalMessageNofication, setTotalMessageNofication] = useState(0)
     const [openChat, setOpenChat] = useState(false)
@@ -11,35 +16,39 @@ function Messages() {
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
             if (authUser) {
-                db.collection('users').doc(authUser.uid).collection('history')
-                .where('type', '==', 'message')
-                .onSnapshot(snapshot => {
-                    let length = snapshot.docs.length;
-                    let result = snapshot.docs.map(doc => ({ list: doc.data(), id: doc.id }))
-                    setTotalMessageNofication(length)
-                    setMessageNofication(result)
-                })
+                db.collection('users').doc(authUser?.uid).collection('history')
+                    .where('type', '==', 'message')
+                    .onSnapshot(snapshot => {
+                        let length = snapshot.docs.length;
+                        let result = snapshot.docs.map(doc => ({ list: doc.data(), id: doc.id }))
+                        setTotalMessageNofication(length)
+                        setMessageNofication(result)
+                    })
             }
         })
-      
+
         return () => { unsubscribe() }
-      }, []);
+    }, []);
+
+    // const markMessageRead = (id) => {
+    //     db.collection('users').doc(user?.uid).collection('history').doc(id).delete()
+    // }
 
 
     return (
         <div className="icon2 j">
-            <div onClick={() => { document.querySelector('.message-popup').style.display = "block" }}>
+            <div onClick={() => { setOpenMessages(true) }}>
                 <img src="/images/msg-header.svg" alt="saveicon" className="saveicon" />
                 <span className="tooltiptext">Messages</span>
                 <div className="notifier">{totalMessageNofication}</div>
             </div>
 
-            <div className="message-popup">
+            {openMessages && <div className="message-popup">
                 <div className="msg-header">
                     <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                         <span>Messages</span>
                         <span><i className="fa fa-times-circle" aria-hidden="true"
-                            onClick={() => { document.querySelector('.message-popup').style.display = "none" }}
+                            onClick={() => { setOpenMessages(false) }}
                             style={{ fontSize: '1.5rem' }}></i></span>
                     </div>
                     <div className="Caps">
@@ -54,10 +63,10 @@ function Messages() {
                     </div>
                     <hr className="customHr" />
                     <ul>
-                        <li>Products</li>
-                        <li>Job vacancies</li>
-                        <li>Articles</li>
-                        <li>Businesses</li>
+                        <Link to={'/products'}>Products</Link>
+                        <Link to={'/jobs'}>Job vacancies</Link>
+                        <Link to={'/articles'}>Articles</Link>
+                        <Link to={'/businesses'}>Businesses</Link>
                     </ul>
                     <div className="queen">
                         <div className="rack">
@@ -120,23 +129,24 @@ function Messages() {
 
                         {messageNofication && messageNofication.map(({ id, list }) => (
                             <div key={id}>
-                                {list.type === 'message' && <div className="people">
-                                    {openChat && <Chat toggle={setOpenChat} userId={list.receiverId} />}
-                                    <div className="shielder" style={{ cursor: 'pointer' }} onClick={() => {setOpenChat(true)}}>
+                                {list?.type === 'message' && <div className="people">
+                                    {openChat && <Chat toggle={setOpenChat} msgId={id} userId={list?.receiverId} />}
+
+                                    <div className="shielder" style={{ cursor: 'pointer' }} onClick={() => { setOpenChat(true) }}>
                                         <div className="img">
-                                            <img src={list.userPhotoURL} alt="hairrrs logo" className="imagy" />
+                                            <img src={list?.userPhotoURL} alt="hairrrs logo" className="imagy" />
                                         </div>
                                         <div className="user0">
-                                            <span className="user"><span>{list.userName}</span></span>
+                                            <span className="user"><span>{list?.userName}</span></span>
                                             <br />
                                             <div className="infos-1">
                                                 <div className="text">
-                                                    <span className="txt">{list.text}</span>
+                                                    <span className="txt">{list?.text}</span>
                                                 </div>
                                                 <div className="time-time">
-                                                    <time>12:00am</time>
+                                                    <time>{list?.createdAt && formatAMPM(list?.createdAt)}</time>
                                                 </div>
-                                                <div className="notificator">{list.msgCount}</div>
+                                                <div className="notificator">{list?.msgCount}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -147,7 +157,7 @@ function Messages() {
                     </div>
                 </div>
             </div>
-        </div>
+            }        </div>
 
     )
 }

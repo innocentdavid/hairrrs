@@ -5,9 +5,14 @@ import ItemOwner from '../../components/ItemOwner';
 import WebShareApi from '../../components/WebShareApi';
 import { SaveListContext } from '../../contexts/GlobalStore';
 import { auth, db } from '../../firebase';
-import { getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
+import firebase from 'firebase';
+import { getFormattedValue, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
+import MyImage from '../../components/MyImage';
+import UserProfile from '../../components/UserProfile';
 
 function Job() {
+  const user = UserProfile.getUser()
+
   var titleSlug;
   const history = useHistory();
   const params = new URLSearchParams(window.location.search);
@@ -59,6 +64,41 @@ function Job() {
     }
   }
 
+  // set page viewed
+  useEffect(() => {
+    const setPageViewed = async () => {
+      // const isAuthor = (a, b) => {
+      //   if(a !== b){ return true }else { return false }
+      // }
+      const isAuthor = (a, b) => a === b ? true : false
+
+      let employerId = job?.employer?.uid
+      let cUserId = user?.uid
+
+      if (employerId && cUserId) {
+        var totalPageView = await document.querySelector('#totalPageViewSection');
+        var pageUrl = await window.location.href;
+        var storedPages = await JSON.parse(localStorage.getItem(pageUrl));
+        let UpdatedViewCount = parseInt(totalPageView?.textContent) + 1
+
+        if (
+          storedPages === null
+          && !isAuthor(employerId, cUserId)
+          && totalPageView?.textContent
+          && jobId
+          && pageUrl
+        ) {
+          localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
+          document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
+          db.collection('Jobs').doc(jobId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
+        }
+      }
+    }
+
+    return () => { setPageViewed() }
+  }, [jobId, job, user])
+  // localStorage.removeItem(window.location.href)
+
   if (job.title) {
     return (
       <div className="layout" style={{ marginTop: '38px' }}>
@@ -70,7 +110,15 @@ function Job() {
                   <pages>home &gt; job vacancy &gt; {job?.title}</pages>
                 </div>
                 <div className="image-view">
-                  {featuredImage && <img src={featuredImage} style={{ height: '458px', width: '510px' }} alt="" />}
+                  {featuredImage &&
+                    <MyImage
+                      src={featuredImage}
+                      width='510px'
+                      height='458px'
+                      alt=""
+                      className=""
+                    />
+                  }
                 </div>
                 {featuredImage && <div className="arrows">
                   <Link className="prev">{'❮'}</Link>
@@ -78,11 +126,12 @@ function Job() {
                 </div>}
                 <div className="images-view-1">
                   {job?.jobImages && job?.jobImages.map(({ src }) => (
+
                     <img
                       onClick={(e) => { setFeaturedImage(e.target.src) }}
                       key={src}
                       src={src}
-                      style={{ width: 60 }}
+                      style={{ width: 60, height: 60 }}
                       alt="" />
                   ))}
                 </div>
@@ -138,7 +187,7 @@ function Job() {
                 <div className="ratings-1">
                   <div className="details">
                     <h2>{job?.title} Needed</h2>
-                    <price>{job?.salary}</price>
+                    <span className={"price"}>{job?.salary && getFormattedValue(job?.salary, job?.currency)}</span>
                   </div>
                   <hr />
                   <div className="details-1">
@@ -146,19 +195,19 @@ function Job() {
                     <info>{job?.jobDesc}
                     </info>
                     <div className="post-infos">
-                      {/* <h2>Posted</h2><info>Jan 24 2020 - 18:34</info> */}
                       <h2>Posted</h2><info>{job?.createdAt && getMonthDateYearHour_minute(job?.createdAt)}</info>
                       <h2>salary plan</h2><info>{job?.salaryPlan}</info>
                       <h2>Type</h2><info>{job?.type}</info>
                       <h2>Location</h2><info>{job?.location}</info>
                       <h2>Address</h2><info>{job?.address}</info>
-                      <Link
-                        to={`maps.google.com?q=48.8583736,2.2922926`}
+                      <a
+                        href={`https://maps.google.com?q=${job?.lat_log}`}
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="locate-icon">
                         <img src="/images/location-icon.svg" alt="locate icon ohyanga" />
                         <span>Locate</span>
-                      </Link>
+                      </a>
                     </div>
                   </div>
                 </div>

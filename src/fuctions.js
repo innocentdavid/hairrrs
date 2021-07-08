@@ -1,5 +1,6 @@
 import { auth, db } from "./firebase";
 import firebase from "firebase";
+import { formatValue } from 'react-currency-input-field';
 
 var uid = auth.currentUser?.uid
 var user = [];
@@ -23,12 +24,14 @@ month[10] = "November";
 month[11] = "December";
 
 const getMonthDate = (timestamp) => {
-    let dateObj = new Date(timestamp?.toDate().toString());
-    var nMonth = month[dateObj.getMonth()];
-    let date = dateObj.getDate();
-    if (nMonth && date) {
-        return `${nMonth}, ${date}`
-    }
+    if (timestamp) {
+        let dateObj = new Date(timestamp?.toDate().toString());
+        var nMonth = month[dateObj.getMonth()];
+        let date = dateObj.getDate();
+        if (nMonth && date) {
+            return `${nMonth}, ${date}`
+        }
+    } else { return ''; }
 }
 
 function formatAMPM(date) {
@@ -59,7 +62,7 @@ const getMonthDateYearHour_minute = (timestamp) => {
         const Hour_minute = Hours + ':' + Minutes
         let time = formatAMPM(timestamp)
 
-        return `${nMonth} ${date} ${year} ${Hour_minute}`
+        return `${nMonth} ${date} ${year} ${time}`
     }
     return ''
 }
@@ -104,7 +107,8 @@ function makeid(length) {
 }
 
 const getUserGeolocationDetails = () => {
-    return fetch('https://geolocation-db.com/json/f9902210-97f0-11eb-a459-b997d30983f1')
+    // return fetch('https://geolocation-db.com/json/f9902210-97f0-11eb-a459-b997d30983f1')
+    return fetch('http://api.ipstack.com/check?access_key=ec25f48e728aa47005e593878c3f67c3')
         .then(res => res.json())
         .then(data => { return data })
 }
@@ -241,10 +245,63 @@ function UrlSlug(str, action) {
         return str.replace(/-/g, ' ')
     }
 }
+
+const resizeSingleImage = (handleUpdatePics, photoURL, size, type) => {
+    var files = photoURL;
+    // var MAX_WIDTH = 96;
+    var MAX_WIDTH = size;
+    var imageFile = files;
+    if (imageFile.name) {
+        var fileName = imageFile.name
+        if (auth.currentUser) {
+            if (!imageFile) { alert('You did not select any image') };
+            const reader = new FileReader();
+            reader.readAsDataURL(imageFile);
+
+            reader.onload = function (event) {
+                const imgElement = document.createElement("img");
+                imgElement.src = event.target.result;
+                imgElement.onload = function (e) {
+                    const canvas = document.createElement("canvas");
+                    const scaleSize = MAX_WIDTH / e.target.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = e.target.height * scaleSize;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(e.target, 0, 0, canvas.width, canvas.height);
+                    const srcEncoded = ctx.canvas.toDataURL(e.target, "image/jpeg");
+                    // Split the base64 string in data and contentType
+                    var block = srcEncoded.split(";");
+                    // Get the content type of the image
+                    var contentType = block[0].split(":")[1];// In this case "image/jpeg"
+                    // get the real base64 content of the file
+                    var realData = block[1].split(",")[1]; // In this case "R0lGODlhPQBEAPeoAJosM...."
+                    var blob = b64toBlob(realData, contentType); // Convert it to a blob to upload
+                    handleUpdatePics(blob, fileName, type);
+                };
+            };
+        }
+    }
+}
+
+
+// Format using prefix, groupSeparator and decimalSeparator
+
+function getFormattedValue(value = 0, prefix) {
+    const formattedValue = formatValue({
+        value,
+        groupSeparator: ',',
+        decimalSeparator: '.',
+        prefix,
+      });
+      return formattedValue
+}
+
+
 export {
     month, getMonthDate, formatAMPM, getMonthDateYearHour_minute,
     getDesc, topFunction, getRandomInt, UrlSlug,
     getUserGeolocationDetails, b64toBlob,
     deleteArticle, save, Unsave, hasSaved, followUser,
-    unFollowUser, hasFollowed, pasteHtmlAtCaret, makeid
+    unFollowUser, hasFollowed, pasteHtmlAtCaret, makeid, resizeSingleImage,
+    getFormattedValue
 };

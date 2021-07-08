@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import TrendingArticles from '../../components/TrendingArticles';
+import TrendingArticles from '../../components/TrendingArticles/TrendingArticles';
 import { auth, db } from '../../firebase';
 import firebase from "firebase";
 import { deleteArticle, getDesc, getMonthDate, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
@@ -10,8 +10,11 @@ import { SaveListContext } from '../../contexts/GlobalStore';
 import ItemOwner from '../../components/ItemOwner';
 import ReportBoard from '../../components/ReportBoard'
 import WebShareApi from '../../components/WebShareApi';
+import UserProfile from '../../components/UserProfile';
 
 function Article() {
+  const user = UserProfile.getUser()
+
   const [showReportBoard, setShowReportBoard] = useState(false)
   const [elipsisInfoComment, setElipsisInfoComment] = useState(false)
   var authUser = auth.currentUser
@@ -31,7 +34,7 @@ function Article() {
   useEffect(() => {
     const fetchArticle = async () => {
       const response = db.collection('articles')
-      .where('UrlSlug', '==', articleUrlSlug);
+        .where('UrlSlug', '==', articleUrlSlug);
 
       const data = await response.get();
 
@@ -155,34 +158,36 @@ function Article() {
   // ReactToArticle ends
 
   // set page viewed
-  var totalPageView = document.querySelector('#totalPageViewSection');
   useEffect(() => {
-    if (totalPageView?.textContent && article?.author?.uid !== authUser.uid) {
-      let UpdatedViewCount = parseInt(totalPageView.textContent) + 1
-      var pageUrl = window.location.href;
-      if (pageUrl) {
-        var storedPages = JSON.parse(localStorage.getItem(pageUrl));
-      }
-      if (authUser) {
-        if (articleId && article?.author?.uid !== authUser.uid && pageUrl) {
-          if (!storedPages) {
-            localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
-            document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
-            db.collection('articles').doc(articleId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
-          }
-        }
-      } else {
-        if (articleId && pageUrl) {
-          if (!storedPages) {
-            localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
-            document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
-            db.collection('articles').doc(articleId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
-          }
+    const setPageViewed = async () => {
+      const isAuthor = (a, b) => a === b ? true : false;
+
+      let authorId = article?.seller?.uid
+      let cUserId = user?.uid
+
+      if (authorId && cUserId) {
+        var totalPageView = await document.querySelector('#totalPageViewSection');
+        var pageUrl = await window.location.href;
+        var storedPages = await JSON.parse(localStorage.getItem(pageUrl));
+        let UpdatedViewCount = parseInt(totalPageView?.textContent) + 1
+
+        if (
+          storedPages === null
+          && !isAuthor(authorId, cUserId)
+          && totalPageView?.textContent
+          && articleId
+          && pageUrl
+        ) {
+          localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
+          document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
+          db.collection('articles').doc(articleId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
         }
       }
     }
-  }, [articleId, article, authUser, totalPageView])
-  // localStorage.clear()
+
+    return () => { setPageViewed() }
+  }, [articleId, article, user])
+  // localStorage.removeItem(window.location.href)
 
   useEffect(() => {
     if (articleId) {

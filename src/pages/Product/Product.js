@@ -2,16 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import firebase from 'firebase';
 import { auth, db } from '../../firebase';
-import { getDesc, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
+import { getDesc, getFormattedValue, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
 import { Helmet } from 'react-helmet';
 import { NotificationContext, SaveListContext } from '../../contexts/GlobalStore';
 import SocialMediaButtons from '../../components/SocialMediaButtons';
 import UserProfile from '../../components/UserProfile';
 import ItemOwner from '../../components/ItemOwner';
 import Chat from '../../components/Chat';
+import MyImage from '../../components/MyImage';
 
 function Product() {
     var user = UserProfile.getUser();
+    // console.log(user)
 
     var titleSlug;
     const history = useHistory();
@@ -35,6 +37,7 @@ function Product() {
     const [product, setProduct] = useState([])
     const [productId, setProductId] = useState([])
 
+    // setProduct
     useEffect(() => {
         db.collection('products')
             .where('title', '==', titleSlug)
@@ -74,7 +77,7 @@ function Product() {
     }, [notificationList, product, productId])
 
 
-    // seller's userName
+    // seller's totalFollowers
     useEffect(() => {
         if (product) {
             db.collection("users").doc(product?.seller?.uid).collection('followers').get().then(doc => {
@@ -110,7 +113,7 @@ function Product() {
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 })
 
-                db.collection('users').doc(user.uid).collection('requestedCalls').doc(id).set({
+                db.collection('users').doc(user?.uid).collection('requestedCalls').doc(id).set({
                     title: product?.title,
                     price: product?.price,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -123,12 +126,12 @@ function Product() {
         if (product?.seller?.displayName !== auth.currentUser.displayName) {
             if (product?.seller?.uid) {
                 db.collection('users').doc(product?.seller?.uid).collection('history').doc(`${id}_requestedCalls`).delete()
-                db.collection('users').doc(user.uid).collection('requestedCalls').doc(id).delete()
+                db.collection('users').doc(user?.uid).collection('requestedCalls').doc(id).delete()
             }
         }
         setHasRequestedCalled(false)
     }
-    
+
     var productImages = document.querySelector('.productImagesI')
     var prevwPane = document.querySelector('#prevw-pane')
     useEffect(() => {
@@ -138,7 +141,9 @@ function Product() {
     const [openChat, setOpenChat] = useState(false)
 
     var slideIndex = 1;
-    showSlides(slideIndex);
+    setTimeout(() => {
+        showSlides(slideIndex);
+    }, 1000);
 
     // Next/previous controls
     function plusSlides(n) {
@@ -167,34 +172,36 @@ function Product() {
 
 
     // set page viewed
-  var totalPageView = document.querySelector('#totalPageViewSection');
-  var authUser = auth.currentUser
-  useEffect(() => {
-    if (totalPageView?.textContent && product?.seller?.uid !== authUser?.uid) {
-      let UpdatedViewCount = parseInt(totalPageView.textContent) + 1
-      var pageUrl = window.location.href;
-      if (pageUrl) {
-        var storedPages = JSON.parse(localStorage.getItem(pageUrl));
-      }
-      if (authUser) {
-        if (productId && product?.seller?.uid !== authUser.uid && pageUrl) {
-          if (!storedPages) {
-            localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
-            document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
-            db.collection('products').doc(productId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
-          }
+    useEffect(() => {
+        const setPageViewed = async () => {
+            const isAuthor = (a, b) => a === b ? true : false;
+
+            let sellerId = product?.seller?.uid
+            let cUserId = user?.uid
+
+            if (sellerId && cUserId) {
+                var totalPageView = await document.querySelector('#totalPageViewSection');
+                var pageUrl = await window.location.href;
+                var storedPages = await JSON.parse(localStorage.getItem(pageUrl));
+                let UpdatedViewCount = parseInt(totalPageView?.textContent) + 1
+
+                if (
+                    storedPages === null
+                    && !isAuthor(sellerId, cUserId)
+                    && totalPageView?.textContent
+                    && productId
+                    && pageUrl
+                ) {
+                    localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
+                    document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
+                    db.collection('products').doc(productId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
+                }
+            }
         }
-      } else {
-        if (productId && pageUrl) {
-          if (!storedPages) {
-            localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
-            document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
-            db.collection('products').doc(productId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
-          }
-        }
-      }
-    }
-  }, [productId, product, authUser, totalPageView])
+
+        return () => { setPageViewed() }
+    }, [productId, product, user])
+    // localStorage.removeItem(window.location.href)
 
 
     if (product?.title) {
@@ -213,7 +220,7 @@ function Product() {
                 {product &&
                     <>
                         <div>
-                            {openChat && <Chat toggle={setOpenChat} userId={user.uid} />}
+                            {openChat && <Chat toggle={setOpenChat} userId={user?.uid} />}
                             <div className="layout2a">
                                 <div className="according">
                                     <div className="pages-timeline">
@@ -222,8 +229,15 @@ function Product() {
 
                                     <div className="productImages">
                                         <div className="image-view">
-                                            {/* <img src={featuredImage} style={{ height: '458px', width: '510px' }} alt="" /> */}
                                             {product?.productImages?.map(({ src }) => (
+                                                //     <MyImage
+                                                //     src={src}
+                                                //     key={src}
+                                                //     width='510px'
+                                                //     height='458px'
+                                                //     alt=""
+                                                //     className="mySlides"
+                                                //   />
                                                 <img
                                                     className="mySlides"
                                                     key={src}
@@ -239,14 +253,15 @@ function Product() {
                                         </div>
                                         <div className="p-10px"></div>
                                         <div className="images-view-1">
-                                            {product?.productImages?.map(({ src }) => (
+                                            {product?.productImages?.map((data, index) => (
                                                 <img
                                                     onClick={(e) => {
-                                                        document.querySelector('.mySlides').src= e.target.src;
+                                                        // showSlides(index);
+                                                        document.querySelector('.mySlides').src = e.target.src;
                                                     }}
-                                                    key={src}
-                                                    src={src}
-                                                    style={{ width: 60 }}
+                                                    key={data.src}
+                                                    src={data.src}
+                                                    style={{ width: 60, height: 60 }}
                                                     alt="" />
                                             ))}
                                         </div>
@@ -261,7 +276,7 @@ function Product() {
                                             <span className="views"><span id='totalPageViewSection'>{product?.totalPageView ? product.totalPageView : 0}</span> <span>views</span></span>
                                         </div>
                                         <div className="report-1">
-                                            <div className="dids-3">
+                                            <div className="dids-3" onClick={() => { setShowShare(!showShare) }}>
                                                 <div className="icon">
                                                     <img src="/images/Sharebtn.png" alt="" />
                                                 </div>
@@ -269,25 +284,24 @@ function Product() {
                                                     <div className={`show_share show_share_${showShare}`} style={{ position: 'absolute', bottom: '35px' }}>
                                                         <SocialMediaButtons url={`ntutu-fdb00.web.app/product?title=${productId}`} text={getDesc(product?.details, 65)} />
                                                     </div>
-                                                    <div className="text" onClick={() => { setShowShare(!showShare) }}>share</div>
+                                                    <div className="text">share</div>
                                                 </div>
                                                 {/* <div className="text">share</div> */}
                                             </div>
-                                            <div className="dids-4">
-                                                {hasSaved(saveList, productId) ?
-                                                    <div onClick={() => { Unsave(productId) }}>
-                                                        <div className="icon">
-                                                            <img src="/images/savebtn.png" alt="" />
-                                                        </div>
-                                                        <div className="text">&nbsp;saved</div>
+                                            {hasSaved(saveList, productId) ?
+                                                <div className="dids-4" onClick={() => { Unsave(productId) }}>
+                                                    <div className="icon">
+                                                        <img src="/images/savebtn.png" alt="" />
                                                     </div>
-                                                    : <div onClick={() => { save(productId, product?.productImages[0]?.src, product?.title, `/product?title=${productId}`, 'product') }}>
-                                                        <div className="icon">
-                                                            <img src="/images/saturday save icon.svg" alt="" />
-                                                        </div>
-                                                        <div className="text">save</div>
-                                                    </div>}
-                                            </div>
+                                                    <div className="text">&nbsp;saved</div>
+                                                </div>
+                                                : <div className="dids-4"
+                                                    onClick={() => { save(productId, product?.productImages[0]?.src, product?.title, `/product?title=${productId}`, 'product') }}>
+                                                    <div className="icon">
+                                                        <img src="/images/saturday save icon.svg" alt="" />
+                                                    </div>
+                                                    <div className="text">save</div>
+                                                </div>}
                                             {product?.seller?.uid !== auth.currentUser.uid ?
                                                 <div className="report-product">
                                                     <div className="icon">
@@ -312,7 +326,7 @@ function Product() {
                                     <div className="ratings-1">
                                         <div className="details">
                                             <h2>{product?.title}</h2>
-                                            <span className="price">{product?.price}</span>
+                                            <span className={"price"}>{product?.price && getFormattedValue(product?.price, product?.currency)}</span>
                                         </div>
                                         <hr />
                                         <div className="details-1">
@@ -347,8 +361,8 @@ function Product() {
                                     {/* Related products */}
                                     {/* <RelatedProduct category={product?.category} title={product?.title} /> */}
 
-                                    {/* Trending Articles */}
-                                    {/* <TrendingArticles /> */}
+                                    {/* Trending products */}
+                                    {/* <Trendingproducts /> */}
                                 </div>
                             </div>
                         </div>

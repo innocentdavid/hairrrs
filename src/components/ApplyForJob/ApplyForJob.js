@@ -1,6 +1,6 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom';
-import { UrlSlug } from '../fuctions';
+import { UrlSlug } from '../../fuctions';
 
 function ApplyForJob() {
   var jobTitle;

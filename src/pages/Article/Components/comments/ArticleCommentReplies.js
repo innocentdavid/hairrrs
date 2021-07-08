@@ -39,7 +39,6 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUser
                     user: {uid: auth.currentUser.uid, displayName: auth.currentUser.displayName, photoURL: auth.currentUser.photoURL },
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 }
-                console.log(data)
                 db.collection('articles').doc(articleId).collection('comments')
                 .doc(`${commentId}`).collection('replies').add(data);
                 db.collection('articles').doc(articleId).collection('comments').doc(`${commentId}`).update({

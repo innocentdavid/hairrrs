@@ -98,10 +98,10 @@ function Profile() {
                 <div className="contnr-1">
                     {/* profile pics */}
                     <div className="b-photo">
-                        {user && <img id="trigger-profile" src={user.photoURL} alt="" onClick={() => { document.querySelector('#mymodal-profile').style.display = 'block' }} />}
+                        {user && <img id="trigger-profile" src={user.photoURLmax} alt="" onClick={() => { document.querySelector('#mymodal-profile').style.display = 'block' }} />}
 
                         <div id="mymodal-profile" className="modal" onClick={() => { document.querySelector('#mymodal-profile').style.display = 'none' }}>
-                            <img src={user.photoURL} alt="" />
+                            <img src={user.photoURLmax} alt="" />
                             <span className="closeprofile" onClick={() => { document.querySelector('#mymodal-profile').style.display = 'none' }}>&times;</span>
                         </div>
                     </div>

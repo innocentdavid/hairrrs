@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import Businesses from './pages/Businesses/Businesses';
 import Home from './pages/Home/Home';
 import Products from './pages/Products/Products';
@@ -19,27 +19,30 @@ import { auth, db } from './firebase';
 import UserProfile from './components/UserProfile';
 import Job from './pages/Job/Job';
 import Jobs from './pages/Jobs/Jobs';
-import ApplyForJob from './ApplyForJob/ApplyForJob';
+import ApplyForJob from './components/ApplyForJob/ApplyForJob';
+import Backend from './pages/Backend/Backend';
+import PageNotFound from './pages/404/404';
 
 function App() {
-// useEffect for signing up users
-useEffect(() => {
-  const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+  // useEffect for signing up users
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
-          db.collection('users').doc(authUser.uid)
-              .onSnapshot(user => {
-                  UserProfile.setUser(user.data());
-              });
+        db.collection('users').doc(authUser.uid)
+          .onSnapshot(user => {
+            UserProfile.setUser(user.data());
+          });
       }
-  })
+    })
 
-  return () => { unsubscribe() }
-}, []);
+    return () => { unsubscribe() }
+  }, []);
 
   return (
     <>
       <Router>
         <Switch>
+          <Route path='/backend' exact component={Backend} />
           <Route path='/ImageUploadProcessing' exact component={ImageUploadProcessing} />
 
           <Layout key={getRandomInt(100000000)}>
@@ -58,7 +61,10 @@ useEffect(() => {
             <Route path='/businesses' exact component={Businesses} />
             <Route path='/create-article' exact component={CreateArticle} />
             <Route path='/article' exact component={Article} />
+            
+            {/* <Redirect to='/404' component={PageNotFound} /> */}
           </Layout>
+
           <br />
           <br />
           <br />

@@ -11,6 +11,7 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
     const [alertMsg, setAlertMsg] = useState('');
 
     const defaults = {
+        photoURLmax: '',
         fullName: '',
         aboutBusiness: '',
         website: '',
@@ -33,20 +34,30 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider)
             .then((authUser) => {
+                console.log(authUser.user)
                 // if (!authUser.additionalUserInfo.isNewUser) {
-                db.collection('users').doc(authUser.user.uid).set({
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    displayName: authUser.user.displayName,
-                    userName: "New user_" + getRandomInt(1000),
-                    uid: authUser.user.uid,
-                    email: authUser.user.email,
-                    photoURL: authUser.additionalUserInfo.profile.picture,
-                    defaults
-                });
+                fetch('https://api.ipdata.co/?api-key=f4332401282ddc4b12019f87256936ad24586eca9f5ce05ad5c079db')
+                    .then(res => res.json())
+                    .then(d2 => {
+                        let d1 = {
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            displayName: authUser.user.displayName,
+                            userName: "New user_" + getRandomInt(1000),
+                            uid: authUser.user.uid,
+                            email: authUser.user.email,
+                            photoURL: authUser.additionalUserInfo.profile.picture
+                        }
+                        let a = { ...defaults, ...d1, ...d2 };
+                        let data = a;
+                        db.collection('users').doc(authUser.user.uid).set(data);
+                    })
                 setOpenAuthModal(false);
                 setOpenLogInOrReg(true)
-                if (!alertMsg) { setOpenAuthModal(false); setOpenLogInOrReg(true) }
-                window.location.reload()
+                if (!alertMsg) {
+                    setOpenLogInOrReg(true)
+                }
+                setOpenAuthModal(false);
+                // window.location.reload()
                 // }
             })
             .catch((error) => { setAlertMsg(error.message); setAlertModal(true) });

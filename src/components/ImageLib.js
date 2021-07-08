@@ -40,43 +40,14 @@ function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal
 
             if (inserImgCaller === 'AddProduct') {
                 let id = makeid(5)
-
-                let div = document.createElement('div')
-                div.id=id
-                div.style.position = 'relative';
-
-                let zigy = `
-                <span 
-                data-id=${id}
-                class='removeImage'>+</span>
-
-                <img 
-                class="pImg"
-                src=${src} alt='' />
-                `
-                div.innerHTML = zigy
-                document.querySelector('.Product-add-images').append(div)
+                setImageToList(id, src)
             }
 
             if (inserImgCaller === 'AddJob') {
                 let id = makeid(5)
-
-                let div = document.createElement('div')
-                div.id=id
-                div.style.position = 'relative';
-
-                let zigy = `
-                <span 
-                data-id=${id}
-                class='removeImage'>+</span>
-
-                <img 
-                class='jImg'
-                src=${src} alt='' />
-                `
-                div.innerHTML = zigy
-                document.querySelector('.Job-add-images').append(div)
+                setImageToList(id, src)
             }
+
             if (inserImgCaller === 'AddArticleCover') {
 
                 setImageToList(src)
@@ -98,15 +69,13 @@ function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal
     }, [counter, totalImages])
 
     // uploadImagge
-    const handleUploadImage = (files) => {
+    const handleUploadImage = (files, MAX_WIDTH = 250) => {
         setTotalImages(Object.entries(files).length);
         Object.entries(files).forEach(file => {
             var imageFile = file[1];
             if (imageFile.name) {
                 var fileName = imageFile.name
-                if (auth.currentUser) {
-                    const MAX_WIDTH = 400;
-
+                if (auth.currentUser?.uid) {
                     if (!imageFile) { alert('You did not select any image') };
                     const reader = new FileReader();
                     reader.readAsDataURL(imageFile);

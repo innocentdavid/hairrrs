@@ -7,6 +7,7 @@ import { makeid, UrlSlug } from '../../fuctions';
 import UserProfile from '../../components/UserProfile';
 import { useHistory } from 'react-router-dom';
 import LocationSearchInput from '../../components/LocationSearchInput';
+import CurrencyField from '../../components/CustomizedInputField/CustomizedInputField';
 
 function AddProduct() {
     var history = useHistory()
@@ -79,26 +80,12 @@ function AddProduct() {
         if (imagesCheck && titleCheck && productDescCheck && rigionCheck && categoryCheck && typeCheck && priceCheck && addressCheck) { return true } else { alert(`An error has occured 😢, please fix the error and try again 😘`); return false }
     }
 
-    const [productImagesNew, setProductImagesNew] = useState([])
-
-    const getProductImagesNew = async () => {
-        let images = document.querySelectorAll('.pImg')
-        if (images) {
-            images.forEach(img => {
-                if (img.src) {
-                    productImagesNew.push({ src: img.src })
-                }
-            });
-        }
-        return 'success'
-    }
+    const [productImages, setProductImages] = useState([])
 
     const addProduct = async () => {
         setOpenLoading(true)
 
-        await getProductImagesNew();
-
-        if (productImagesNew) {
+        if (productImages) {
             const data = {
                 title,
                 price,
@@ -109,17 +96,20 @@ function AddProduct() {
                 rigion,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 category,
-                productImages: productImagesNew,
+                productImages: productImages,
                 promotion: 'Regular',
                 country: 'Nigeria',
                 address,
-                quantity: 1
+                quantity: 1,
+                totalPageView: 0,
+                currency: user?.currency?.symbol
             }
 
             if (params.has('edit')) {
                 await db.collection('products').doc(params.get('edit')).update(data);
             } else {
                 await db.collection('products').doc().set(data);
+                await db.collection('users').doc(user?.uid).update({ totalProducts: firebase.firestore.FieldValue.increment(1) })
             }
 
             setTitle(''); setType(''); setPrice(''); setRigion(''); setAddress('');
@@ -139,21 +129,22 @@ function AddProduct() {
         addProduct()
     }
 
-    let removeImage = document.querySelectorAll('.removeImage')
-    removeImage.forEach(el => {
-        el.addEventListener('click', async (e) => {
-            let id = e.target.dataset.id
-            let elm = document.querySelector(`#${id}`)
-            if (elm) {
-                elm.remove()
-            }
-        })
-    });
-
-
     // edit
 
-    const [productImages, setProductImages] = useState(null)
+    const setImageToList = async (id, src) => {
+        let imgs = [];
+        imgs.push({ id, src })
+        let img = await imgs
+        let a = [...productImages, ...img]
+        setProductImages(a)
+    }
+
+    const removeImage = (id) => {
+        let myArray = productImages.filter(function (obj) {
+            return obj.id !== id;
+        });
+        setProductImages(myArray)
+    }
 
     useEffect(() => {
         if (productId) {
@@ -163,8 +154,6 @@ function AddProduct() {
                         let r = snapshot.data()
 
                         if (r.productImages) {
-                            setProductImagesNew(r.productImages)
-
                             let data = []
                             r?.productImages?.forEach(img => {
                                 data.push({
@@ -198,6 +187,7 @@ function AddProduct() {
         }
     }, [title])
 
+
     return (
         <form>
             {openLoading && <div className="loader" style={{ display: 'grid' }}>
@@ -208,6 +198,7 @@ function AddProduct() {
                 title={'Hairrs'}
                 closeInsertImageModal={closeInsertImageModal}
                 inserImgCaller='AddProduct'
+                setImageToList={setImageToList}
             />}
 
             <div className="layout" style={{ marginTop: 0 }}>
@@ -227,8 +218,10 @@ function AddProduct() {
                                 {/* product images */}
                                 <div className="add-images Product-add-images">
                                     {productImages?.map(({ id, src }) => (
-                                        <div key={id} id={id} style={{ position: 'relative' }} draggable>
-                                            <span data-id={id} className="removeImage">+</span>
+                                        <div key={id} id={id} style={{ position: 'relative' }}>
+                                            <span
+                                                onClick={() => { removeImage(id) }}
+                                                data-id={id} className="removeImage">+</span>
                                             <img className="jImg" src={src} alt="" />
                                         </div>
                                     ))}
@@ -273,21 +266,25 @@ function AddProduct() {
                                 <div className="rigionErrSection errSection"></div>
 
                                 <div className="add-title">
-                                    <LocationSearchInput setLocation={setAddress} />
-                                    {/* <input
-                                        value={address}
-                                        onChange={(e) => { document.querySelector('.addressErrSection').textContent = ''; setAddress(e.target.value) }}
-                                        type="text"
-                                        placeholder="Address" /> */}
+                                    <LocationSearchInput
+                                        setLocation={setAddress} />
                                     <span className="addressErrSection errSection"></span>
                                 </div>
 
                                 <div className="add-title">
-                                    <input
-                                        value={price}
-                                        onChange={(e) => { document.querySelector('.priceErrSection').textContent = ''; setPrice(e.target.value) }}
-                                        type="text"
-                                        placeholder="Price" />
+                                {params.has('edit') && price && <CurrencyField
+                                    placeholder='Price'
+                                    defaultValue={price}
+                                    handleOnChange={setPrice}
+                                    user={user}
+                                />}
+
+                                {!params.has('edit') && <CurrencyField
+                                    placeholder='Price'
+                                    defaultValue={price}
+                                    handleOnChange={setPrice}
+                                    user={user}
+                                />}
                                     <div className="priceErrSection errSection"></div>
                                 </div>
 

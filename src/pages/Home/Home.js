@@ -3,17 +3,18 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import LatestJobVacancy from '../../components/LatestJobVacancy';
 import ProductCard from '../../components/ProductCard';
-import TrendingArticles from '../../components/TrendingArticles';
+import TrendingArticles from '../../components/TrendingArticles/TrendingArticles';
 import { db } from '../../firebase';
 
 function Home() {
     const [productCategories, setProductCategories] = useState([]);
     const [jobCategories, setJobCategories] = useState([]);
+    const [articleCategories, setArticleCategories] = useState([])
 
     // setProductCategories
     useEffect(() => {
         const sub = () => {
-            db.collection('categories').onSnapshot((snapshot) => {
+            db.collection('productCategories').onSnapshot((snapshot) => {
                 let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
                 setProductCategories(r);
             })
@@ -32,8 +33,20 @@ function Home() {
         sub();
     }, [])
 
+    // setArticleCategories
+    useEffect(() => {
+        const sub = () => {
+            db.collection('articleCategories').onSnapshot((snapshot) => {
+                let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
+                setArticleCategories(r);
+            })
+        }
+        sub();
+    }, [])
+
     // eslint-disable-next-line no-unused-vars
-    const featuredCatg = ['wig', 'weavon', 'gadgets', 'extras']
+    const featuredCatg = ['Wig', 'Weavon', 'Gadgets', 'Extras']
+
 
     return (
         <>
@@ -83,7 +96,7 @@ function Home() {
                                         <img src="/images/9555bcdb781e5cf8ab9ef3504a952220.png" alt="model on afro hair" className="tooltip-image" />
                                         <div className="Catgs mt-1">
                                             {productCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/products?category=${data.category}`}>{data.category}</Link></div>
+                                                <div key={id}><Link to={`/products?category=${data.value}`}>{data.value}</Link></div>
                                             ))}
                                         </div>
                                     </span>
@@ -146,8 +159,8 @@ function Home() {
                                     <span className="cats">
                                         <img src="/images/Articles img.png" alt="model on afro hair" className="tooltip-image" />
                                         <div className="Catgs mt-1">
-                                            {productCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/articles?category=${data.category}`}>{data.category}</Link></div>
+                                            {articleCategories?.map(({ id, data }) => (
+                                                <div key={id}><Link to={`/articles?category=${data.value}`}>{data.value}</Link></div>
                                             ))}
                                         </div>
                                     </span>

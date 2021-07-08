@@ -6,8 +6,12 @@ import CustomSelectDropDown from '../../components/CustomSelectDropDown';
 import { useHistory } from 'react-router-dom';
 import { makeid, UrlSlug } from '../../fuctions';
 import Attachment from './Components/Attachment';
+import CurrencyField from '../../components/CustomizedInputField/CustomizedInputField';
+import UserProfile from '../../components/UserProfile';
 
 function AddJob() {
+    const user = UserProfile.getUser()
+
     const history = useHistory();
     const params = new URLSearchParams(window.location.search);
     const [openLoading, setOpenLoading] = useState(false)
@@ -84,25 +88,13 @@ function AddJob() {
     //     if (imagesCheck && jobDescCheck && titleCheck && locationCheck && categoryCheck && typeCheck && addressCheck) { return true } else { alert(`An error has occured 😢, please fix the error and try again 😘`); return false }
     // }
 
-    const [productImagesNew, setProductImagesNew] = useState([])
+    const [jobImages, setJobImages] = useState([])
 
-    const getProductImagesNew = async () => {
-        let images = document.querySelectorAll('.jImg')
-        if (images) {
-            images.forEach(img => {
-                if (img.src) {
-                    productImagesNew.push({ src: img.src })
-                }
-            });
-        }
-        return 'success'
-    }
-
+    const [showForm, setShowForm] = useState(true)
+    const [questions, setQuestions] = useState([])
 
     const addProduct = async () => {
         setOpenLoading(true)
-
-        await getProductImagesNew();
 
         const data = {
             title,
@@ -113,23 +105,33 @@ function AddJob() {
             negotiable,
             type,
             location,
+            lat_log: `${user?.latitude},${user?.longitude}`,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             category,
-            jobImages: productImagesNew,
+            jobImages,
             promotion: 'Regular',
-            country: 'Nigeria',
+            country: user?.country_name,
             address,
+            totalPageView: 0,
+            showForm,
+            questions,
+            currency: user?.currency?.symbol
         }
+
         if (params.has('edit')) {
             await db.collection('Jobs').doc(params.get('edit')).update(data);
         } else {
             await db.collection('Jobs').doc().set(data);
+            await db.collection('users').doc(user?.uid).update({ totalJobs: firebase.firestore.FieldValue.increment(1) })
         }
 
+        
+        let holderPpromo = document.querySelector('.holder-promo')
+        if(holderPpromo) {holderPpromo.style.display = 'none'}
+        
         setOpenLoading(false)
-        document.querySelector('.holder-promo').style.display = 'none'
         history.push(`/job?title=${UrlSlug(title, 'encode')}`)
-        // window.location = `/job?title=${UrlSlug(title, 'encode')}`
+
 
         // setTitle(''); setType(''); setLocation(''); setAddress('');
         // setSalaryPlan(''); setSalary(''); setJobDesc(''); setNegotiable('');
@@ -139,20 +141,27 @@ function AddJob() {
         addProduct()
     }
 
-    let removeImage = document.querySelectorAll('.removeImage')
-    removeImage.forEach(el => {
-        el.addEventListener('click', async (e) => {
-            let id = e.target.dataset.id
-            let elm = document.querySelector(`#${id}`)
-            if (elm) {
-                elm.remove()
-            }
-        })
-    });
-
     // edit
 
-    const [jobImages, setJobImages] = useState([])
+    const setImageToList = async (id, src) => {
+        let imgs = [];
+        imgs.push({ id, src })
+        let img = await imgs
+        let a = [...jobImages, ...img]
+        if (a) {
+            setJobImages(a)
+        }
+    }
+
+    const removeImage = (id) => {
+        let myArray = jobImages.filter(function (obj) {
+            return obj.id !== id;
+        });
+        setJobImages(myArray)
+    }
+
+
+    // edit
 
     useEffect(() => {
         if (jobId) {
@@ -161,26 +170,23 @@ function AddJob() {
                     if (snapshot.exists) {
                         let r = snapshot.data()
 
-                        if (r.jobImages) {
-                            setProductImagesNew(r.jobImages)
-                            let data = []
-                            r.productImages.forEach(img => {
-                                data.push({
-                                    id: makeid(5),
-                                    src: img.src
-                                })
-                            });
-                            setJobImages(data)
+                        if (r?.jobImages) {
+                            setJobImages(r?.jobImages)
                         }
-                        setCategory(r.category)
-                        setTitle(r.title)
-                        setType(r.type)
-                        setLocation(r.location)
-                        setAddress(r.address)
-                        setSalaryPlan(r.salaryPlan)
-                        setSalary(r.salary)
-                        setJobDesc(r.jobDesc)
-                        setNegotiable(r.negotiable)
+
+                        if(r?.questions){
+                            setQuestions(r?.questions)
+                        }
+
+                        setCategory(r?.category)
+                        setTitle(r?.title)
+                        setType(r?.type)
+                        setLocation(r?.location)
+                        setAddress(r?.address)
+                        setSalaryPlan(r?.salaryPlan)
+                        setSalary(r?.salary)
+                        setJobDesc(r?.jobDesc)
+                        setNegotiable(r?.negotiable)
                     } else {
                         history.push('/jobs')
                     }
@@ -188,15 +194,12 @@ function AddJob() {
         }
     }, [history, jobId])
 
+    // set loading off
     useEffect(() => {
         if (title) {
             setOpenLoading(false)
         }
     }, [title])
-
-    const [disabledStatus, setDisabledStatus] = useState(true)
-    const [showUpload, setShowUpload] = useState(false)
-
 
 
     return (
@@ -209,6 +212,7 @@ function AddJob() {
                 title={'Hairrs'}
                 closeInsertImageModal={closeInsertImageModal}
                 inserImgCaller='AddJob'
+                setImageToList={setImageToList}
             />}
 
             <div className="layout8">
@@ -226,7 +230,9 @@ function AddJob() {
                             <div className="add-images Job-add-images">
                                 {jobImages?.map(({ id, src }) => (
                                     <div key={id} id={id} style={{ position: 'relative' }}>
-                                        <span data-id={id} className="removeImage">+</span>
+                                        <span
+                                            onClick={() => { removeImage(id) }}
+                                            data-id={id} className="removeImage">+</span>
                                         <img className="jImg" src={src} alt="" />
                                     </div>
                                 ))}
@@ -252,10 +258,19 @@ function AddJob() {
                             <CustomSelectDropDown options={salaryPlans} setState={setSalaryPlan} dValue={salaryPlan} label={'salary plan'} />
 
                             <div className="add-title">
-                                <input
-                                    value={salary}
-                                    onChange={(e) => { setSalary(e.target.value) }}
-                                    type="text" placeholder="Salary" />
+                                {params.has('edit') && salary && <CurrencyField
+                                    placeholder='Salary'
+                                    defaultValue={salary}
+                                    handleOnChange={setSalary}
+                                    user={user}
+                                />}
+
+                                {!params.has('edit') && <CurrencyField
+                                    placeholder='Salary'
+                                    defaultValue={salary}
+                                    handleOnChange={setSalary}
+                                    user={user}
+                                />}
                             </div>
 
                             {/* categories */}
@@ -293,10 +308,12 @@ function AddJob() {
 
                             <br />
 
-                            <Attachment disabledStatus={disabledStatus} setShowUpload={setShowUpload} />
+                            <Attachment
+                                questions={questions} setQuestions={setQuestions}
+                                showForm={showForm} setShowForm={setShowForm} />
 
                             <button onClick={() => {
-                                setDisabledStatus(false)
+                                handleSubmit()
                                 // document.querySelector('.holder-promo').style.display = 'block'
                             }} type="button" className="nextbtn">Next</button>
 
@@ -304,15 +321,6 @@ function AddJob() {
                     </div>
                 </div>
             </div>
-
-            <br />
-            <center>
-                {showUpload && <button onClick={() => {
-                    handleSubmit()
-                    // document.querySelector('.holder-promo').style.display = 'block'
-                }} type="button" className="nextbtn">Upload</button>}
-            </center>
-
 
 
             <div className="holder-promo">

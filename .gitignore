@@ -13,6 +13,7 @@
 
 # production
 /build
+/PopupsRoutes
 
 # misc
 .DS_Store

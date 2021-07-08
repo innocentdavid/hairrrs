@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import TrendingArticles from '../../TrendingArticles'
+import TrendingArticles from '../../TrendingArticles/TrendingArticles'
 
 function UpBusiness() {
     return (

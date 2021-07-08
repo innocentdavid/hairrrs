@@ -1,10 +1,40 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../../firebase'
-import TrendingArticles from '../../TrendingArticles'
+import TrendingArticles from '../../TrendingArticles/TrendingArticles'
 
 function UpProducts() {
     const [mostEngagedProduct, setMostEngagedProduct] = useState([])
+    const [categories, setCategories] = useState([])
+
+    // setProductCategories from cache
+    const storedProductCategories = localStorage.getItem('productCategories')
+    useEffect(() => {
+        const unsub = () => {
+            if (storedProductCategories) {
+                const data = JSON.parse(storedProductCategories)
+                setCategories(data)
+            }
+        }
+        return () => { unsub() }
+    }, [storedProductCategories])
+    
+    useEffect(() => {
+        const unsub = () => {
+            db.collection('productCategories').get()
+                .then((doc) => {
+                    if (!doc.empty) {
+                        let r = doc.docs.map(doc => ({ category: doc.data(), id: doc.id }))
+                        setCategories(r)
+                        localStorage.setItem('productCategories', JSON.stringify(r));
+                    }
+                })
+        }
+        return () => { unsub() }
+    }, [])
+
+
+
     useEffect(() => {
         db.collection('products')
             // .orderBy('totalEngagement', 'desc')
@@ -15,21 +45,13 @@ function UpProducts() {
             })
     }, [])
 
-    const [categories, setCategories] = useState()
-    useEffect(() => {
-        db.collection('productCategories').get()
-            .then((doc) => {
-                setCategories(doc.docs.map(doc => ({category: doc.data(), id: doc.id})))
-            })
-    }, [])
-
     return (
         <div className="up-products">Products
             <span className="tooltiptext1">
                 <div className="categories-class">
                     <span className="cats">
                         <ul>
-                            {categories && categories.map(({ id, category}) => (
+                            {categories && categories.map(({ id, category }) => (
                                 <Link key={id} to={`/products?category=${category?.value}`}><li>{category?.value}</li></Link>
                             ))}
                         </ul>
