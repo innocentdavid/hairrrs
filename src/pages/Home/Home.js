@@ -2,43 +2,68 @@ import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import LatestJobVacancy from '../../components/LatestJobVacancy';
+import MyImage from '../../components/MyImage';
 import ProductCard from '../../components/ProductCard';
 import TrendingArticles from '../../components/TrendingArticles/TrendingArticles';
 import { db } from '../../firebase';
+import { UrlSlug } from '../../fuctions';
 
 function Home() {
-    const [productCategories, setProductCategories] = useState([]);
-    const [jobCategories, setJobCategories] = useState([]);
-    const [articleCategories, setArticleCategories] = useState([])
-
     // setProductCategories
+    const [productCategories, setProductCategories] = useState([]);
     useEffect(() => {
         const sub = () => {
+            const storedObj = localStorage.getItem('productCategories')
+            if (storedObj) {
+                const data = JSON.parse(storedObj)
+                setProductCategories(data)
+            }
             db.collection('productCategories').onSnapshot((snapshot) => {
-                let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
-                setProductCategories(r);
+                if (!snapshot.empty) {
+                    let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
+                    localStorage.setItem('productCategories', JSON.stringify(r));
+                    setProductCategories(r);
+                }
             })
         }
         sub();
     }, [])
 
     // setJobCategories
+    const [jobCategories, setJobCategories] = useState([]);
     useEffect(() => {
         const sub = () => {
+            const storedObj = localStorage.getItem('jobCategories')
+            if (storedObj) {
+                const data = JSON.parse(storedObj)
+                setJobCategories(data)
+            }
             db.collection('jobCategories').onSnapshot((snapshot) => {
-                let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
-                setJobCategories(r);
+                if (!snapshot.empty) {
+                    let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
+                    localStorage.setItem('jobCategories', JSON.stringify(r));
+                    setJobCategories(r);
+                }
             })
         }
         sub();
     }, [])
 
     // setArticleCategories
+    const [articleCategories, setArticleCategories] = useState([])
     useEffect(() => {
         const sub = () => {
+            const storedObj = localStorage.getItem('articleCategories')
+            if (storedObj) {
+                const data = JSON.parse(storedObj)
+                setArticleCategories(data)
+            }
             db.collection('articleCategories').onSnapshot((snapshot) => {
-                let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
-                setArticleCategories(r);
+                if (!snapshot.empty) {
+                    let r = (snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
+                    localStorage.setItem('articleCategories', JSON.stringify(r));
+                    setArticleCategories(r);
+                }
             })
         }
         sub();
@@ -86,17 +111,24 @@ function Home() {
                 <div className="features">
                     {/* Products categories */}
                     <div className="boxCont"><div className="box">
-                        <img src="/images/product-img.png" alt="hairdryer" />
+                        <MyImage
+                            src={"/images/product-img.png"}
+                            alt="hairdryer"
+                        />
                         <div className="text">Products</div>
                         <span className="tooltiptext">
                             <div className="overall">
                                 <div className="title"><h2>Product categories</h2></div>
                                 <div className="lists">
                                     <span className="cats">
-                                        <img src="/images/9555bcdb781e5cf8ab9ef3504a952220.png" alt="model on afro hair" className="tooltip-image" />
+                                        <MyImage
+                                            src={"/images/9555bcdb781e5cf8ab9ef3504a952220.png"}
+                                            className="tooltip-image"
+                                            alt="model on afro hair"
+                                        />
                                         <div className="Catgs mt-1">
                                             {productCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/products?category=${data.value}`}>{data.value}</Link></div>
+                                                <div key={id}><Link to={`/products?category=${UrlSlug(data?.value)}`}>{data?.value}</Link></div>
                                             ))}
                                         </div>
                                     </span>
@@ -107,18 +139,25 @@ function Home() {
                     </div>
                     {/* Businesses categories */}
                     <div className="boxCont"><div className="box">
-                        <img src="/images/business-img.png" alt="hairdryer"
-                            className="businessImg" />
+                        <MyImage
+                            src={"/images/business-img.png"}
+                            className="businessImg"
+                            alt="hairdryer"
+                        />
                         <div className="text">Businesses</div>
                         <span className="tooltiptext tooltiptextBusiness">
                             <div className="overall">
                                 <div className="title">Business category</div>
                                 <div className="lists">
                                     <span className="cats">
-                                        <img src="/images/businesses img .png" alt="model on afro hair" className="tooltip-image" />
+                                        <MyImage
+                                            src={"/images/businesses img .png"}
+                                            className="tooltip-image"
+                                            alt="model on afro hair"
+                                        />
                                         <div className="Catgs mt-1">
                                             {productCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/businesses?category=${data.category}`}>{data.category}</Link></div>
+                                                <div key={id}><Link to={`/businesses?category=${UrlSlug(data?.value)}`}>{data?.value}</Link></div>
                                             ))}
                                         </div>
                                     </span>
@@ -129,17 +168,24 @@ function Home() {
                     </div>
                     {/* Job categories */}
                     <div className="boxCont"><div className="box">
-                        <img src="/images/job-vacancy-img.png" alt="hairdryer" />
+                        <MyImage
+                            src={"/images/job-vacancy-img.png"}
+                            alt="hairdryer"
+                        />
                         <div className="text">Job vacancies</div>
                         <span className="tooltiptext tooltiptextJv">
                             <div className="overall">
                                 <div className="title">Job category</div>
                                 <div className="lists">
                                     <span className="cats">
-                                        <img src="/images/unnamed (2).png" alt="model on afro hair" className="tooltip-image" />
+                                        <MyImage
+                                            src={"/images/unnamed (2).png"}
+                                            className="tooltip-image"
+                                            alt="model on afro hair"
+                                        />
                                         <div className="Catgs mt-1">
                                             {jobCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/jobs?category=${data.value}`}>{data.label}</Link></div>
+                                                <div key={id}><Link to={`/jobs?category=${UrlSlug(data?.value)}`}>{data?.value}</Link></div>
                                             ))}
                                         </div>
                                     </span>
@@ -150,17 +196,24 @@ function Home() {
                     </div>
                     {/* Articles categories */}
                     <div className="boxCont"><div className="box">
-                        <img src="/images/article-img.png" alt="hairdryer" />
+                        <MyImage
+                            src={"/images/article-img.png"}
+                            alt="hairdryer"
+                        />
                         <div className="text">Articles</div>
                         <span className="tooltiptext tooltiptextAt">
                             <div className="overall">
                                 <div className="title">Articles category</div>
                                 <div className="lists">
                                     <span className="cats">
-                                        <img src="/images/Articles img.png" alt="model on afro hair" className="tooltip-image" />
+                                        <MyImage
+                                            src={"/images/Articles img.png"}
+                                            className="tooltip-image"
+                                            alt="model on afro hair"
+                                        />
                                         <div className="Catgs mt-1">
                                             {articleCategories?.map(({ id, data }) => (
-                                                <div key={id}><Link to={`/articles?category=${data.value}`}>{data.value}</Link></div>
+                                                <div key={id}><Link to={`/articles?category=${UrlSlug(data?.value)}`}>{data?.value}</Link></div>
                                             ))}
                                         </div>
                                     </span>
@@ -183,7 +236,9 @@ function Home() {
                         </div>
 
                         <div className="seemore-class">
-                            <Link to={`products?category=${catg}`} ><div className="seemore">see more</div></Link>
+                            <Link to={`products?category=${catg}`} >
+                                <div className="seemore">see more</div>
+                            </Link>
                         </div>
 
                     </div>

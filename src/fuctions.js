@@ -55,11 +55,11 @@ const getMonthDateYearHour_minute = (timestamp) => {
         let date = dateObj.getDate();
         let year = dateObj.getFullYear();
 
-        let newDate = new Date(timestamp * 1000)
-
-        let Hours = newDate.getHours()
-        let Minutes = newDate.getMinutes()
-        const Hour_minute = Hours + ':' + Minutes
+        // let newDate = new Date(timestamp * 1000)
+        // let Hours = newDate.getHours()
+        // let Minutes = newDate.getMinutes()
+        // const Hour_minute = Hours + ':' + Minutes
+        
         let time = formatAMPM(timestamp)
 
         return `${nMonth} ${date} ${year} ${time}`

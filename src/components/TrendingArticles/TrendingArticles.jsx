@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SaveListContext } from '../../contexts/GlobalStore';
 import { db } from '../../firebase';
-import { getDesc, getMonthDate, save, Unsave, hasSaved, topFunction } from '../../fuctions'
+import { getDesc, save, Unsave, hasSaved, topFunction } from '../../fuctions'
 import MyImage from '../MyImage';
-// import { getCachedAticles, setCachedAticles } from './CashedTrendingArticles';
 
 function TrendingArticles({ limit = "18" }) {
     const [saveList] = useContext(SaveListContext)
@@ -58,63 +57,66 @@ function TrendingArticles({ limit = "18" }) {
                         {articles?.map(({ id, article }) => (
                             <div key={id} className="article">
                                 <div className="shopper5">
-                                    <Link
-                                        to={`/profile?uid=${article?.author?.uid}`}
-                                        className="user-display">
-                                        <MyImage
-                                            src={article?.author?.photoURL}
-                                            width=''
-                                            height=''
-                                            alt="images"
-                                            className="AuthorPhotoURL"
-                                        />
-                                        <span className="tooltiptext AuthorName">{article?.author?.displayName}</span>
-                                    </Link>
                                     <div className="imgbox1">
-                                        <Link to={`/article?title=${article?.UrlSlug}`}
-                                            // style={{ width: '271px', height: '120px' }}
-                                            onClick={() => { topFunction() }}>
-                                            <MyImage
-                                                src={article?.articleCover}
-                                                width=''
-                                                height=''
-                                                alt=""
-                                                className=""
-                                            />
-                                        </Link>
-                                        <div className="details1">
-                                            <Link to={`/article?title=${article?.UrlSlug}`} onClick={() => { topFunction() }}>
-                                                <h2>{article?.title}</h2>
-                                            </Link>
-                                            <div className="informations">
-                                                <span>{getDesc(article?.article)}</span>
-                                                <div className="artc-2">
-                                                    <div className="categories-filter">
-                                                        <i>
+                                        <div>
+                                            <div style={{ position: 'relative' }}>
+                                                <Link to={`/profile?uid=${article?.author?.uid}`}
+                                                    onClick={() => { topFunction() }}
+                                                    style={{ margin: 10, position: 'absolute' }}
+                                                    className="authorAndName" >
+                                                    <MyImage
+                                                        src={article?.author?.photoURL}
+                                                        alt="images"
+                                                        className="AuthorPhotoURL"
+                                                    />
+                                                    <span className="tooltiptext AuthorName">{article?.author?.displayName}</span>
+                                                </Link>
+                                                <Link to={`/article?title=${article?.UrlSlug}`}
+                                                    onClick={() => { topFunction() }}>
+                                                    <MyImage src={article?.articleCover} />
+                                                </Link>
+                                            </div>
+
+                                            <div className="details1">
+                                                <Link to={`/article?title=${article?.UrlSlug}`} onClick={() => { topFunction() }}>
+                                                    <h2>{article?.title}</h2>
+                                                </Link>
+                                                <div className="informations">
+                                                    <span>{getDesc(article?.article)}</span>
+
+                                                    <div className="artc-2">
+                                                        <div className="categories-filter">
                                                             <div onClick={() => { window.location = `/articles?title=${article?.category}` }}>
                                                                 <Link to={`/articles?title=${article?.category}`}>
                                                                     <span>{article?.category}</span>
                                                                 </Link>
                                                             </div>
-                                                            {/* <h3>{article && article?.createdAt && getMonthDate(article.createdAt)}</h3> */}
-                                                        </i>
+                                                            {/* <h3>{article?.createdAt && getMonthDate(article.createdAt)}</h3> */}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="likes--save">
-                                                    <div className="comments-thumbs">
-                                                        <span className="views">{article?.totalLikes}</span>
-                                                        <h2>Likes</h2>
-                                                        <span className="views">{article?.totalDisLikes}</span>
-                                                        <h2>Dislikes</h2>
-                                                        <span className="views">{article?.totalComments}</span>
-                                                        <h2>Comments</h2>
-                                                    </div>
-                                                    <div className="save--icon">
-                                                        {hasSaved(saveList, id) ?
-                                                            <img onClick={() => { Unsave(id) }} src="/images/circle-arrow-down-color.svg" alt="" className="group84" />
-                                                            : <img onClick={() => { save(id, article?.articleCover, article?.title, `/article?title=${article?.title}`, 'article') }} src="/images/saturday save icon.svg" alt="" className="group84" />}
-                                                    </div>
-                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="likes--save">
+                                            <div className="comments-thumbs">
+                                                <span className="views">
+                                                    {article?.totalLikes}&nbsp;
+                                                    <span>Likes</span>
+                                                </span>
+                                                <span className="views">
+                                                    {article?.totalDisLikes}&nbsp;
+                                                    <span>Dislikes</span>
+                                                </span>
+                                                <span className="views">
+                                                    {article?.totalComments}&nbsp;
+                                                    <span>Comments</span>
+                                                </span>
+                                            </div>
+                                            <div className="save--icon">
+                                                {hasSaved(saveList, id) ?
+                                                    <img onClick={() => { Unsave(id) }} src="/images/circle-arrow-down-color.svg" alt="" className="group84" />
+                                                    : <img onClick={() => { save(id, article?.articleCover, article?.title, `/article?title=${article?.title}`, 'article') }} src="/images/saturday save icon.svg" alt="" className="group84" />}
                                             </div>
                                         </div>
                                     </div>

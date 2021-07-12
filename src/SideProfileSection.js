@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import MyImage from './components/MyImage';
+import UserProfile from './components/UserProfile/UserProfile';
 import { auth, db } from './firebase';
 import { topFunction } from './fuctions';
 
 function SideProfileSection({ setOpenLogInOrReg }) {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(UserProfile.getUser())
+
   const [signOutModal, setSignOutModal] = useState(false)
 
   useEffect(() => {
@@ -35,7 +38,13 @@ function SideProfileSection({ setOpenLogInOrReg }) {
           onClick={() => { topFunction() }}
           className="d-flex align-items-center"
           style={{ position: 'relative' }}>
-          <img src={user?.photoURL} alt="" className="user" />
+          <MyImage
+            src={user?.photoURL}
+            width=''
+            height=''
+            alt={user?.displayName}
+            className="user"
+          />
           <span style={{ fontSize: '1.2rem', color: '#f40053', marginLeft: 10 }}>{user?.displayName}</span>
           <span
             onClick={(e) => { e.preventDefault(); setSignOutModal(!signOutModal) }}

@@ -34,7 +34,6 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider)
             .then((authUser) => {
-                console.log(authUser.user)
                 // if (!authUser.additionalUserInfo.isNewUser) {
                 fetch('https://api.ipdata.co/?api-key=f4332401282ddc4b12019f87256936ad24586eca9f5ce05ad5c079db')
                     .then(res => res.json())

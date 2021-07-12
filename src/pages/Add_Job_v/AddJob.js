@@ -4,10 +4,10 @@ import firebase from 'firebase';
 import ImageLib from '../../components/ImageLib';
 import CustomSelectDropDown from '../../components/CustomSelectDropDown';
 import { useHistory } from 'react-router-dom';
-import { makeid, UrlSlug } from '../../fuctions';
+import { UrlSlug } from '../../fuctions';
 import Attachment from './Components/Attachment';
 import CurrencyField from '../../components/CustomizedInputField/CustomizedInputField';
-import UserProfile from '../../components/UserProfile';
+import UserProfile from '../../components/UserProfile/UserProfile';
 
 function AddJob() {
     const user = UserProfile.getUser()

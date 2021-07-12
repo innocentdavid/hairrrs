@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebase'
 import firebase from 'firebase'
-import UserProfile from './UserProfile'
+import UserProfile from './UserProfile/UserProfile'
 import { formatAMPM } from '../fuctions'
 
 function Chat({ toggle, userId, msgId }) {

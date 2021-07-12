@@ -9,34 +9,37 @@ import FollowingTab from './Components/FollowingTab';
 import TotalEngagement from './Components/TotalEngagement';
 import LoungeUsers from './Components/LoungeUsers';
 import FollowersTab from './Components/FollowersTab';
+import UserProfile from '../../components/UserProfile/UserProfile';
 
 function Profile() {
+    const params = new URLSearchParams(window.location.search);
+    const uid = params.get('uid')
     const history = useHistory();
 
     const [user, setUser] = useState([])
-    const [currentUser, setCurrentUser] = useState([])
+    const [openLoading, setOpenLoading] = useState(false)
+
+    // const [currentUser, setCurrentUser] = useState([])
     auth.onAuthStateChanged(user => {
-        setCurrentUser(user)
+        // setCurrentUser(user)
         if (!user) { history.push('/') }
     })
 
     useEffect(() => {
-        if (currentUser) {
-            var uid = currentUser.uid
-            const params = new URLSearchParams(window.location.search);
-            if (params.has('uid')) {
-                if (params.get('uid') === '') { history.push('/') }
-                uid = params.get('uid')
-            }
-            if (uid) {
-                db.collection('users').doc(uid)
-                    .onSnapshot(doc => {
-                        let result = ({ ...doc.data(), id: doc.id });
+        if (uid) {
+            setOpenLoading(true)
+            db.collection('users').doc(uid)
+                .onSnapshot(doc => {
+                    if(doc.exists){
+                        let result = ({ ...doc.data(), uid: doc.id });
                         setUser(result);
-                    });
-            }
+                        setOpenLoading(false)
+                    }
+                });
+        } else {
+            setUser(UserProfile.getUser())
         }
-    }, [currentUser, history])
+    }, [uid])
 
 
 
@@ -67,6 +70,10 @@ function Profile() {
 
     return (
         <div className="layout" style={{ marginTop: 0 }}>
+            {openLoading && <div className="loader" style={{ display: 'grid' }}>
+                <img src="/images/loading.svg" alt="" />
+            </div>}
+
             <Helmet>
                 <title>{`${user && (user.displayName)?.replace(/\b(\w)/g, s => s.toUpperCase())} - Hairrrs`}</title>
                 <meta name="description" content="Everything Hairs" />
@@ -82,8 +89,8 @@ function Profile() {
                 {/* cover image */}
                 <div className="contnr" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 
-                    {!user?.coverPhotoURL &&
-                        <div style={{ padding: '10px 20px', background: 'white'}}>complete your profile</div>
+                    {!user?.coverPhotoURL && !params.has('uid') &&
+                        <div style={{ padding: '10px 20px', background: 'white' }}>complete your profile</div>
                     }
 
                     {user?.coverPhotoURL && <img id="trigger" src={user?.coverPhotoURL} alt="" onClick={() => { document.querySelector('#mymodal').style.display = 'block' }} />}
@@ -98,10 +105,10 @@ function Profile() {
                 <div className="contnr-1">
                     {/* profile pics */}
                     <div className="b-photo">
-                        {user && <img id="trigger-profile" src={user.photoURLmax} alt="" onClick={() => { document.querySelector('#mymodal-profile').style.display = 'block' }} />}
+                        {user && <img id="trigger-profile" src={user?.photoURLmax ? user?.photoURLmax : user?.photoURL} alt="" onClick={() => { document.querySelector('#mymodal-profile').style.display = 'block' }} />}
 
                         <div id="mymodal-profile" className="modal" onClick={() => { document.querySelector('#mymodal-profile').style.display = 'none' }}>
-                            <img src={user.photoURLmax} alt="" />
+                            <img src={user?.photoURLmax ? user?.photoURLmax : user?.photoURL} alt="" />
                             <span className="closeprofile" onClick={() => { document.querySelector('#mymodal-profile').style.display = 'none' }}>&times;</span>
                         </div>
                     </div>
@@ -128,9 +135,9 @@ function Profile() {
                             <div className="catalogue" style={{ width: '100%' }}>
                                 <h>Beauty company</h>
                                 <h>Blog</h>
-                                
+
                                 {user?.website && <><img src="images/Icon material-web.svg" alt="web" />
-                                <span>{user?.website}</span></>}
+                                    <span>{user?.website}</span></>}
 
                                 <div className="locate-icon">
                                     <img src="images/location-icon.svg" alt="locate icon ohyanga" />
@@ -139,7 +146,7 @@ function Profile() {
                         </div>
                     </div>
 
-                    <div className="control-class" style={{ marginTop: '3rem' }}>
+                    {!params.has('uid') && <div className="control-class" style={{ marginTop: '3rem' }}>
                         <div className="container-2">
                             <div className="btn-msg">
                                 <Link to="/go-premium" ><div className="message">Go premium</div></Link>
@@ -158,7 +165,7 @@ function Profile() {
                                 </Link>
                             </div>
                         </div>
-                    </div>
+                    </div>}
                 </div>
 
                 <LoungeUsers />
@@ -177,10 +184,18 @@ function Profile() {
                     </div>
 
                     <div className="stats-0">
-                        <div className="box-1" onClick={() => { setShowfollowersTab(!showfollowersTab) }}>
+                        <div className="box-1" onClick={() => {
+                            if (!params.has('uid')) {
+                                setShowfollowersTab(!showfollowersTab)
+                            }
+                        }}>
                             <h3>{totalFollowers}</h3><h2>followers</h2>
                         </div>
-                        <div className="box-1" onClick={() => { setShowFollowingTab(!showFollowingTab) }}>
+                        <div className="box-1" onClick={() => {
+                            if (!params.has('uid')) {
+                                setShowFollowingTab(!showFollowingTab)
+                            }
+                        }}>
                             <h3>{totalFollowing}</h3><h2>following</h2>
                         </div>
                         <div className="box-1">

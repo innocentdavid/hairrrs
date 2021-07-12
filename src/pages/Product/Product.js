@@ -2,14 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import firebase from 'firebase';
 import { auth, db } from '../../firebase';
-import { getDesc, getFormattedValue, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
+import { getDesc, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
 import { Helmet } from 'react-helmet';
 import { NotificationContext, SaveListContext } from '../../contexts/GlobalStore';
 import SocialMediaButtons from '../../components/SocialMediaButtons';
-import UserProfile from '../../components/UserProfile';
+import UserProfile from '../../components/UserProfile/UserProfile';
 import ItemOwner from '../../components/ItemOwner';
 import Chat from '../../components/Chat';
-import MyImage from '../../components/MyImage';
 
 function Product() {
     var user = UserProfile.getUser();
@@ -326,7 +325,7 @@ function Product() {
                                     <div className="ratings-1">
                                         <div className="details">
                                             <h2>{product?.title}</h2>
-                                            <span className={"price"}>{product?.price && getFormattedValue(product?.price, product?.currency)}</span>
+                                            <span className={"price"}>{product?.price}</span>
                                         </div>
                                         <hr />
                                         <div className="details-1">

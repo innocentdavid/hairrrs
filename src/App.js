@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Businesses from './pages/Businesses/Businesses';
 import Home from './pages/Home/Home';
 import Products from './pages/Products/Products';
@@ -16,12 +16,11 @@ import BusinessProfile from './pages/BusinessProfile/BusinessProfile';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import Articles from './pages/Articles/Articles';
 import { auth, db } from './firebase';
-import UserProfile from './components/UserProfile';
+import UserProfile from './components/UserProfile/UserProfile';
 import Job from './pages/Job/Job';
 import Jobs from './pages/Jobs/Jobs';
 import ApplyForJob from './components/ApplyForJob/ApplyForJob';
 import Backend from './pages/Backend/Backend';
-import PageNotFound from './pages/404/404';
 
 function App() {
   // useEffect for signing up users
@@ -30,7 +29,9 @@ function App() {
       if (authUser) {
         db.collection('users').doc(authUser.uid)
           .onSnapshot(user => {
-            UserProfile.setUser(user.data());
+            if(user.exists){
+              UserProfile.setUser(user.data());
+            }
           });
       }
     })

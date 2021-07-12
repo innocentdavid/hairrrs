@@ -50,7 +50,7 @@ function Notification() {
                 <div className="users">
                     {notificationList?.map(({ id, list }) => (
                         <div key={id} className="people" style={{ marginLeft: '20px' }}>
-                            {list.type === 'requestedCalls' && 
+                            {list.type !== 'message' && 
                             <Link to={list.link ? list.link : '/'} className="shielder" style={{ display: 'flex', color: 'black' }}>
                                 <div className="img">
                                     <img src={list.userPhotoURL} alt="hairrrs logo" className="" />

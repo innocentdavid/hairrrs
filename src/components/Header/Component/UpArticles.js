@@ -1,40 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../../firebase'
+import { UrlSlug } from '../../../fuctions'
 import TrendingArticles from '../../TrendingArticles/TrendingArticles'
 
 function UpArticles() {
+    const [articleCategories] = useState(JSON.parse(localStorage.getItem('articleCategories')))
+    
     const [mostEngagedArticle, setMostEngagedArticle] = useState([])
-    const [articleCategories, setArticleCategories] = useState([])
-
-    // setArticleCategories from cache
-    const storedArticleCategories = localStorage.getItem('articleCategories')
-    useEffect(() => {
-        const unsub = () => {
-            if (storedArticleCategories) {
-                const data = JSON.parse(storedArticleCategories)
-                setArticleCategories(data)
-            }
-        }
-        return () => { unsub() }
-    }, [storedArticleCategories])
-
-    // setArticleCategories
-    useEffect(() => {
-        const unsub = () => {
-            db.collection('articleCategories').onSnapshot((snapshot) => {
-                if (!snapshot.empty) {
-                    let r = snapshot.docs.map(doc => ({ category: doc.data(), id: doc.id }))
-                    setArticleCategories(r)
-                    localStorage.setItem('articleCategories', JSON.stringify(r));
-                }
-            })
-        }
-        return () => { unsub() }
-    }, [])
-
-
-
     // setMostEngagedArticle from cache
     const storedMostEngagedArticle = localStorage.getItem('mostEngagedArticle')
     useEffect(() => {
@@ -66,8 +39,8 @@ function UpArticles() {
                 <div className="categories-class">
                     <span className="cats">
                         <ul>
-                            {articleCategories && articleCategories.map(({ id, category }) => (
-                                <Link key={id} to={`/articles?category=${category.value}`}><li>{category.value}</li></Link>
+                            {articleCategories && articleCategories.map(({ id, data }) => (
+                                <Link key={id} to={`/articles?category=${UrlSlug(data.value, 'encode')}`}><li>{data.value}</li></Link>
                             ))}
                         </ul>
                     </span>

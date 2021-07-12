@@ -8,7 +8,7 @@ import { auth, db } from '../../firebase';
 import firebase from 'firebase';
 import { getFormattedValue, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
 import MyImage from '../../components/MyImage';
-import UserProfile from '../../components/UserProfile';
+import UserProfile from '../../components/UserProfile/UserProfile';
 
 function Job() {
   const user = UserProfile.getUser()

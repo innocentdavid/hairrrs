@@ -1,38 +1,11 @@
 import React from 'react'
 import { useState } from 'react'
-import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { db } from '../../../firebase'
+import { UrlSlug } from '../../../fuctions'
 import TrendingArticles from '../../TrendingArticles/TrendingArticles'
 
 function UpJobVacancies() {
-    const [jobCategories, setJobCategories] = useState([])
-
-    // setJobCategories from cache
-    const storedJobCategories = localStorage.getItem('jobCategories')
-    useEffect(() => {
-        const unsub = () => {
-            if (storedJobCategories) {
-                const data = JSON.parse(storedJobCategories)
-                setJobCategories(data)
-            }
-        }
-        return () => { unsub() }
-    }, [storedJobCategories])
-
-    // setJobCategories
-    useEffect(() => {
-        const unsub = () => {
-            db.collection('jobCategories').onSnapshot((snapshot) => {
-                if (!snapshot.empty) {
-                    let r = snapshot.docs.map(doc => ({ category: doc.data(), id: doc.id }))
-                    setJobCategories(r)
-                    localStorage.setItem('jobCategories', JSON.stringify(r));
-                }
-            })
-        }
-        return () => { unsub() }
-    }, [])
+    const [jobCategories] = useState(JSON.parse(localStorage.getItem('jobCategories')))
 
     return (
         <div className="up-JobVacancies">Job Vacancies
@@ -40,8 +13,8 @@ function UpJobVacancies() {
                 <div className="categories-class">
                     <span className="cats">
                         <ul>
-                            {jobCategories && jobCategories.map(({ id, category }) => (
-                                <Link key={id} to={`/articles?category=${category.value}`}><li>{category.value}</li></Link>
+                            {jobCategories && jobCategories.map(({ id, data }) => (
+                                <Link key={id} to={`/articles?category=${UrlSlug(data.value, 'encode')}`}><li>{data.value}</li></Link>
                             ))}
                         </ul>
                     </span>

@@ -10,7 +10,7 @@ import { SaveListContext } from '../../contexts/GlobalStore';
 import ItemOwner from '../../components/ItemOwner';
 import ReportBoard from '../../components/ReportBoard'
 import WebShareApi from '../../components/WebShareApi';
-import UserProfile from '../../components/UserProfile';
+import UserProfile from '../../components/UserProfile/UserProfile';
 
 function Article() {
   const user = UserProfile.getUser()

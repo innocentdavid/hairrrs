@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import Chat from './Chat';
 import ReportBoard from './ReportBoard'
+import UserProfile from './UserProfile/UserProfile';
 
 function ItemOwner({ userId }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(UserProfile.getUser());
     useEffect(() => {
         db.collection('users').doc(userId).get().then(doc => {
             setUser(doc.data())
