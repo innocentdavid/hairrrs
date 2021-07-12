@@ -5,6 +5,7 @@ import AlertModal from './AlertModal';
 function SignIn({ signInWithGoogle, toggleShowAuthModal, setOpenAuthModal, setOpenLogInOrReg }) {
   const [alertModal, setAlertModal] = useState(false);
   const [alertMsg, setAlertMsg] = useState('')
+  const [openLoading, setOpenLoading] = useState(false)
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,18 +13,29 @@ function SignIn({ signInWithGoogle, toggleShowAuthModal, setOpenAuthModal, setOp
 
   // email & password
   const signIn = () => {
+    setOpenLoading(true)
     auth.signInWithEmailAndPassword(email, password)
-      .catch((error) => { setAlertMsg(error); setAlertModal(true) });
-    if (!alertMsg) { setOpenAuthModal(false); setOpenLogInOrReg(true) }
-  }
-
-  if (auth.currentUser) {
-    setAlertMsg('')
+      .then(data => {
+        // console.log(data)
+        setOpenLoading(false)
+        setOpenAuthModal(false); 
+        setOpenLogInOrReg(false);
+      })
+      .catch((error) => {
+        console.log(error)
+        setOpenLoading(false)
+        setAlertMsg(error.message);
+        setAlertModal(true)
+      });
   }
 
   return (
     <div className="signin-form">
-      <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} alertMsg={alertMsg.message} />
+      {openLoading && <div className="loader" style={{ display: 'grid' }}>
+        <img src="/images/loading.svg" alt="" />
+      </div>}
+
+      <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} alertMsg={alertMsg} />
       <form onSubmit={(e) => { e.preventDefault(); signIn() }}>
         <input value={email} onChange={(e) => { setEmail(e.target.value) }} type="email" placeholder="Email" className="email" required />
         <hr className="HomeHr" />

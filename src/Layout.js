@@ -36,9 +36,9 @@ function Layout({ children }) {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((authUser) => {
+            setOpenLoading(false)
             if (authUser) {
                 setOpenLogInOrReg(false)
-                setOpenLoading(false)
             } else {
                 setOpenLogInOrReg(true)
             }
@@ -64,7 +64,7 @@ function Layout({ children }) {
                 zIndex: 21
             }}>
                 <button
-                    onClick={() => { setOpenAuthModal(true); setOpenLoading(true) }}
+                    onClick={() => { setOpenAuthModal(true) }}
                     className="signin"
                     style={{ margin: "20px 0", cursor: 'pointer' }}
                 >login / reg</button>
