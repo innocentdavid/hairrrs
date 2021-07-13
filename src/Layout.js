@@ -48,10 +48,10 @@ function Layout({ children }) {
 
     return (
         <>
-            {openLogInOrReg && <div style={{
+            {openLogInOrReg && <div className="login" style={{
                 position: 'fixed',
-                top: "160px",
-                left: 5,
+                top: "175px",
+                left: 30,
                 width: '250px',
                 background: "white",
                 marginRight: "10px",

@@ -18,11 +18,12 @@ html {
 }
 
 body {
-  background: #c10041;
+  /* background: #c10041; */
+  background: #f2f2f2;
   font-family: 'Montserrat-Regular', 'Segoe UI', sans-serif;
   font-weight: 400;
   font-size: 13px;
-  letter-spacing: 0.5px
+  letter-spacing: 0.5px;
 }
 
 .authModal {
@@ -35,13 +36,13 @@ body {
 }
 
 button {
-  background: white !important;
+  background: white;
   color: black !important;
   padding: 5px 10px !important;
-  border: 1px solid #c10041 !important;
+  border: 1px solid #c10041;
   border-radius: 3px !important;
   margin: 10px 0;
-  transition: .2s !important
+  transition: .2s !important;
 }
 
 button.disabledBtn {
@@ -90,6 +91,9 @@ button:hover {
 .logo--mobile {
   display: none;
 }
+header{
+  z-index: 5;
+}
 
 header nav {
   position: fixed;
@@ -100,8 +104,33 @@ header nav {
   height: 80px;
   top: 44px;
   background: white;
-  color: #757575;
-  z-index: 20;
+  z-index: 44;
+}
+nav{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 700px;
+}
+.searchReadAds{
+  display: flex;
+  align-items: center;
+}
+.searchReadAds button{
+  background: #f40053 !important;
+  margin-left: 5px;
+  align-items: center;
+  border: none !important;
+  padding: 8px 18px !important;
+  border-radius: 0px 8px 8px 0px !important;
+  cursor: pointer;
+  z-index: 1;
+}
+.searchReadAds button:hover{
+  background:#fd0f5f !important;
+}
+.searchReadAds button img{
+  height: 14px;
 }
 
 header3 nav {
@@ -182,16 +211,6 @@ header3 .notification--icon img {
   margin-left: 10px;
 }
 
-header button {
-  cursor: pointer;
-  background: #f40053;
-  padding: 7px 25px;
-  outline: none;
-  margin-left: 6px;
-  border-radius: 5px;
-  border: none;
-  z-index: 1;
-}
 
 header button:hover {
   background: rgb(235, 0, 78);
@@ -202,11 +221,11 @@ header input {
   height: 30px;
   width: 390px;
   outline: none;
-  padding: 15px;
+  padding: 16px;
   margin-left: 10px;
   border: 1px solid #dbdbdb;
   color: #757575;
-  border-radius: 5px;
+  border-radius: 5px 0px 0px 5px;
 }
 
 header form {
@@ -392,14 +411,8 @@ header form {
   border-radius: 5px;
   text-align: center;
   border: 1px solid #f40053;
-}
-
-.support txt {
-  margin-top: 4px;
-  margin-left: 10%;
-  color: #f40053;
-  font-weight: 500;
-  font-size: 14px;
+  align-items: center;
+  padding-left: 10px;
 }
 
 .support img {
@@ -652,28 +665,32 @@ div#mainCont {
 }
 
 .layout {
-  margin-top: 102px;
+  margin-top: 125px;
   padding: 0 10px;
   overflow: auto;
+  align-items: center;
+  justify-content: space-between;
+  justify-items: center;
 }
 
 .layout1 {
   position: fixed;
   top: 140px;
-  left: 10px;
+  left: 30px;
   margin-bottom: 10px;
+  margin-top: 35px;
   box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11);
   border-radius: 5px;
 }
 
 .layout1a {
   width: fit-content;
-  box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11);
+  /* box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11); */
   border-radius: 0px 0px 5px 5px;
 }
 
 .mt-130 {
-  margin-top: 130px
+  margin-top: 100px;
 }
 
 .layout1 .accord--profile {
@@ -1297,28 +1314,44 @@ a {
 
 .header2 {
   position: fixed;
-  background: #f40053;
+  /* background: #f40053; */
+  background: #f2f2f2;
   padding: 8px;
   width: 100%;
   top: 120px;
   box-shadow: 0px 4px 14px 0.5px rgba(0, 0, 0, 0.205);
-  z-index: 5;
+  z-index: 42;
+}
+.header2 .H2{
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .header2 .up-products {
   display: inline-block;
+  color: #f40053;
+  font-weight: 500;
 }
 
 .header2 .up-business {
   display: inline-block;
+  color: #f40053;
+  font-weight: 500;
 }
 
 .header2 .up-JobVacancies {
   display: inline-block;
+  color: #f40053;
+  font-weight: 500;
 }
 
 .header2 .up-Articles {
   display: inline-block;
+  color: #f40053;
+  font-weight: 500;
 }
 
 .up-products {
@@ -3206,14 +3239,17 @@ input[type=range]::-webkit-slider-thumb {
 .layout2 {
   background: white;
   color: black;
-  /* width: 930px; */
+  width: 930px;
   box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11);
+  padding-bottom: 0 !important;
+  margin-bottom: 0  !important;
 }
 
 .layout2a {
   background: white;
   box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11);
   padding: 20px;
+  padding-top: 15px !important;
 }
 
 .adv {
@@ -3337,7 +3373,8 @@ input[type=range]::-webkit-slider-thumb {
 
 .faceOfhairrrs {
   background: #f9f9f9;
-  height: 100%;
+  height: 285px;
+  width: 285px !important;
   margin: 20px 0;
   margin-left: -5px;
   text-align: center;
@@ -3361,20 +3398,24 @@ input[type=range]::-webkit-slider-thumb {
   padding: 18px;
   padding-top: 0;
   display: flex;
-}
-
-.features .boxCont {
-  padding: 20px;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.features .boxCont {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 300px;
+  margin-top: -15px;
+}
+
 .features .box {
   background: linear-gradient(#c10041, #f40053);
-  height: 100px;
-  width: 100px;
+  height: 170px;
+  width: 210px;
   border-radius: 10px;
+  padding: 10px;
 }
 
 .features .box:hover {
@@ -3382,14 +3423,13 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 .box img {
+  width: 110px;
   position: absolute;
-  width: 60px;
 }
 
 .box img.businessImg {
-  width: 80px;
-  height: 80px;
-  margin-top: -13px;
+  width: 145px;
+  margin-top: -28px;
   margin-left: -10px;
 }
 
@@ -3397,8 +3437,9 @@ input[type=range]::-webkit-slider-thumb {
   color: white;
   font-size: 14px;
   z-index: 5;
-  margin-top: 80px;
-  margin-left: 5px;
+  text-align: right;
+  margin-top: 125px;
+  margin-right: 5px;
 }
 
 .features .box .tooltiptext {
@@ -3408,13 +3449,14 @@ input[type=range]::-webkit-slider-thumb {
   color: black;
   height: 315px;
   width: 915px;
-  margin-left: -30px;
+  margin-left: -20px;
   margin-top: 0px;
-  top: 180px;
+  top: 0;
   border-radius: 5px;
   transition: .5s;
   transition-delay: .5s;
   display: flex;
+  z-index: 5;
 }
 
 .tooltiptext .overall {
@@ -3499,6 +3541,7 @@ input[type=range]::-webkit-slider-thumb {
   box-shadow: 0px 2px 20px 0.5px rgba(117, 117, 117, 0.11);
   margin-top: 16px;
   padding-top: 20px;
+  margin-bottom: 15px;
 }
 
 .layout-manager {
@@ -9377,6 +9420,7 @@ seller {
     padding: 5px 16px;
     outline: none;
     margin-left: 6px;
+    margin-top: 0;
     border-radius: 5px;
     border: none;
     z-index: 1;
@@ -9401,8 +9445,9 @@ seller {
   header form {
     display: flex;
     width: 250px;
-    margin-left: -4%;
+    margin-left: 0 !important;
     margin-right: 0;
+    padding: 0 !important;
     text-align: center;
   }
 
@@ -9418,6 +9463,7 @@ seller {
     top: 100px;
     box-shadow: 0px 4px 14px 0.5px rgba(0, 0, 0, 0.205);
     z-index: 5;
+    color: red;
   }
 
   .up-products {
@@ -9623,11 +9669,58 @@ seller {
     z-index: 99999999999;
   }
 
+  .dots{
+    width: 120px;
+  }
   .headerAd img {
     width: 100%;
     height: 25px;
     position: fixed;
-    z-index: 99999999999;
+    z-index: 44;
+  }
+
+  .layout2{
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    top: 0;
+    left: 0;
+  }
+  .layout{
+    width: 100% !important;
+    height: 85vh;
+    overflow: auto;
+    width: 100%;
+    position: fixed !important;
+    overflow-x: hidden;
+  }
+  .mainLayoutCont{
+    width: 100% !important;
+  }
+  .adv{
+    width: 100% !important;
+  }
+  .div1{
+    width: 100% !important;
+  }
+  .login{
+    display: none !important;
+  }
+  .billboard{
+    width: 100% !important;
+    margin: 0 !important;
+    margin-bottom: 10px !important;
+  }
+  .features{
+    margin-top: 30px;
+    gap: 15px;
+    width: 100%;
+    height: 190px;
+  }
+  .features .box{
+    width: 130px;
+    height: 130px;
+    line-break: 20px;
   }
 
   .header nav {
@@ -9640,7 +9733,7 @@ seller {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 40px;
+    height: 45px;
     margin-top: -10px;
     background: #f40053;
     color: #757575;
@@ -9713,7 +9806,7 @@ seller {
   }
 
   body {
-    background: white;
+    background: #f2f2f2;
   }
 
   .header2 {
@@ -9722,6 +9815,15 @@ seller {
 
   .ly0 {
     display: none;
+  }
+  .adv-1{
+    display: grid;
+    margin: auto;
+    margin-top: 30px !important;
+  }
+  .faceOfhairrrs{
+    width: 100% !important;
+    margin: 0 !important;
   }
 
   .navigation--icons {
@@ -9733,14 +9835,14 @@ seller {
     padding-right: 25px;
     background: white;
     width: 100%;
-    height: 35px;
+    height: 46px;
     bottom: 0;
     box-shadow: 0px 10px 10px 15px rgba(0, 0, 0, 0.096);
-    z-index: 20;
+    z-index: 50;
   }
 
   .navigation--icons img {
-    width: 17px;
+    z-index: 50;
   }
 
   .mobile--icon {

@@ -127,6 +127,7 @@ function Home() {
                         </span>
                     </div>
                     </div>
+                    
                     {/* Job categories */}
                     <div className="boxCont"><div className="box">
                         <img src="/images/job-vacancy-img.png" alt="hairdryer" />
