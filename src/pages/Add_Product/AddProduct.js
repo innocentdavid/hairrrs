@@ -3,8 +3,8 @@ import { db } from '../../firebase';
 import firebase from 'firebase';
 import ImageLib from '../../components/ImageLib';
 import CustomSelectDropDown from '../../components/CustomSelectDropDown';
-import { makeid, UrlSlug } from '../../fuctions';
-import UserProfile from '../../components/UserProfile';
+import { getFormattedValue, makeid, UrlSlug } from '../../fuctions';
+import UserProfile from '../../components/UserProfile/UserProfile';
 import { useHistory } from 'react-router-dom';
 import LocationSearchInput from '../../components/LocationSearchInput';
 import CurrencyField from '../../components/CustomizedInputField/CustomizedInputField';
@@ -85,10 +85,13 @@ function AddProduct() {
     const addProduct = async () => {
         setOpenLoading(true)
 
+        const getFV = await getFormattedValue(price, user?.currency?.symbol)
+        console.log(price)
+
         if (productImages) {
             const data = {
                 title,
-                price,
+                price: getFV,
                 productDesc,
                 seller: { displayName: user?.displayName, uid: user?.uid, photoURL: user?.photoURL, phoneNumber: user.phoneNumber },
                 negotiable,
@@ -169,7 +172,7 @@ function AddProduct() {
                         setCategory(r.category)
                         setTitle(r.title)
                         setType(r.type)
-                        setPrice(r.price)
+                        setPrice(r.price?.slice(1).replace(/,/g, ''))
                         setProductDesc(r.productDesc)
                         setRigion(r.rigion)
                         setAddress(r.address)

@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 import { auth, db } from '../../../firebase'
 import { formatAMPM } from '../../../fuctions'
 import Chat from '../../Chat'
-import UserProfile from '../../UserProfile'
+// import UserProfile from '../../UserProfile/UserProfile'
 
 function Messages() {
-    const user = UserProfile.getUser();
+    // const user = UserProfile.getUser();
 
     const [openMessages, setOpenMessages] = useState(false)
     const [messageNofication, setMessageNofication] = useState([])

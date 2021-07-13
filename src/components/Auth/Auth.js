@@ -9,6 +9,7 @@ import AlertModal from './AlertModal';
 function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
     const [alertModal, setAlertModal] = useState(false);
     const [alertMsg, setAlertMsg] = useState('');
+    const [openLoading, setOpenLoading] = useState(false)
 
     const defaults = {
         photoURLmax: '',
@@ -31,10 +32,10 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
     }
 
     const signInWithGoogle = () => {
+        setOpenLoading(true)
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider)
-            .then((authUser) => {
-                console.log(authUser.user)
+            .then(async (authUser) => {
                 // if (!authUser.additionalUserInfo.isNewUser) {
                 fetch('https://api.ipdata.co/?api-key=f4332401282ddc4b12019f87256936ad24586eca9f5ce05ad5c079db')
                     .then(res => res.json())
@@ -51,19 +52,30 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
                         let data = a;
                         db.collection('users').doc(authUser.user.uid).set(data);
                     })
+                    .catch((error) => {
+                        // console.log(error)
+                        // setAlertMsg(error.message); 
+                        // setAlertModal(true)
+                    })
+
                 setOpenAuthModal(false);
-                setOpenLogInOrReg(true)
-                if (!alertMsg) {
-                    setOpenLogInOrReg(true)
-                }
-                setOpenAuthModal(false);
-                // window.location.reload()
-                // }
+                setOpenLogInOrReg(false)
+
             })
-            .catch((error) => { setAlertMsg(error.message); setAlertModal(true) });
+            .catch((error) => {
+                // console.log(error)
+                setOpenLoading(false)
+
+                if (error?.code === 'auth/popup-closed-by-user') {
+                    setAlertMsg("The popup has been closed before finalizing the operation.");
+                } else { setAlertMsg(error.message) }
+
+                setAlertModal(true)
+            });
     }
 
     if (auth.currentUser) {
+        setOpenLoading(false)
         setAlertMsg('')
     }
 
@@ -82,8 +94,12 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
     }
 
     return (<div style={{ zIndex: 22 }}>
+        {openLoading && <div className="loader" style={{ display: 'grid' }}>
+            <img src="/images/loading.svg" alt="" />
+        </div>}
+
         {!auth.currentUser && <div>
-            {alertModal && <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} alertMsg={alertMsg.message} />}
+            {alertModal && <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} alertMsg={alertMsg} />}
             <div className={`authModal signin-modal`}>
                 <div className="logo-close">
                     <div className="logo-signin">

@@ -11,7 +11,9 @@ const GblobalNotification = ({ children }) => {
     useEffect(() => {
         if (user) {
             let uid = auth.currentUser.uid
-            db.collection('users').doc(uid).collection('history').onSnapshot(snapshot => {
+            db.collection('users').doc(uid).collection('history')
+            .where('type', '!=', 'message')
+            .onSnapshot(snapshot => {
                 let totalNotificationList = snapshot.docs.length;
                 let result = snapshot.docs.map(doc => ({ list: doc.data(), id: doc.id, totalNotificationList }))
                 setNotificationList(result)

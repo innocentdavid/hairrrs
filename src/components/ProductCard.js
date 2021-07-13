@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import { SaveListContext } from '../contexts/GlobalStore';
 import { db } from '../firebase';
-import { getFormattedValue, hasSaved, save, topFunction, Unsave, UrlSlug } from '../fuctions';
+import { hasSaved, save, topFunction, Unsave, UrlSlug } from '../fuctions';
 import MyImage from './MyImage';
 
 function ProductCard({ catg }) {
@@ -52,7 +52,7 @@ function ProductCard({ catg }) {
                         }
                         <div className="details">
                             <h2>{product?.title}</h2>
-                            <span>{product?.price && getFormattedValue(product?.price, product?.currency) }</span>
+                            <span>{product?.price}</span>
                             <div className="seller">{product?.sellerName}</div>
                             <div className="likes--save">
                                 <div className="promo-validity">

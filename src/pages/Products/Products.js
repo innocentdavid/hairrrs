@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { SaveListContext } from '../../contexts/GlobalStore';
 import { db } from '../../firebase';
-import { hasSaved, save, Unsave } from '../../fuctions';
+import { hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
 
 function Products() {
     var category;
@@ -14,7 +14,7 @@ function Products() {
         if (params.get('category') === '') {
             category = 'All';
         } else {
-            let r = params.get('category');
+            let r = UrlSlug(params.get('category'), 'decode');
             category = r.toLowerCase()
         }
     }
@@ -148,7 +148,7 @@ function Products() {
                                         <Link to={`/product?title=${id}`} >
                                             <h2>{product.title}</h2>
                                         </Link>
-                                        <span className="price">{product.price}</span>
+                                        <span className="price">{product?.price}</span>
                                         <div className="categories-filter">
                                             <span className="seller">seller:</span><h4>{product.seller.displayName}</h4>
                                         </div>

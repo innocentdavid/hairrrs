@@ -11,7 +11,7 @@ function Jobs() {
     if (!params.has('category') || params.get('category') === '') {
       setcategory('all')
     } else {
-      setcategory(params.get('category'))
+      setcategory(UrlSlug(params.get('category'), 'decode'))
     }
   }, [])
 

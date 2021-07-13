@@ -5,6 +5,7 @@ import Header from './components/Header/Header';
 import SideProfileSection from './SideProfileSection';
 import { topFunction } from './fuctions';
 import { auth } from './firebase';
+import MyImage from './components/MyImage';
 
 function Layout({ children }) {
     const params = new URLSearchParams(window.location.search);
@@ -35,15 +36,15 @@ function Layout({ children }) {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((authUser) => {
+            setOpenLoading(false)
             if (authUser) {
                 setOpenLogInOrReg(false)
-                setOpenLoading(false)
-            }else{
+            } else {
                 setOpenLogInOrReg(true)
             }
-        })      
+        })
         return () => { unsubscribe() }
-      }, []);
+    }, []);
 
 
     return (
@@ -63,12 +64,20 @@ function Layout({ children }) {
                 zIndex: 21
             }}>
                 <button
-                    onClick={() => { setOpenAuthModal(true); setOpenLoading(true) }}
+                    onClick={() => { setOpenAuthModal(true) }}
                     className="signin"
                     style={{ margin: "20px 0", cursor: 'pointer' }}
                 >login / reg</button>
-                
-                {openLoading && <img src="/images/kloader.gif" alt="" style={{ position: 'fixed', zIndex: '26', width: '100px', height: '100px' }} />}
+
+                {openLoading &&
+                    <MyImage
+                        src={"/images/kloader.gif"}
+                        width=''
+                        height=''
+                        alt=""
+                        className="kloader"
+                    />
+                }
             </div>}
 
             {openAuthModal && <Auth setOpenAuthModal={setOpenAuthModal} setOpenLogInOrReg={setOpenLogInOrReg} />}
@@ -88,14 +97,26 @@ function Layout({ children }) {
 
                                         {!openLogInOrReg && <SideProfileSection setOpenLogInOrReg={setOpenLogInOrReg} />}
 
-                                        <div className={openLogInOrReg ? "layout1a mt-130" : "layout1a" }>
+                                        <div className={openLogInOrReg ? "layout1a mt-130" : "layout1a"}>
                                             <Link to="#" ><div className="shopper9">
                                                 <div className="user-display">
-                                                    <img src="/images/user?.png" alt="" />
+                                                    <MyImage
+                                                        src={"/images/user?.png"}
+                                                        width=''
+                                                        height=''
+                                                        alt=""
+                                                        className=""
+                                                    />
                                                     <span className="tooltiptext">Chizzyfix</span>
                                                 </div>
                                                 <div className="imgbox1">
-                                                    <img src="/images/0_NEgmVl2J_RRzI9Sr.jpg" alt="" />
+                                                    <MyImage
+                                                        src={"/images/0_NEgmVl2J_RRzI9Sr.jpg"}
+                                                        width=''
+                                                        height=''
+                                                        alt=""
+                                                        className=""
+                                                    />
                                                     <div className="learnmore">
                                                         <div className="website">trytune.com/about</div>
                                                         <div className="learn-more">Learn more</div>
@@ -126,10 +147,22 @@ function Layout({ children }) {
 
                 <div className="floater">
                     <div className="support"><span>Support</span>
-                        <img src="/images/support-icon.svg" alt="hairrrs comment icon" />
+                        <MyImage
+                            src={"/images/support-icon.svg"}
+                            width=''
+                            height=''
+                            alt="hairrrs comment icon"
+                            className=""
+                        />
                     </div>
                     <div className="scrolltotop" onClick={() => { topFunction() }}>
-                        <img src="/images/Icon feather-chevron-down.svg" alt="scroll up button" />
+                        <MyImage
+                            src={"/images/Icon feather-chevron-down.svg"}
+                            width=''
+                            height=''
+                            alt="hairrrs comment icon"
+                            className=""
+                        />
                     </div>
                 </div>
                 {/* modals */}

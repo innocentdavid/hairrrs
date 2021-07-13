@@ -2,22 +2,21 @@ import React from 'react';
 import ReactImageProcess from 'react-image-process';
 
 function ImageUploadProcessing() {
-    const onComplete = data => {
-        console.log('data:', data);
-    };
+  // const onComplete = data => {
+  //   console.log('data:', data);
+  // };
 
-    return (
-        // <ReactImageProcess mode="primaryColor" onComplete={color => console.log(color)}>
-        <ReactImageProcess
-        mode="clip"
-          scale={1.0}
-          coordinate={[[200, 200], [300, 300]]}
->
-            <img src="/images/9555bcdb781e5cf8ab9ef3504a952220.png" alt="" />
-            {/* <img src="/images/21-long-black-and-white-braids-B04kshXAuWR.jpg" alt="" /> */}
-          </ReactImageProcess>
-        // <h1>Hello</h1>
-    )
+  return (
+    // <ReactImageProcess mode="primaryColor" onComplete={color => console.log(color)}>
+    <ReactImageProcess
+      mode="clip"
+      scale={1.0}
+      coordinate={[[200, 200], [300, 300]]}
+    >
+      <img src="/images/9555bcdb781e5cf8ab9ef3504a952220.png" alt="" />
+      {/* <img src="/images/21-long-black-and-white-braids-B04kshXAuWR.jpg" alt="" /> */}
+    </ReactImageProcess>
+  )
 }
 
 export default ImageUploadProcessing

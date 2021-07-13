@@ -1,39 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../../firebase'
+import { UrlSlug } from '../../../fuctions'
 import TrendingArticles from '../../TrendingArticles/TrendingArticles'
 
 function UpProducts() {
     const [mostEngagedProduct, setMostEngagedProduct] = useState([])
-    const [categories, setCategories] = useState([])
-
-    // setProductCategories from cache
-    const storedProductCategories = localStorage.getItem('productCategories')
-    useEffect(() => {
-        const unsub = () => {
-            if (storedProductCategories) {
-                const data = JSON.parse(storedProductCategories)
-                setCategories(data)
-            }
-        }
-        return () => { unsub() }
-    }, [storedProductCategories])
-    
-    useEffect(() => {
-        const unsub = () => {
-            db.collection('productCategories').get()
-                .then((doc) => {
-                    if (!doc.empty) {
-                        let r = doc.docs.map(doc => ({ category: doc.data(), id: doc.id }))
-                        setCategories(r)
-                        localStorage.setItem('productCategories', JSON.stringify(r));
-                    }
-                })
-        }
-        return () => { unsub() }
-    }, [])
-
-
+    const [categories] = useState(JSON.parse(localStorage.getItem('productCategories')))
 
     useEffect(() => {
         db.collection('products')
@@ -51,8 +24,8 @@ function UpProducts() {
                 <div className="categories-class">
                     <span className="cats">
                         <ul>
-                            {categories && categories.map(({ id, category }) => (
-                                <Link key={id} to={`/products?category=${category?.value}`}><li>{category?.value}</li></Link>
+                            {categories && categories.map(({ id, data }) => (
+                                <Link key={id} to={`/products?category=${UrlSlug(data.value, 'encode')}`}><li>{data.value}</li></Link>
                             ))}
                         </ul>
                     </span>

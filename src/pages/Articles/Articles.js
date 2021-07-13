@@ -14,7 +14,7 @@ function Articles() {
         }
     }, [])
 
-    const [articles, setArticles] = useState([])
+    const [, setArticles] = useState([])
     useEffect(() => {
         const getCatgArticles = (category) => {
             if (category === 'all') {

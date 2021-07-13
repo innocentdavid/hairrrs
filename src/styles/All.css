@@ -26,6 +26,13 @@ body {
   letter-spacing: 0.5px;
 }
 
+.kloader {
+  position: 'fixed'; 
+  z-index: '26'; 
+  width: '100px';
+  height: '100px'
+}
+
 .authModal {
   position: fixed;
   top: 0;
@@ -1696,6 +1703,19 @@ a {
   height: 90px;
   margin-left: 10px;
   margin-bottom: 10px;
+}
+
+.details1 {
+  padding: 3px 6px;
+  height: 120px;
+  overflow: hidden;
+}
+
+.imgbox1{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 270px;
 }
 
 .shopper-00 .imgbox1 img {
@@ -4497,13 +4517,9 @@ h1 {
 }
 
 .imgbox1 img {
-  margin-bottom: 50px;
-  width: 271px;
+  width: 268px;
   height: 120px;
-  z-index: -3;
-  object-fit: cover;
-  margin-top: -1px;
-  margin-left: -2px;
+    object-fit: cover;
 }
 
 .shopper .details {
@@ -4649,7 +4665,7 @@ i {
   background: white;
   border: 2px solid #f2f2f2;
   color: black;
-  height: 270px;
+  height: 280px;
   width: 271px;
   margin: 10px;
 }
@@ -4928,12 +4944,6 @@ i {
   margin-bottom: -0.10px;
 }
 
-.details1 {
-  margin-top: -45px;
-  margin-left: 15px;
-  margin-right: 55px;
-}
-
 .informations .category {
   font-size: 10px;
   color: #757575;
@@ -4982,6 +4992,7 @@ i {
 .comments-thumbs {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 5px;
   width: 190px;
 }
@@ -5007,6 +5018,8 @@ i {
 .likes--save {
   display: flex;
   align-content: center;
+  padding: 3px 10px;
+    border-top: 1px solid rgb(90 89 89 / 15%);
 }
 
 .likes--save .save--icon img {
@@ -5616,18 +5629,6 @@ textarea.comment-textarea {
   border-radius: 5px;
   cursor: pointer;
 }
-
-/* .views-container {
-  width: 200px;
-  margin-top: 4px;
-  font-weight: 800;
-}
-
-.comments-likes .views-container {
-  width: 110px;
-  margin-top: 4px;
-  font-weight: 800;
-} */
 
 .justify-around {
   justify-content: space-around
@@ -8110,9 +8111,7 @@ seller {
 }
 
 .following-tab img {
-  width: 21px;
-  margin-top: 10px;
-  cursor: pointer;
+  border-radius: 50%;
 }
 
 .following-tab .exclude {
@@ -9911,9 +9910,21 @@ seller {
 }
 
 .AuthorPhotoURL {
-  width: 35px;
-  height: 35px;
+  width: 35px !important;
+  height: 35px !important;
   border-radius: 50%;
+  margin-bottom: -5px;
+}
+
+.authorAndName {
+  display: flex;
+  align-items: center;
+}
+
+.AuthorName {
+  padding: 5px 8px;
+  border-radius: 3px;
+  margin-left: 10px;
 }
 
 
