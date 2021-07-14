@@ -80,8 +80,8 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
 
     const toggleShowAuthModal = (modal) => {
         if (modal === 'signIn') {
-            setSignUpModal(false)
             setSignInModal(true)
+            setSignUpModal(false)
         }
         if (modal === 'signUp') {
             setSignUpModal(true)
@@ -96,12 +96,12 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
 
         {!auth.currentUser && <div>
             {alertModal && <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} alertMsg={alertMsg} />}
-            <div className={`authModal signin-modal`}>
+            <div id="authModal" className={`authModal signin-modal`}>
                 <div className="logo-close">
                     <div className="logo-signin">
                         <img src="/images/Logo-1.png" alt="hairrrs logo" />
                     </div>
-                    <div onClick={() => { setOpenAuthModal(false); setOpenLogInOrReg(true) }} className="close">&times;</div>
+                    <div onClick={() => { setOpenAuthModal(false) }} className="close">&times;</div>
                 </div>
                 <div className="contents">
                     {signInModal && <SignIn
@@ -111,8 +111,6 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
                         signInWithGoogle={signInWithGoogle} />}
 
                     {signUpModal && <SignUp
-                        setOpenAuthModal={setOpenAuthModal}
-                        setOpenLogInOrReg={setOpenLogInOrReg}
                         toggleShowAuthModal={toggleShowAuthModal}
                         defaults={defaults}
                         signInWithGoogle={signInWithGoogle} />}

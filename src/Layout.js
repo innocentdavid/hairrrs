@@ -5,8 +5,10 @@ import Header from './components/Header/Header';
 import SideProfileSection from './SideProfileSection';
 import { topFunction } from './fuctions';
 import MyImage from './components/MyImage';
+import UserProfile from './components/UserProfile/UserProfile';
 
 function Layout({ children }) {
+    const user= UserProfile.getUser()
     const params = new URLSearchParams(window.location.search);
     var scrollTo = params.get('scrollTo')
     var el = document.querySelector(`#${scrollTo}`);
@@ -29,8 +31,20 @@ function Layout({ children }) {
         return true
     }
 
-    const [openAuthModal, setOpenAuthModal] = useState(false)
     const [openLogInOrReg, setOpenLogInOrReg] = useState(false)
+
+    useEffect(() => {
+        if(!user){ 
+            setOpenLogInOrReg(true)
+        }
+    }, [user])
+
+    const setOpenAuthModal = (type) => {
+        let e = document.querySelector("#authModal");
+        if (type === true) {
+            if (e) { e.style.display = 'block' }
+        } else { if (e) { e.style.display = 'none' } }
+    }
 
 
     return (
@@ -56,7 +70,7 @@ function Layout({ children }) {
                 >login / reg</button>
             </div>}
 
-            {openAuthModal && <Auth setOpenAuthModal={setOpenAuthModal} setOpenLogInOrReg={setOpenLogInOrReg} />}
+            <Auth setOpenAuthModal={setOpenAuthModal} setOpenLogInOrReg={setOpenLogInOrReg} />
 
             <Header />
 

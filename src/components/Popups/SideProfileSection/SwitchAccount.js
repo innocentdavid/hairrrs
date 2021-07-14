@@ -82,7 +82,7 @@ function SwitchAccount({ setShowSwitchAccount, handleSignOut, setOpenAuthModal }
 
         <div style={{ minHeight: 15 }}></div>
         <div className="d-flex align-items-center">
-        <button className="mr-2" onClick={() => { setOpenAuthModal(true) }}>Add new account</button>
+        <button className="mr-2" onClick={(e) => { setOpenAuthModal(true) }}>Add new account</button>
         <button onClick={handleSignOut}>Logout</button>
         </div>
 
