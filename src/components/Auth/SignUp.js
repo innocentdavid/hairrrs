@@ -4,7 +4,7 @@ import firebase from 'firebase'
 import { getRandomInt } from '../../fuctions';
 import AlertModal from './AlertModal';
 
-function SignUp({ defaults, signInWithGoogle, toggleShowAuthModal, setOpenAuthModal, setOpenLogInOrReg }) {
+function SignUp({ defaults, signInWithGoogle, toggleShowAuthModal }) {
   const [alertModal, setAlertModal] = useState(false);
   const [alertMsg, setAlertMsg] = useState('')
   const [openLoading, setOpenLoading] = useState(false)
@@ -69,8 +69,6 @@ function SignUp({ defaults, signInWithGoogle, toggleShowAuthModal, setOpenAuthMo
         <hr className="HomeHr" />
 
         <div className="others">
-          <span>Recover password</span>
-          <br />
           <button type="submit" className="signinbtn-1">Sign up</button>
         </div>
 

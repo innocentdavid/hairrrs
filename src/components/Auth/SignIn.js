@@ -18,7 +18,7 @@ function SignIn({ signInWithGoogle, toggleShowAuthModal, setOpenAuthModal, setOp
       .then(data => {
         // console.log(data)
         setOpenLoading(false)
-        setOpenAuthModal(false); 
+        setOpenAuthModal(false);
         setOpenLogInOrReg(false);
       })
       .catch((error) => {
@@ -62,7 +62,7 @@ function SignIn({ signInWithGoogle, toggleShowAuthModal, setOpenAuthModal, setOp
 
         <div className="others-2">
           Not Registered? &nbsp;
-          <button onClick={(e) => { e.preventDefault(); toggleShowAuthModal('signUp') }} className="signinbtn-1">Signup</button>
+          <button onClick={() => { toggleShowAuthModal('signUp') }} className="signinbtn-1">Signup</button>
         </div>
       </form>
     </div>
