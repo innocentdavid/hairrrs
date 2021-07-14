@@ -29,6 +29,7 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
         messageNotifications: false,
         emailNotifications: false,
         appAutoUpdate: false,
+        totalEngagement: 0
     }
 
     const signInWithGoogle = () => {
@@ -72,11 +73,6 @@ function Auth({ setOpenAuthModal, setOpenLogInOrReg }) {
 
                 setAlertModal(true)
             });
-    }
-
-    if (auth.currentUser) {
-        setOpenLoading(false)
-        setAlertMsg('')
     }
 
     const [signInModal, setSignInModal] = useState(true)

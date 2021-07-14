@@ -4,7 +4,6 @@ import Auth from './components/Auth/Auth';
 import Header from './components/Header/Header';
 import SideProfileSection from './SideProfileSection';
 import { topFunction } from './fuctions';
-import { auth } from './firebase';
 import MyImage from './components/MyImage';
 
 function Layout({ children }) {
@@ -32,19 +31,6 @@ function Layout({ children }) {
 
     const [openAuthModal, setOpenAuthModal] = useState(false)
     const [openLogInOrReg, setOpenLogInOrReg] = useState(false)
-    const [openLoading, setOpenLoading] = useState(false)
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((authUser) => {
-            setOpenLoading(false)
-            if (authUser) {
-                setOpenLogInOrReg(false)
-            } else {
-                setOpenLogInOrReg(true)
-            }
-        })
-        return () => { unsubscribe() }
-    }, []);
 
 
     return (
@@ -68,16 +54,6 @@ function Layout({ children }) {
                     className="signin"
                     style={{ margin: "20px 0", cursor: 'pointer' }}
                 >login / reg</button>
-
-                {openLoading &&
-                    <MyImage
-                        src={"/images/kloader.gif"}
-                        width=''
-                        height=''
-                        alt=""
-                        className="kloader"
-                    />
-                }
             </div>}
 
             {openAuthModal && <Auth setOpenAuthModal={setOpenAuthModal} setOpenLogInOrReg={setOpenLogInOrReg} />}
@@ -95,7 +71,10 @@ function Layout({ children }) {
                                     <div className="f-child"></div>
                                     <div className="layout1">
 
-                                        {!openLogInOrReg && <SideProfileSection setOpenLogInOrReg={setOpenLogInOrReg} />}
+                                        {!openLogInOrReg && <SideProfileSection
+                                            setOpenLogInOrReg={setOpenLogInOrReg}
+                                            setOpenAuthModal={setOpenAuthModal}
+                                        />}
 
                                         <div className={openLogInOrReg ? "layout1a mt-130" : "layout1a"}>
                                             <Link to="#" ><div className="shopper9">

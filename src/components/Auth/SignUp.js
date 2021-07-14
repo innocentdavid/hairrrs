@@ -7,6 +7,7 @@ import AlertModal from './AlertModal';
 function SignUp({ defaults, signInWithGoogle, toggleShowAuthModal, setOpenAuthModal, setOpenLogInOrReg }) {
   const [alertModal, setAlertModal] = useState(false);
   const [alertMsg, setAlertMsg] = useState('')
+  const [openLoading, setOpenLoading] = useState(false)
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -14,6 +15,7 @@ function SignUp({ defaults, signInWithGoogle, toggleShowAuthModal, setOpenAuthMo
 
   // email & password
   const signUp = () => {
+    setOpenLoading(true)
     auth.createUserWithEmailAndPassword(email, password)
       .then((authUser) => {
         fetch('https://api.ipdata.co/?api-key=f4332401282ddc4b12019f87256936ad24586eca9f5ce05ad5c079db')
@@ -32,20 +34,30 @@ function SignUp({ defaults, signInWithGoogle, toggleShowAuthModal, setOpenAuthMo
             let data = a;
 
             db.collection('users').doc(authUser.user.uid).set(data);
+            authUser.user.updateProfile({
+              displayName: fullName,
+              photoURL: process.env.REACT_APP_DEFAULT_USER_PHOTO_URL
+            });
           })
-        authUser.user.updateProfile({ displayName: fullName, photoURL: process.env.REACT_APP_DEFAULT_USER_PHOTO_URL });
       })
-      .catch((error) => { setAlertMsg(error.message); setAlertModal(true) });
-    if (!alertMsg) { setOpenAuthModal(false); setOpenLogInOrReg(true) }
-  }
-
-  if (auth.currentUser) {
-    setAlertMsg('')
+      .then(data => {
+        // console.log(data)
+        setOpenLoading(false)
+      })
+      .catch((error) => {
+        setOpenLoading(false)
+        setAlertMsg(error.message);
+        setAlertModal(true)
+      });
   }
 
   return (
     <div className="signup-form">
-      <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} alertMsg={alertMsg.message} />
+      {openLoading && <div className="loader" style={{ display: 'grid' }}>
+        <img src="/images/loading.svg" alt="" />
+      </div>}
+
+      <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} alertMsg={alertMsg} />
       <form onSubmit={(e) => { e.preventDefault(); signUp() }}>
         <input value={fullName} onChange={(e) => { setFullName(e.target.value) }} type="text" placeholder="Full name" className="email" required />
         <hr className="HomeHr" />

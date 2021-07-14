@@ -44,15 +44,13 @@ function Header() {
                     {/* search */}
                     <Search />
 
-                    {user?.uid ? <div className="icons-class">
+                    <div className="icons-class">
                         <Messages /> <Notification /> <SaveList />
 
                         <div className="strtsales">
                             <div className="startselling" onClick={() => { document.querySelector('.addboard').style.display = "block" }}>Start selling</div>
                         </div>
                     </div>
-                    : <div></div>}
-                    {/* : <div>signup/login</div>} */}
                 </nav>
             </header>
 

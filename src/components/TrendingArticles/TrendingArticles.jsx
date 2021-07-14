@@ -10,14 +10,6 @@ function TrendingArticles({ limit = "18" }) {
 
     const [articles, setArticles] = useState([]);
 
-    // Get Article from cache
-    // useEffect(() => {
-    //     const cache = getCachedAticles()
-    //     if (cache) {
-    //         setArticles(cache)
-    //     }
-    // }, [])
-
     const storedArticles = localStorage.getItem('trendingArticles')
     useEffect(() => {
         if (storedArticles) {

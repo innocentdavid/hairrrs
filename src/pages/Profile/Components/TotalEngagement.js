@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
+import UserProfile from '../../../components/UserProfile/UserProfile'
 
 function TotalEngagement() {
+    const [user] = useState(UserProfile.getUser())
+
   return (
     <div className="layout3" style={{ paddingTop: '40px', paddingBottom: '150px' }}>
     <div className="business-statistics">
@@ -59,7 +62,7 @@ function TotalEngagement() {
                 </div>
 
                 <div className="Total-revenue">
-                    <div className="amount">728</div>
+                    <div className="amount">{user?.totalEngagement}</div>
                     <div className="title">Total analystics</div>
                 </div>
 
