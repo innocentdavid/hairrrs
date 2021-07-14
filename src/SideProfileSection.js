@@ -1,43 +1,48 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import MyImage from './components/MyImage';
+import SwitchAccount from './components/Popups/SideProfileSection/SwitchAccount';
 import UserProfile from './components/UserProfile/UserProfile';
 import { auth, db } from './firebase';
 import { topFunction } from './fuctions';
 
-function SideProfileSection({ setOpenLogInOrReg }) {
+function SideProfileSection({ setOpenLogInOrReg, setOpenAuthModal }) {
   const [user, setUser] = useState(UserProfile.getUser())
 
   const [signOutModal, setSignOutModal] = useState(false)
+  const [showSwitchAccount, setShowSwitchAccount] = useState(false)
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
         db.collection('users').doc(authUser.uid)
           .onSnapshot(user => {
-            setUser(user.data())
+            user.exists ? setUser(user.data()) : UserProfile.getUser()
           });
       }
     })
     return () => { unsubscribe() }
   }, []);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    const data = {
+      uid: user?.uid,
+      displayName: user?.displayName,
+      photoURL: user?.photoURL
+    }
+    await localStorage.setItem('lastUser', JSON.stringify(data));
+
     localStorage.removeItem("user");
     auth.signOut();
     setUser(null)
     setOpenLogInOrReg(true)
-    // window.location = '/'
   }
 
   return (<>
     {user?.uid && <div className="accord--profile">
-      <div className="user--photo">
-        <Link
-          to='/profile'
-          onClick={() => { topFunction() }}
-          className="d-flex align-items-center"
-          style={{ position: 'relative' }}>
+      <div className="user--photo"
+        style={{ position: 'relative' }}>
+        <Link to='/profile' onClick={() => { topFunction() }}>
           <MyImage
             src={user?.photoURL}
             width=''
@@ -45,26 +50,39 @@ function SideProfileSection({ setOpenLogInOrReg }) {
             alt={user?.displayName}
             className="user"
           />
-          <span style={{ fontSize: '1.2rem', color: '#f40053', marginLeft: 10 }}>{user?.displayName}</span>
-          <span
-            onClick={(e) => { e.preventDefault(); setSignOutModal(!signOutModal) }}
-            style={{ color: '#f40053', marginLeft: 10 }}>
-            {signOutModal ? <i style={{ fontSize: '25px' }} className="fa fa-angle-up" aria-hidden="true"></i>
-              : <i style={{ fontSize: '25px' }} className="fa fa-angle-down" aria-hidden="true"></i>}
-          </span>
         </Link>
+
+        <Link to='/profile' onClick={() => { topFunction() }}>
+          <span style={{ fontSize: '1.2rem', color: '#f40053', marginLeft: 10 }}>{user?.displayName}</span>
+        </Link>
+
+        <span
+          onClick={(e) => { e.preventDefault(); setSignOutModal(!signOutModal) }}
+          style={{ color: '#f40053', marginLeft: 10 }}>
+          {signOutModal ? <i style={{ fontSize: '25px' }} className="fa fa-angle-up" aria-hidden="true"></i>
+            : <i style={{ fontSize: '25px' }} className="fa fa-angle-down" aria-hidden="true"></i>}
+        </span>
+
         {signOutModal &&
           <div
-            onclick={(e) => { e.preventDefault() }}
+            onClick={(e) => { e.preventDefault() }}
             className="signOutChild" style={{
               position: 'absolute',
-              top: "70px",
-              right: '5px',
+              top: "35px",
+              right: '2px',
               textAlign: 'right',
               zIndex: 25
             }}>
-            <div className="" onclick={(e) => { e.preventDefault() }} ><button style={{ cursor: 'pointer' }}>Switch Account</button></div>
-            <div onClick={handleSignOut} className="SignOut" onclick={(e) => { e.preventDefault() }}><button className="btnSolid" style={{ cursor: 'pointer' }}>sign out</button></div>
+            <div className="" onClick={(e) => { e.preventDefault() }} ><button onClick={() => { setShowSwitchAccount(true) }} style={{ cursor: 'pointer' }}>Switch Account</button></div>
+            {showSwitchAccount && <SwitchAccount
+              setShowSwitchAccount={setShowSwitchAccount}
+              handleSignOut={handleSignOut}
+              setOpenAuthModal={setOpenAuthModal}
+            />}
+            <div className="SignOut"
+              onClick={(e) => { e.preventDefault(); handleSignOut() }}>
+              <button className="btnSolid" style={{ cursor: 'pointer' }}>sign out</button>
+            </div>
           </div>
         }
       </div>

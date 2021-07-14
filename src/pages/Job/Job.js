@@ -34,6 +34,7 @@ function Job() {
   const [jobId, setJobId] = useState([])
   const [featuredImage, setFeaturedImage] = useState(null)
 
+  // setJob setJobId setFeaturedImage
   useEffect(() => {
     db.collection('Jobs')
       .where('title', '==', titleSlug)
@@ -91,10 +92,14 @@ function Job() {
           localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
           document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
           db.collection('Jobs').doc(jobId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
+
+          db.collection('users').doc(job?.employer?.uid).update({
+            totalEngagement: firebase.firestore.FieldValue.increment(1)
+          })
+
         }
       }
     }
-
     return () => { setPageViewed() }
   }, [jobId, job, user])
   // localStorage.removeItem(window.location.href)

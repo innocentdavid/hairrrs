@@ -112,7 +112,10 @@ function AddProduct() {
                 await db.collection('products').doc(params.get('edit')).update(data);
             } else {
                 await db.collection('products').doc().set(data);
-                await db.collection('users').doc(user?.uid).update({ totalProducts: firebase.firestore.FieldValue.increment(1) })
+                await db.collection('users').doc(user?.uid).update({ 
+                    totalProducts: firebase.firestore.FieldValue.increment(1), 
+                    totalEngagement: firebase.firestore.FieldValue.increment(1)
+                })
             }
 
             setTitle(''); setType(''); setPrice(''); setRigion(''); setAddress('');

@@ -17,7 +17,6 @@ function Article() {
 
   const [showReportBoard, setShowReportBoard] = useState(false)
   const [elipsisInfoComment, setElipsisInfoComment] = useState(false)
-  var authUser = auth.currentUser
 
   const [saveList] = useContext(SaveListContext)
   const history = useHistory();
@@ -52,7 +51,7 @@ function Article() {
   // Get Article end
 
 
-  // Article setLiked setDisLiked
+  // Article initial setLiked setDisLiked
   useEffect(() => {
     let unsubscribe = () => {
       if (articleId && auth.currentUser) {
@@ -106,8 +105,6 @@ function Article() {
   // comments_likes_dislikes_views end
 
 
-
-
   // ReactToArticle
   const [liked, setLiked] = useState(false);
   const [disLiked, setDisLiked] = useState(false);
@@ -120,15 +117,27 @@ function Article() {
           if (disLiked) {
             db.collection('articles').doc(articleId).collection('disLikes').doc(uid).delete();
             db.collection('articles').doc(articleId).update({ totalDisLikes: firebase.firestore.FieldValue.increment(-1) });
+
+            // db.collection('users').doc(article?.author?.uid).update({
+            //   totalEngagement: firebase.firestore.FieldValue.increment(-1)
+            // })
             setDisLiked(false)
           }
           if (liked) {
             db.collection('articles').doc(articleId).collection('likes').doc(uid).delete();
             db.collection('articles').doc(articleId).update({ totalLikes: firebase.firestore.FieldValue.increment(-1) });
+            
+            db.collection('users').doc(article?.author?.uid).update({
+              totalEngagement: firebase.firestore.FieldValue.increment(-1)
+            })
             setLiked(false)
           } else {
             db.collection('articles').doc(articleId).collection('likes').doc(uid).set({ userName: auth.currentUser.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
             db.collection('articles').doc(articleId).update({ totalLikes: firebase.firestore.FieldValue.increment(1) });
+            
+            db.collection('users').doc(article?.author?.uid).update({
+              totalEngagement: firebase.firestore.FieldValue.increment(1)
+            })
             setLiked(true)
           }
         }
@@ -137,15 +146,27 @@ function Article() {
           if (liked) {
             db.collection('articles').doc(articleId).collection('likes').doc(uid).delete();
             db.collection('articles').doc(articleId).update({ totalLikes: firebase.firestore.FieldValue.increment(-1) });
+            
+            db.collection('users').doc(article?.author?.uid).update({
+              totalEngagement: firebase.firestore.FieldValue.increment(-1)
+            })
             setLiked(false)
           }
           if (disLiked) {
             db.collection('articles').doc(articleId).collection('disLikes').doc(uid).delete();
             db.collection('articles').doc(articleId).update({ totalDisLikes: firebase.firestore.FieldValue.increment(-1) });
+            
+            // db.collection('users').doc(article?.author?.uid).update({
+            //   totalEngagement: firebase.firestore.FieldValue.increment(-1)
+            // })
             setDisLiked(false)
           } else {
             db.collection('articles').doc(articleId).collection(reaction).doc(uid).set({ userName: auth.currentUser.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
             db.collection('articles').doc(articleId).update({ totalDisLikes: firebase.firestore.FieldValue.increment(1) });
+            
+            // db.collection('users').doc(article?.author?.uid).update({
+            //   totalEngagement: firebase.firestore.FieldValue.increment(1)
+            // })
             setDisLiked(true)
           }
         }
@@ -181,6 +202,10 @@ function Article() {
           localStorage.setItem(pageUrl, JSON.stringify(pageUrl));
           document.querySelector('#totalPageViewSection').textContent = UpdatedViewCount
           db.collection('articles').doc(articleId).update({ totalPageView: firebase.firestore.FieldValue.increment(1) })
+
+          db.collection('users').doc(article?.author?.uid).update({
+            totalEngagement: firebase.firestore.FieldValue.increment(1)
+          })
         }
       }
     }
@@ -189,13 +214,19 @@ function Article() {
   }, [articleId, article, user])
   // localStorage.removeItem(window.location.href)
 
+  // get last five comments
   useEffect(() => {
-    if (articleId) {
-      db.collection('articles').doc(articleId).collection('comments').where('createdAt', '<', new Date(Date.now() + 10000)).get().then(doc => {
-        console.log(doc.docs.map(doc => ({ doc: doc.data() })))
-      })
-    }
-  }, [articleId]);
+    // if (articleId) {
+    //   db.collection('articles').doc(articleId).collection('comments')
+    //   .where('createdAt', '<', new Date(Date.now() + 10000))
+    //   .limit(5)
+    //   .onSnapshot((snapshot) => {
+    //     if(!snapshot.empty){
+    //       console.log(snapshot.docs.map(doc => ({ doc: doc.data() })))
+    //     }
+    //   })
+    // }
+  }, []);
 
   return (
     <>

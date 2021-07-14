@@ -122,7 +122,10 @@ function AddJob() {
             await db.collection('Jobs').doc(params.get('edit')).update(data);
         } else {
             await db.collection('Jobs').doc().set(data);
-            await db.collection('users').doc(user?.uid).update({ totalJobs: firebase.firestore.FieldValue.increment(1) })
+            await db.collection('users').doc(user?.uid).update({ 
+                totalJobs: firebase.firestore.FieldValue.increment(1),
+                totalEngagement: firebase.firestore.FieldValue.increment(1)
+            })
         }
 
         
