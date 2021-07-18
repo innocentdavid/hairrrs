@@ -147,7 +147,7 @@ function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal
 
         <div className="modal">
             <div className="inserts">
-                <div style={{ marginBottom: "50px" }}>
+                <div style={{ marginBottom: "30px" }}>
                     <input type="file" accept="image/*" onChange={(e) => { e.target.files && handleUploadImage(e.target.files) }} id="insertImageInputPopUp" hidden multiple />
                     <label htmlFor="insertImageInputPopUp">
                         <span className="uploadImage">Upload image</span>
