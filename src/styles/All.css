@@ -3470,15 +3470,11 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 .features {
-  padding: 18px;
-  padding-top: 0;
-  display: column !important;
-  columns: 2;
-  /* justify-content: center; */
-  justify-content: space-between;
-  width: 300px !;
-  align-items: center;
-  height: auto !important;
+    display: flex;
+    justify-content: space-between;
+    padding: 18px;
+    padding-top: 0;
+    width: 950px;
 }
 
 .features .boxCont {
@@ -3492,7 +3488,7 @@ input[type=range]::-webkit-slider-thumb {
 .features .box {
   background: linear-gradient(#c10041, #f40053);
   height: 170px;
-  width: 160px !important;
+  width: 210px !important;
   border-radius: 10px;
   padding: 10px;
   break-inside: avoid;
@@ -9916,6 +9912,8 @@ seller {
     grid-template-columns: auto;
     width: 320px;
     height: 190px;
+    display: column !important;
+    columns: 2;
   }
   .features .box{
     width: 130px;
