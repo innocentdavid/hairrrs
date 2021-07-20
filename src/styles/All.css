@@ -64,18 +64,18 @@ button.btnSolid {
 
 button:hover {
   background: #c10041 !important;
-  color: white !important
+  color: white !important;
 }
 
 .rotate-true {
   transition: all 2s;
-  transform: rotate(180deg)
+  transform: rotate(180deg);
 }
 
 .headerAd {
   background-color: #c10041;
   width: 100%;
-  height: 60px;
+  height: 45px;
   margin-top: 0;
   position: fixed;
   top: 0;
@@ -140,6 +140,40 @@ nav{
 .searchReadAds button img{
   height: 14px;
 }
+
+.mt-1 a{
+  color: black;
+  font-size: 13px;
+}
+.mt-1 a:hover{
+  color: #757575;
+}
+.boxCont .tooltiptext h2{
+  margin-left: 0px !important;
+}
+.MsgFeatures a{
+  color: #757575;
+  font-weight: 500;
+}
+.MsgFeatures a:hover{
+  color: black;
+}
+.content-1{
+  align-items: center !important;
+  justify-content: center !important;
+  justify-self: center !important;
+  align-self: center !important;
+  text-align: center !important;
+  margin: 0 !important;
+  margin-top: 1.5% !important;
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+.Caps button{
+  background: #fff !important;
+}
+
 
 header3 nav {
   position: fixed;
@@ -3478,7 +3512,6 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 .features .boxCont {
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   width: 300px;
@@ -6671,7 +6704,7 @@ form .reply-area {
 
 .submit-content-cont {
   display: flex;
-  justify-content: flex-end
+  justify-content: flex-end;
 }
 
 .submit-content:focus {
@@ -9859,9 +9892,72 @@ seller {
   .shopper-jv .details-00{
     width: 190px;
   }
-
+  .message-popup{
+    height: 85vh !important;
+    width: 100% !important;
+    align-self: center;
+    align-content: center;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+    left: 0 !important;
+    box-shadow: none;
+    cursor: default;
+  }
+  .message-popup-1{
+    height: 85vh !important;
+    width: 100% !important;
+    align-self: center;
+    align-content: center;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+    left: 0 !important;
+    box-shadow: none;
+    cursor: default;
+  }
+  .message-popup-2{
+    height: 85vh !important;
+    width: 100% !important;
+    align-self: center;
+    align-content: center;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+    left: 0 !important;
+    box-shadow: none;
+    cursor: default;
+  }
+  .search-tab{
+    left: 0 !important;
+    width: 100% !important;
+    height: 85vh !important;
+    box-shadow: none;
+  }
+  .signin-modal{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 58 !important;
+  }
+  .authModal{
+    z-index: 58 !important;
+  }
   .seemore{
-    margin-left: 20%;
+    margin-left: 20% !important;
+  }
+  .trenz h1{
+    margin-left: 5% !important;
+  }
+  .subcategories9 .trenz h1{
+    margin-left: -2% !important;
+  }
+
+  .subcategories9 .trenz .seemore-class{
+    margin: -10px !important;
+  }
+  .subcategories9 .seemore-class{
+    margin-left: -20px !important;
   }
   .dots{
     width: 120px;
@@ -9882,7 +9978,7 @@ seller {
   }
   .layout{
     width: 100% !important;
-    height: 85vh;
+    height: 88.5% !important;
     overflow: auto;
     width: 100%;
     position: fixed !important;
@@ -9908,19 +10004,29 @@ seller {
   .features{
     margin-top: 30px;
     gap: 15px;
-    grid: 2;
-    grid-template-columns: auto;
-    width: 320px;
-    height: 190px;
-    display: column !important;
-    columns: 2;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center !important;
   }
   .features .box{
-    width: 130px;
-    height: 130px;
+    width: 150px !important;
+    height: 150px !important;
     line-break: 20px;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
-
+  .boxCont{
+    height: auto !important;
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
   .header nav {
     background: #f40053;
   }
@@ -9998,7 +10104,37 @@ seller {
     width: 14px;
     z-index: 3;
   }
-
+  .shopper{
+    width: 100% !important;
+    align-self: center;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .articleCont{
+    align-self: center;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .shopper5{
+    align-self: center;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
   .strtsales {
     display: none;
   }
@@ -10077,7 +10213,7 @@ seller {
 
   .support {
     position: fixed;
-    bottom: 62px;
+    bottom: 82px;
     right: 54px;
     width: 80px;
     align-items: center;
@@ -10096,7 +10232,7 @@ seller {
   }
 
   .scrolltotop {
-    bottom: 60px;
+    bottom: 80px;
     width: 30px;
     height: 30px;
   }
@@ -10426,11 +10562,11 @@ header2 {
 }
 
 .tooltiptextJv {
-  margin-left: -465px !important
+  margin-left: -474px !important
 }
 
 .tooltiptextAt {
-  margin-left: -688px !important
+  margin-left: -702px !important
 }
 
 .mt-1 {
