@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SaveListContext } from '../../contexts/GlobalStore';
 import { db } from '../../firebase';
-import { getDesc, save, Unsave, hasSaved, topFunction } from '../../fuctions'
+import { getDesc, save, Unsave, hasSaved, topFunction, UrlSlug, getMonthDate } from '../../fuctions'
 import MyImage from '../MyImage';
 
 function TrendingArticles({ limit = "18" }) {
@@ -52,7 +52,7 @@ function TrendingArticles({ limit = "18" }) {
                                     <div className="imgbox1">
                                         <div>
                                             <div style={{ position: 'relative' }}>
-                                                <Link to={`/profile?uid=${article?.author?.uid}`}
+                                                <Link to={`/${article?.author?.userName}`}
                                                     onClick={() => { topFunction() }}
                                                     style={{ margin: 10, position: 'absolute' }}
                                                     className="authorAndName" >
@@ -78,12 +78,10 @@ function TrendingArticles({ limit = "18" }) {
 
                                                     <div className="artc-2">
                                                         <div className="categories-filter">
-                                                            <div onClick={() => { window.location = `/articles?title=${article?.category}` }}>
-                                                                <Link to={`/articles?title=${article?.category}`}>
-                                                                    <span>{article?.category}</span>
-                                                                </Link>
-                                                            </div>
-                                                            {/* <h3>{article?.createdAt && getMonthDate(article.createdAt)}</h3> */}
+                                                            <Link style={{ display: 'block' }} to={`/articles?title=${UrlSlug(article?.category, 'encode')}`}>
+                                                                {article?.category}
+                                                            </Link>
+                                                            <h3>{getMonthDate(article?.createdAt)}</h3>
                                                         </div>
                                                     </div>
                                                 </div>

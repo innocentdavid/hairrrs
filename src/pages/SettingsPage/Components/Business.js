@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { db } from '../../../firebase';
+import { UrlSlug } from '../../../fuctions';
 
 function Business({ user }) {
     const [userName, setUserName] = useState('')
@@ -22,12 +24,16 @@ function Business({ user }) {
         setUpdating(true)
         if (user) {
             let data = {
-                userName, aboutBusiness, website, services
+                userName: getFormattedUserName(userName), aboutBusiness, website, services
             }
             await db.collection('users').doc(user.uid).update(data)
             setHasChanged(false)
             setUpdating(false)
         }
+    }
+
+    const getFormattedUserName = (name) => {
+        return UrlSlug(name, 'encode')
     }
 
     return (
@@ -36,11 +42,12 @@ function Business({ user }) {
 
             {/* usename */}
             <div className="margin-top">
-                <span className='txt'>Username</span>
-                <span>http://www.Ohyanga.com/profile/username</span>
+                <span className='txt'>Username:</span>
+                &nbsp; &nbsp;
+                <span>https://www.ntutu-fdb00.web.app/{getFormattedUserName(userName)}</span>
                 <br />
                 <input id="userName"
-                    value={userName}
+                    value={getFormattedUserName(userName)}
                     onChange={(e) => { setUserName(e.target.value); setHasChanged(true) }}
                     type="text" className="classctl" />
             </div>

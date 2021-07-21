@@ -1,15 +1,16 @@
-
 import React, { useEffect, useState } from 'react';
-import { auth, db } from '../../firebase';
+import { db } from '../../firebase';
 import firebase from 'firebase';
 import './createArticle-scss/createArticle.css';
 import { pasteHtmlAtCaret } from '../../fuctions';
 import { useHistory } from 'react-router-dom';
 import ImageLib from '../../components/ImageLib';
+import UserProfile from '../../components/UserProfile/UserProfile';
 
 function CreateArticle() {
+  const user = UserProfile.getUser()
   var history = useHistory()
-  const currentUser = auth.currentUser
+  const currentUser = user
   useEffect(() => {
     if (!currentUser) {
       history.push('/')
@@ -152,15 +153,16 @@ function CreateArticle() {
     let UserDefinedcategory = articleCategory;
     UserDefinedcategory ? category = UserDefinedcategory : category = 'Hair and beauty'
 
-    if (title && auth.currentUser) {
+    if (title && user) {
       let data = {
         UrlSlug, title,
         article, category,
         articleCover: articleCover,
         author: {
-          uid: auth.currentUser.uid,
-          displayName: auth.currentUser.displayName,
-          photoURL: auth.currentUser.photoURL
+          uid: user.uid,
+          displayName: user.displayName,
+          userName: user.userName,
+          photoURL: user.photoURL
         },
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         totalLikes: 0, totalDisLikes: 0,
@@ -172,7 +174,7 @@ function CreateArticle() {
       } else {
         await db.collection('articles').add(data)
         
-        await db.collection('users').doc(auth.currentUser?.uid).update({
+        await db.collection('users').doc(user?.uid).update({
           totalArticles: firebase.firestore.FieldValue.increment(1),
           totalEngagement: firebase.firestore.FieldValue.increment(1)
         })

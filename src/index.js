@@ -9,6 +9,17 @@ import './styles/Chat.css';
 import './styles/Attachment.css';
 import GlobalStore from './contexts/GlobalStore';
 
+const root = document.getElementById('root')
+const modalRroot = document.getElementById('modal-root')
+
+class Modal extends React.Component {
+  render() {
+    return (<>
+    hello
+    </>)
+  }
+}
+
 ReactDOM.render(
   <React.StrictMode>
     <GlobalStore>

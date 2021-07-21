@@ -95,7 +95,7 @@ function ItemOwner({ userId }) {
             <div className="sellers-data">
                 <div className="postedBy">Posted by</div>
                 <div className="users-data">
-                    <Link to={`/profile?uid=${userId}`} className="images-data"> <img src={user?.photoURL} alt={user && user?.displayName} /></Link>
+                    <Link to={`/${user?.userName}`} className="images-data"> <img src={user?.photoURL} alt={user && user?.displayName} /></Link>
                     <div className="author-name">
                         {user?.displayName && user?.displayName === auth.currentUser?.displayName ? 'You' : user?.displayName}
                     </div>

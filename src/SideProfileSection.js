@@ -2,27 +2,22 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import MyImage from './components/MyImage';
 import SwitchAccount from './components/Popups/SideProfileSection/SwitchAccount';
-import UserProfile from './components/UserProfile/UserProfile';
-import { auth, db } from './firebase';
+import { auth } from './firebase';
 import { topFunction } from './fuctions';
 
 function SideProfileSection({ setOpenLogInOrReg, setOpenAuthModal }) {
-  const [user, setUser] = useState(UserProfile.getUser())
+  const [user, setUser] = useState()
+  useEffect(() => {
+    var u = JSON.parse(localStorage.getItem('user'))
+    if(u){
+      var userC = u?.data?.user?.user
+      setUser(userC)
+    }
+  }, [])
 
   const [signOutModal, setSignOutModal] = useState(false)
   const [showSwitchAccount, setShowSwitchAccount] = useState(false)
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-      if (authUser) {
-        db.collection('users').doc(authUser.uid)
-          .onSnapshot(user => {
-            user.exists ? setUser(user.data()) : UserProfile.getUser()
-          });
-      }
-    })
-    return () => { unsubscribe() }
-  }, []);
 
   const handleSignOut = async () => {
     const data = {
@@ -42,7 +37,7 @@ function SideProfileSection({ setOpenLogInOrReg, setOpenAuthModal }) {
     {user?.uid && <div className="accord--profile">
       <div className="user--photo"
         style={{ position: 'relative' }}>
-        <Link to='/profile' onClick={() => { topFunction() }}>
+        <Link to={`/${user?.userName}`} onClick={() => { topFunction() }}>
           <MyImage
             src={user?.photoURL}
             width=''
@@ -52,7 +47,7 @@ function SideProfileSection({ setOpenLogInOrReg, setOpenAuthModal }) {
           />
         </Link>
 
-        <Link to='/profile' onClick={() => { topFunction() }}>
+        <Link to={`/${user?.userName}`} onClick={() => { topFunction() }}>
           <span style={{ fontSize: '1.2rem', color: '#f40053', marginLeft: 10 }}>{user?.displayName}</span>
         </Link>
 

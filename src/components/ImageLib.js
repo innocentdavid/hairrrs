@@ -166,6 +166,18 @@ function ImageLib({ title, setImageToList, inserImgCaller, closeInsertImageModal
                                     key={image.id}
                                     style={{ margin: '10px' }}
                                     onClick={() => { setPreviewImage(image.url) }}>
+                                    {/* {inserImgCaller !== 'AddArticleCover' && <input
+                                        type="checkbox"
+                                        className="imgCheckBox"
+                                        name="imgCheckBox"
+                                        value={image.url}
+                                        id={image.id} />}
+                                    {inserImgCaller === 'AddArticleCover' && <input
+                                        type="radio"
+                                        className="imgRadio"
+                                        name="imgCheckBox"
+                                        value={image.url}
+                                        id={image.id} />} */}
                                     <input
                                         type="radio"
                                         className="imgRadio"

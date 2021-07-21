@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import firebase from 'firebase';
-import { auth, db } from '../../firebase';
+import { db } from '../../firebase';
 import { getDesc, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
 import { Helmet } from 'react-helmet';
 import { NotificationContext, SaveListContext } from '../../contexts/GlobalStore';
@@ -12,7 +12,6 @@ import Chat from '../../components/Chat';
 
 function Product() {
     var user = UserProfile.getUser();
-    // console.log(user)
 
     var titleSlug;
     const history = useHistory();
@@ -98,7 +97,7 @@ function Product() {
     })
 
     const requestcall = (id) => {
-        if (product?.seller?.displayName !== auth.currentUser.displayName) {
+        if (product?.seller?.displayName !== user.displayName) {
             if (product?.seller?.id) {
                 db.collection('users').doc(product?.seller?.id).collection('history').doc(`${id}_requestedCalls`).set({
                     userName: user.displayName,
@@ -122,7 +121,7 @@ function Product() {
         setHasRequestedCalled(true)
     }
     const deleteRequestcall = (id) => {
-        if (product?.seller?.displayName !== auth.currentUser.displayName) {
+        if (product?.seller?.displayName !== user.displayName) {
             if (product?.seller?.uid) {
                 db.collection('users').doc(product?.seller?.uid).collection('history').doc(`${id}_requestedCalls`).delete()
                 db.collection('users').doc(user?.uid).collection('requestedCalls').doc(id).delete()
@@ -301,7 +300,7 @@ function Product() {
                                                     </div>
                                                     <div className="text">save</div>
                                                 </div>}
-                                            {product?.seller?.uid !== auth.currentUser.uid ?
+                                            {product?.seller?.uid !== user.uid ?
                                                 <div className="report-product">
                                                     <div className="icon">
                                                         <img src="/images/reportwt.png" alt="" />
@@ -310,7 +309,7 @@ function Product() {
                                                 </div> :
 
                                                 <div className="action-buttons" style={{ marginLeft: 5 }}>
-                                                    <div className="stocksout">Out of stock</div>
+                                                    <div className="stocksout">Out of stock?</div>
                                                     <div
                                                         onClick={handleEditProduct}
                                                         className="trash" style={{ marginRight: '5px' }}>Edit</div>
@@ -342,7 +341,7 @@ function Product() {
                                         </div>
                                     </div>
 
-                                    {auth.currentUser?.uid !== product?.seller?.uid && <>
+                                    {user?.uid !== product?.seller?.uid && <>
                                         <div className="Contact-user">
                                             <div className="chat" onClick={() => { setOpenChat(true) }}>Chat</div>
                                             {hasRequestedCalled ? <div style={{ cursor: 'pointer' }} onClick={() => { deleteRequestcall(productId) }} className="Requestcall">Unrequest Call</div>

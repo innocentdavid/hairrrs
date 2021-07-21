@@ -1,16 +1,17 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db } from '../firebase';
+import UserProfile from '../components/UserProfile/UserProfile';
+import { db } from '../firebase';
 
 export const NotificationContext = createContext([{}, () => {}]);
 
 const GblobalNotification = ({ children }) => {
-    const [user] = useAuthState(auth)
+    const user = UserProfile.getUser()
+
     const [NotificationList, setNotificationList] = useState([]);
 
     useEffect(() => {
         if (user) {
-            let uid = auth.currentUser.uid
+            let uid = user.uid
             db.collection('users').doc(uid).collection('history')
             .where('type', '!=', 'message')
             .onSnapshot(snapshot => {

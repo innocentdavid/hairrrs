@@ -1,14 +1,20 @@
 import React from 'react'
+import { db } from '../../../firebase'
 import MyImage from '../../MyImage'
 import UserProfile from '../../UserProfile/UserProfile'
 
 function SwitchAccount({ setShowSwitchAccount, handleSignOut, setOpenAuthModal }) {
   const user = UserProfile.getUser()
+  const allUsers = JSON.parse(localStorage.getItem('allUsers'))
 
-  const handleSwitch = () => {
-    // if (!user || !user.uid) {
-    //   lastUser = JSON.parse(localStorage.getItem('lastUser'))
-    // }
+  const handleSwitch = (uid) => {
+    db.collection('users').doc(uid)
+      .onSnapshot(user => {
+        if (user.exists) {
+          localStorage.removeItem("user");
+          UserProfile.setUser(user.data()); // also set the auth current user to this new user
+        }
+      });
   }
 
 
@@ -64,17 +70,18 @@ function SwitchAccount({ setShowSwitchAccount, handleSignOut, setOpenAuthModal }
         <b>Switch to:</b>
         <div style={{ minHeight: 5 }}></div>
 
-        {user?.accounts ? user?.accounts.map((user) => (
+        {allUsers ? allUsers?.map((user) => (
           <div
-            onClick={() => { handleSwitch('uid') }}
+            key={user?.uid}
+            onClick={() => { handleSwitch(user?.uid) }}
             style={{ display: 'flex', alignItems: 'center', marginBottom: 20, cursor: 'pointer' }}>
             <MyImage
-              src={user.photoURL}
-              alt={user.displayName}
+              src={user?.photoURL}
+              alt={user?.displayName}
               className="AuthorPhotoURL"
             />
 
-            <div style={{ marginLeft: 20, fontSize: 16 }}>{user.displayName}</div>
+            <div style={{ marginLeft: 20, fontSize: 16 }}>{user?.displayName}</div>
           </div>
         )) : <>
           <h4 style={{ color: 'red' }}>You do not have another account</h4>
@@ -82,8 +89,8 @@ function SwitchAccount({ setShowSwitchAccount, handleSignOut, setOpenAuthModal }
 
         <div style={{ minHeight: 15 }}></div>
         <div className="d-flex align-items-center">
-        <button className="mr-2" onClick={(e) => { setOpenAuthModal(true) }}>Add new account</button>
-        <button onClick={handleSignOut}>Logout</button>
+          <button className="mr-2" onClick={(e) => { setOpenAuthModal(true) }}>Add new account</button>
+          <button onClick={handleSignOut}>Logout</button>
         </div>
 
       </div>

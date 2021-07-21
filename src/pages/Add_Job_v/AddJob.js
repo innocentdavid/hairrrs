@@ -94,50 +94,59 @@ function AddJob() {
     const [questions, setQuestions] = useState([])
 
     const addProduct = async () => {
-        setOpenLoading(true)
-
-        const data = {
-            title,
-            jobDesc,
-            employer: { displayName: auth.currentUser?.displayName, uid: auth.currentUser?.uid, photoURL: auth.currentUser?.photoURL },
-            salaryPlan,
-            salary,
-            negotiable,
-            type,
-            location,
-            lat_log: `${user?.latitude},${user?.longitude}`,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            category,
-            jobImages,
-            promotion: 'Regular',
-            country: user?.country_name,
-            address,
-            totalPageView: 0,
-            showForm,
-            questions,
-            currency: user?.currency?.symbol
+        if(auth.currentUser){
+            setOpenLoading(true)
+    
+            const data = {
+                title,
+                jobDesc,
+                employer: { 
+                    displayName: user?.displayName, 
+                    userName: user?.userName, 
+                    uid: user?.uid, 
+                    photoURL: user?.photoURL 
+                },
+                salaryPlan,
+                salary,
+                negotiable,
+                type,
+                location,
+                lat_log: `${user?.latitude},${user?.longitude}`,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                category,
+                jobImages,
+                promotion: 'Regular',
+                country: user?.country_name,
+                address,
+                totalPageView: 0,
+                showForm,
+                questions,
+                currency: user?.currency?.symbol
+            }
+    
+            if (params.has('edit')) {
+                await db.collection('Jobs').doc(params.get('edit')).update(data);
+            } else {
+                await db.collection('Jobs').doc().set(data);
+                await db.collection('users').doc(user?.uid).update({ 
+                    totalJobs: firebase.firestore.FieldValue.increment(1),
+                    totalEngagement: firebase.firestore.FieldValue.increment(1)
+                })
+            }
+    
+            
+            let holderPpromo = document.querySelector('.holder-promo')
+            if(holderPpromo) {holderPpromo.style.display = 'none'}
+            
+            setOpenLoading(false)
+            history.push(`/job?title=${UrlSlug(title, 'encode')}`)
+    
+    
+            // setTitle(''); setType(''); setLocation(''); setAddress('');
+            // setSalaryPlan(''); setSalary(''); setJobDesc(''); setNegotiable('');
+        }else{
+            alert(`An error occured!, check if you're connected to the internet and try again`);
         }
-
-        if (params.has('edit')) {
-            await db.collection('Jobs').doc(params.get('edit')).update(data);
-        } else {
-            await db.collection('Jobs').doc().set(data);
-            await db.collection('users').doc(user?.uid).update({ 
-                totalJobs: firebase.firestore.FieldValue.increment(1),
-                totalEngagement: firebase.firestore.FieldValue.increment(1)
-            })
-        }
-
-        
-        let holderPpromo = document.querySelector('.holder-promo')
-        if(holderPpromo) {holderPpromo.style.display = 'none'}
-        
-        setOpenLoading(false)
-        history.push(`/job?title=${UrlSlug(title, 'encode')}`)
-
-
-        // setTitle(''); setType(''); setLocation(''); setAddress('');
-        // setSalaryPlan(''); setSalary(''); setJobDesc(''); setNegotiable('');
     }
 
     const handleSubmit = () => {

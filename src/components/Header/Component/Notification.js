@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { NotificationContext } from '../../../contexts/GlobalStore'
-import { auth, db } from '../../../firebase'
+import { db } from '../../../firebase'
 import Chat from '../../Chat'
+import UserProfile from '../../UserProfile/UserProfile'
 
 function Notification() {
+    const user = UserProfile.getUser()
     const [notificationList] = useContext(NotificationContext)
     const [notificationListTotal, setNotificationListTotal] = useState(0)
 
@@ -14,7 +16,7 @@ function Notification() {
     }, [tnl])
 
     const deleteList = (id) => {
-        db.collection('users').doc(auth.currentUser?.uid).collection('history').doc(id).delete()
+        db.collection('users').doc(user?.uid).collection('history').doc(id).delete()
     }
 
     const [openChat, setOpenChat] = useState(false)

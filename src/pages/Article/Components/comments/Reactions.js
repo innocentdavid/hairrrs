@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { auth, db } from '../../../../firebase';
+import { db } from '../../../../firebase';
 import firebase from 'firebase';
+import UserProfile from '../../../../components/UserProfile/UserProfile';
 
 function Reactions({ articleId, commentId, colctn }) {
+    const user = UserProfile.getUser()
     const [liked, setLiked] = useState(false);
     const [disLiked, setDisLiked] = useState(false);
 
     // check if current user has liked or unlike this comment
     useEffect(() => {
         function isCuserLikedOrDisLiked(colctn, stateToUpdate) {
-            db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection(colctn).doc(auth.currentUser.uid).get().then((doc) => {
+            db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection(colctn).doc(user.uid).get().then((doc) => {
                 if (doc.exists) {
                     stateToUpdate(true);
                 }
             });
         }
 
-        if (articleId && auth.currentUser) {
+        if (articleId && user) {
             isCuserLikedOrDisLiked('likes', setLiked);
             isCuserLikedOrDisLiked('disLikes', setDisLiked);
         }
-    }, [articleId, commentId])
+    }, [articleId, commentId, user])
 
 
     function getTotalCommentReactions(reaction) {
@@ -35,8 +37,8 @@ function Reactions({ articleId, commentId, colctn }) {
     }
 
     const like = () => {
-        if (articleId && commentId && auth.currentUser) {
-            const uid = auth.currentUser?.uid
+        if (articleId && commentId && user) {
+            const uid = user?.uid
             if (uid) {
                 if (disLiked) {
                     db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('disLikes').doc(uid).delete();
@@ -46,7 +48,7 @@ function Reactions({ articleId, commentId, colctn }) {
                     db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('likes').doc(uid).delete();
                     setLiked(false)
                 } else {
-                    db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('likes').doc(uid).set({ userName: auth.currentUser.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                    db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('likes').doc(uid).set({ userName: user.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
                     setLiked(true)
                 }
             } else {
@@ -58,8 +60,8 @@ function Reactions({ articleId, commentId, colctn }) {
     }
 
     const disLike = () => {
-        if (articleId && commentId && auth.currentUser) {
-            const uid = auth.currentUser.uid
+        if (articleId && commentId && user) {
+            const uid = user.uid
             if (uid) {
                 if (liked) {
                     db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('likes').doc(uid).delete();
@@ -69,7 +71,7 @@ function Reactions({ articleId, commentId, colctn }) {
                     db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('disLikes').doc(uid).delete();
                     setDisLiked(false)
                 } else {
-                    db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('disLikes').doc(uid).set({ userName: auth.currentUser.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                    db.collection('articles').doc(articleId).collection('comments').doc(commentId).collection('disLikes').doc(uid).set({ userName: user.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
                     setDisLiked(true)
                 }
             } else {
