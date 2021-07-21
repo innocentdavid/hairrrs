@@ -8,7 +8,7 @@ import Product from './pages/Product/Product';
 import CreateArticle from './pages/CreateArticle/CreateArticle';
 import Article from './pages/Article/Article';
 import { getRandomInt } from './fuctions';
-import ImageUploadProcessing from './components/ImageUploadProcessing';
+// import ImageUploadProcessing from './components/ImageUploadProcessing';
 import AddProduct from './pages/Add_Product/AddProduct';
 import AddJob from './pages/Add_Job_v/AddJob';
 import Profile from './pages/Profile/Profile';
@@ -44,7 +44,7 @@ function App() {
       <Router>
         <Switch>
           <Route path='/backend' exact component={Backend} />
-          <Route path='/ImageUploadProcessing' exact component={ImageUploadProcessing} />
+          {/* <Route path='/ImageUploadProcessing' exact component={ImageUploadProcessing} /> */}
 
           <Layout key={getRandomInt(100000000)}>
             <Route path='/settings' exact component={SettingsPage} />

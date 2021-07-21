@@ -6,12 +6,13 @@ function Search() {
 
     return (
         <form>
+            <div className="searchReadAds">
             <div className="search--holder0">
                 <input
                 onChange={()=>{ setSearchAds(true) }} 
                 type="text" placeholder="search for Products, Services, or Articles"></input>
             </div>
-            <button type="button" style={{ backgroung: 'black' }}>
+            <button type="button" style={{ background: 'black' }}>
                 <img src="/images/search-header.svg" alt="" />
             </button>
 
@@ -110,6 +111,7 @@ function Search() {
                     </div>
                 </div>
             }
+            </div>
         </form>
 
     )
