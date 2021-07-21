@@ -9926,7 +9926,7 @@ seller {
     justify-self: center;
     left: 0 !important;
     box-shadow: none;
-    cursor: default; 
+    cursor: default;
   }
   .search-tab{
     left: 0 !important;
@@ -9938,7 +9938,7 @@ seller {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 58 !important;
+    z-index:  58 !important;
   }
   .authModal{
     z-index: 58 !important;
