@@ -59,6 +59,7 @@ function Header() {
                 <div className="close" onClick={() => { document.querySelector('.addboard').style.display = "none" }}>&times;</div>
                 <div className="accord-030">
                     <span>Start selling</span>
+                    <span>080</span>
 
                     <div className="business-statistics">
                         <div className="stats-0">
@@ -83,7 +84,9 @@ function Header() {
             </div>
 
             <div className="header2">
-                <UpProducts /> <UpBusiness /> <UpJobVacancies /> <UpArticles />
+                <div className="H2">
+                    <UpProducts /> <UpBusiness /> <UpJobVacancies /> <UpArticles />
+                </div>
             </div>
 
             {/* mobile bottom navigator */}

@@ -62,7 +62,7 @@ function Messages() {
                         </form>
                     </div>
                     <hr className="customHr" />
-                    <ul>
+                    <ul className="MsgFeatures">
                         <Link to={'/products'}>Products</Link>
                         <Link to={'/jobs'}>Job vacancies</Link>
                         <Link to={'/articles'}>Articles</Link>

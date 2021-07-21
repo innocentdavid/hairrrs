@@ -236,7 +236,7 @@ function AddJob() {
                         <h4>Step 1 - Vacancy Details</h4>
                         <div className="according-000">
                             <div className="infos" onClick={(e) => { e.preventDefault(); setOpenImageLib(true) }}>
-                                <button className="add-p">&#10133;</button><h4>Upload product image (first image is will be the featured image)</h4>
+                                <button className="add-p">&#43;</button><h4>Upload product image (first image will be the featured image)</h4>
                             </div>
                             {/* job images */}
                             <div className="add-images Job-add-images">
@@ -269,7 +269,7 @@ function AddJob() {
                             {/* salary plan */}
                             <CustomSelectDropDown options={salaryPlans} setState={setSalaryPlan} dValue={salaryPlan} label={'salary plan'} />
 
-                            <div className="add-title">
+                            <div className="add-title" style={{ marginBottom: '25px' }}>
                                 {params.has('edit') && salary && <CurrencyField
                                     placeholder='Salary'
                                     defaultValue={salary}
@@ -293,7 +293,7 @@ function AddJob() {
                             {/* types */}
                             <CustomSelectDropDown options={types} setState={setType} dValue={type} label={'type'} />
 
-                            <div className="selection">
+                            <div className="selection" style={{ marginBottom: '10px' }}>
                                 <div className="selector">
                                     <input
                                         value={location}

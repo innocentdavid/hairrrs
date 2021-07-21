@@ -49,10 +49,10 @@ function Layout({ children }) {
 
     return (
         <>
-            {openLogInOrReg && <div style={{
+            {openLogInOrReg && <div className="login" style={{
                 position: 'fixed',
-                top: "160px",
-                left: 5,
+                top: "175px",
+                left: 30,
                 width: '250px',
                 background: "white",
                 marginRight: "10px",
@@ -92,7 +92,7 @@ function Layout({ children }) {
 
                                         <div className={openLogInOrReg ? "layout1a mt-130" : "layout1a"}>
                                             <Link to="#" ><div className="shopper9">
-                                                <div className="user-display">
+                                                {/* <div className="user-display">
                                                     <MyImage
                                                         src={"/images/user?.png"}
                                                         width=''
@@ -101,8 +101,8 @@ function Layout({ children }) {
                                                         className=""
                                                     />
                                                     <span className="tooltiptext">Chizzyfix</span>
-                                                </div>
-                                                <div className="imgbox1">
+                                                </div> */}
+                                                {/* <div className="imgbox1">
                                                     <MyImage
                                                         src={"/images/0_NEgmVl2J_RRzI9Sr.jpg"}
                                                         width=''
@@ -120,7 +120,7 @@ function Layout({ children }) {
                                                             <span className="info">Full matching frontal hair lasts for 10years can be dyed, washed and ironed Show Contact...</span>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> */}
                                             </div>
                                             </Link>
                                         </div>

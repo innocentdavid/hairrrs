@@ -166,6 +166,7 @@ function Home() {
                         </span>
                     </div>
                     </div>
+                    
                     {/* Job categories */}
                     <div className="boxCont"><div className="box">
                         <MyImage
