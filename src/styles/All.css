@@ -9926,13 +9926,13 @@ seller {
     justify-self: center;
     left: 0 !important;
     box-shadow: none;
-    cursor: default;
+    cursor: default; 
   }
   .search-tab{
     left: 0 !important;
     width: 100% !important;
     height: 85vh !important;
-    box-shadow: none;
+    box-shadow: none; 
   }
   .signin-modal{
     display: flex;
