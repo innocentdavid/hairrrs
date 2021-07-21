@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 import { auth, db } from '../../../firebase'
 import { formatAMPM } from '../../../fuctions'
 import Chat from '../../Chat'
-// import UserProfile from '../../UserProfile/UserProfile'
+import UserProfile from '../../UserProfile/UserProfile'
 
 function Messages() {
-    // const user = UserProfile.getUser();
+    const user = UserProfile.getUser();
 
     const [openMessages, setOpenMessages] = useState(false)
     const [messageNofication, setMessageNofication] = useState([])
@@ -16,7 +16,7 @@ function Messages() {
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
             if (authUser) {
-                db.collection('users').doc(authUser?.uid).collection('history')
+                db.collection('users').doc(user?.uid).collection('history')
                     .where('type', '==', 'message')
                     .onSnapshot(snapshot => {
                         let length = snapshot.docs.length;
@@ -28,7 +28,7 @@ function Messages() {
         })
 
         return () => { unsubscribe() }
-    }, []);
+    }, [user]);
 
     // const markMessageRead = (id) => {
     //     db.collection('users').doc(user?.uid).collection('history').doc(id).delete()

@@ -93,7 +93,13 @@ function AddProduct() {
                 title,
                 price: getFV,
                 productDesc,
-                seller: { displayName: user?.displayName, uid: user?.uid, photoURL: user?.photoURL, phoneNumber: user.phoneNumber },
+                seller: {
+                    displayName: user?.displayName,
+                    uid: user?.uid,
+                    userName: user?.userName,
+                    photoURL: user?.photoURL,
+                    phoneNumber: user.phoneNumber
+                },
                 negotiable,
                 type,
                 rigion,
@@ -112,8 +118,8 @@ function AddProduct() {
                 await db.collection('products').doc(params.get('edit')).update(data);
             } else {
                 await db.collection('products').doc().set(data);
-                await db.collection('users').doc(user?.uid).update({ 
-                    totalProducts: firebase.firestore.FieldValue.increment(1), 
+                await db.collection('users').doc(user?.uid).update({
+                    totalProducts: firebase.firestore.FieldValue.increment(1),
                     totalEngagement: firebase.firestore.FieldValue.increment(1)
                 })
             }
@@ -278,19 +284,19 @@ function AddProduct() {
                                 </div>
 
                                 <div className="add-title">
-                                {params.has('edit') && price && <CurrencyField
-                                    placeholder='Price'
-                                    defaultValue={price}
-                                    handleOnChange={setPrice}
-                                    user={user}
-                                />}
+                                    {params.has('edit') && price && <CurrencyField
+                                        placeholder='Price'
+                                        defaultValue={price}
+                                        handleOnChange={setPrice}
+                                        user={user}
+                                    />}
 
-                                {!params.has('edit') && <CurrencyField
-                                    placeholder='Price'
-                                    defaultValue={price}
-                                    handleOnChange={setPrice}
-                                    user={user}
-                                />}
+                                    {!params.has('edit') && <CurrencyField
+                                        placeholder='Price'
+                                        defaultValue={price}
+                                        handleOnChange={setPrice}
+                                        user={user}
+                                    />}
                                     <div className="priceErrSection errSection"></div>
                                 </div>
 

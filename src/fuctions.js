@@ -25,11 +25,17 @@ month[11] = "December";
 
 const getMonthDate = (timestamp) => {
     if (timestamp) {
-        let dateObj = new Date(timestamp?.toDate().toString());
-        var nMonth = month[dateObj.getMonth()];
-        let date = dateObj.getDate();
-        if (nMonth && date) {
-            return `${nMonth}, ${date}`
+        try {
+            let dateObj = new Date(timestamp?.toDate().toString());
+            if (dateObj) {
+                var nMonth = month[dateObj.getMonth()];
+                let date = dateObj.getDate();
+                if (nMonth && date) {
+                    return `${nMonth}, ${date}`
+                }
+            }
+        } catch (error) {
+            return '';
         }
     } else { return ''; }
 }
@@ -59,7 +65,7 @@ const getMonthDateYearHour_minute = (timestamp) => {
         // let Hours = newDate.getHours()
         // let Minutes = newDate.getMinutes()
         // const Hour_minute = Hours + ':' + Minutes
-        
+
         let time = formatAMPM(timestamp)
 
         return `${nMonth} ${date} ${year} ${time}`
@@ -239,11 +245,13 @@ function pasteHtmlAtCaret(html) {
 }
 
 function UrlSlug(str, action) {
-    if (action === 'encode') {
-        return str.replace(/\s+/g, '-')
-    } else {
-        return str.replace(/-/g, ' ')
-    }
+    if (str) {
+        if (action === 'encode') {
+            return str.replace(/\s+/g, '-')
+        } else {
+            return str.replace(/-/g, ' ')
+        }
+    } else { return str }
 }
 
 const resizeSingleImage = (handleUpdatePics, photoURL, size, type) => {
@@ -292,8 +300,8 @@ function getFormattedValue(value = 0, prefix) {
         groupSeparator: ',',
         decimalSeparator: '.',
         prefix,
-      });
-      return formattedValue
+    });
+    return formattedValue
 }
 
 

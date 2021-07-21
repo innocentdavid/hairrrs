@@ -7,3 +7,21 @@
 #authModal {
   display: none;
 }
+
+.resume-cv-edit input{
+  border: none !important;
+  outline: none !important;
+  padding-left: 0 !important;
+  pointer-events: none !important;
+}
+
+.resume-cv-edit textarea {
+  border: none !important;
+  outline: none !important;
+  padding-left: 0 !important;
+  pointer-events: none !important;
+}
+
+.resume-cv-edit .CV-INFO .texthub {
+  border: 1px solid #d6d6d69f;
+}

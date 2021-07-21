@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { auth, db } from '../../../../firebase';
+import { db } from '../../../../firebase';
 import firebase from "firebase";
 import ArticleCommentReplies from './ArticleCommentReplies';
+import UserProfile from '../../../../components/UserProfile/UserProfile';
 
 function ArticleComments({ articleId, totalComments }) {
+    const user = UserProfile.getUser()
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState('');
     const [limit, setLimit] = useState(5);
@@ -26,13 +28,13 @@ function ArticleComments({ articleId, totalComments }) {
     }, [articleId, limit]);
 
     const addComment = () => {
-        if (auth.currentUser) {
+        if (user) {
             if (comment !== '') {
                 var data = {
                     id: articleId,
                     comment,
                     totalReplies: 0,
-                    user: {uid: auth.currentUser.uid, displayName: auth.currentUser.displayName, photoUrl: auth.currentUser.photoURL },
+                    user: {uid: user.uid, displayName: user.displayName, photoUrl: user.photoURL },
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 }
                 db.collection('articles').doc(articleId).collection('comments').add(data);
@@ -47,7 +49,7 @@ function ArticleComments({ articleId, totalComments }) {
     }
 
     const [authUserPhotoURL, setAuthUserPhotoURL] = useState('/images/default-user.png');
-    const currentUser = auth.currentUser
+    const currentUser = user
     useEffect(() => {
         if (currentUser.photoURL) {
             setAuthUserPhotoURL(currentUser.photoURL)
@@ -63,7 +65,7 @@ function ArticleComments({ articleId, totalComments }) {
                         <textarea onChange={(e) => { setComment(e.target.value) }} value={comment} type="text" name="reply" placeholder="write reply" className="comment-textarea"></textarea>
                         <div className="submit-content-cont">
                             <button className="submit-content">
-                                {auth.currentUser ? <img src="/images/Group 1188.svg" alt="send icon" /> : <i class="fa fa-times"></i>}
+                                {user ? <img src="/images/Group 1188.svg" alt="send icon" /> : <i class="fa fa-times"></i>}
                             </button>
                         </div>
                     </div>

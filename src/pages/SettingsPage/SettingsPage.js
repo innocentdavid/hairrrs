@@ -10,8 +10,11 @@ import Location from './Components/Location';
 import NotificationSettings from './Components/NotificationSettings';
 import ResetPassword from './Components/ResetPassword';
 import DeleteAccount from './Components/DeleteAccount';
+import UserProfile from '../../components/UserProfile/UserProfile';
 
 function SettingsPage() {
+    const user = UserProfile.getUser()
+
     const currentUser = auth.currentUser
     let history = useHistory()
     useEffect(() => {
@@ -20,19 +23,6 @@ function SettingsPage() {
         }
     }, [currentUser, history])
 
-    const [user, setUser] = useState([])
-    useEffect(() => {
-        if (currentUser) {
-            let uid = auth.currentUser?.uid
-            db.collection('users').doc(uid)
-                .onSnapshot(doc => {
-                    let result = ({ ...doc.data(), id: doc.id });
-                    setUser({ ...result });
-                });
-        }
-    }, [currentUser])
-
-    // list of settings like pushNotification, emailNot..., messageNot..., showAnalystics, appAutoUpdate, usePhNumbAsCNumb
     const [toggleAnalystics, setToggleAnalystics] = useState(false)
     useEffect(() => {
         if (user) {

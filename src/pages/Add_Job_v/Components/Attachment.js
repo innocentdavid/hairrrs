@@ -1,8 +1,7 @@
 import React from 'react'
 import Questions from './Questions'
 
-function Attachment({ questions, setQuestions, showForm, setShowForm }) {
-  
+function Attachment({ questions, setQuestions, showForm, setShowForm }) {  
 
   return (
     <div className="attachment">

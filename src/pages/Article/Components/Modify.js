@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { auth, db } from '../../../firebase'
+import { db } from '../../../firebase'
 import firebase from 'firebase'
+import UserProfile from '../../../components/UserProfile/UserProfile';
 // import { confirm } from "../components/Confirmation";
 
 function Modify({ modal, type, articleId, commentId, itemId, itemUserId, text }) {
+    const user = UserProfile.getUser()
+    
     const [openEditModal, setOpenEditModal] = useState(false);
     const [editedtext, setEditedtext] = useState('');
     useEffect(() => {
@@ -38,7 +41,7 @@ function Modify({ modal, type, articleId, commentId, itemId, itemUserId, text })
         }
     }
 
-    return (<> {itemUserId === auth.currentUser.uid &&
+    return (<> {itemUserId === user.uid &&
         <div style={{ display: 'flex' }}>
             <li
                 onClick={() => { setOpenEditModal(true) }}

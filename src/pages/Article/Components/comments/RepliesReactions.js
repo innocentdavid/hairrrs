@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { auth, db } from '../../../../firebase';
+import { db } from '../../../../firebase';
 import firebase from 'firebase';
 import ReportBoard from '../../../../components/ReportBoard';
 import Modify from '../Modify';
+import UserProfile from '../../../../components/UserProfile/UserProfile';
 
 function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply }) {
+    const user = UserProfile.getUser()
     const [likedReply, setLikedReply] = useState(false);
     const [disLikedReply, setDisLikedReply] = useState(false);
 
@@ -13,7 +15,7 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
         function isCuserLikedOrDisLiked(collection, stateToUpdate) {
             db.collection('articles').doc(articleId).collection('comments')
             .doc(commentId).collection('replies').doc(replyId)
-            .collection(collection).doc(auth.currentUser.uid).get()
+            .collection(collection).doc(user.uid).get()
             .then((doc) => {
                 if (doc.exists) {
                     stateToUpdate(true);
@@ -21,7 +23,7 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
             });
         }
 
-        if (articleId && auth.currentUser) {
+        if (articleId && user) {
             isCuserLikedOrDisLiked('likes', setLikedReply);
             isCuserLikedOrDisLiked('disLikes', setDisLikedReply);
         }
@@ -38,8 +40,8 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
     }
 
     const likeReply = () => {
-        if (auth.currentUser) {
-            const uid = auth.currentUser.uid
+        if (user) {
+            const uid = user.uid
             if (disLikedReply) {
                 db.collection('articles').doc(articleId).collection('comments')
                 .doc(commentId).collection('replies').doc(replyId)
@@ -55,7 +57,7 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
                 db.collection('articles').doc(articleId).collection('comments')
                 .doc(commentId).collection('replies').doc(replyId)
                 .collection('likes').doc(uid).set({
-                    userName: auth.currentUser.displayName,
+                    userName: user.displayName,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 setLikedReply(true)
@@ -66,8 +68,8 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
     }
 
     const disLikeReply = () => {
-        if (auth.currentUser) {
-            const uid = auth.currentUser.uid
+        if (user) {
+            const uid = user.uid
             if (likedReply) {
                 db.collection('articles').doc(articleId).collection('comments')
                 .doc(commentId).collection('replies').doc(replyId)
@@ -82,7 +84,7 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
             } else {
                 db.collection('articles').doc(articleId).collection('comments')
                 .doc(commentId).collection('replies').doc(replyId)
-                .collection('disLikes').doc(uid).set({ userName: auth.currentUser.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                .collection('disLikes').doc(uid).set({ userName: user.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
                 setDisLikedReply(true)
             }
         } else {
@@ -116,7 +118,7 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
                 {elipsisInfoComment &&
                     <div className="elipsis--info-comment">
                         <ul style={{ display: 'flex' }}>
-                        {auth.currentUser.uid !== replyUserId &&
+                        {user.uid !== replyUserId &&
                             <li style={{ margin: '5px' }} onClick={() => { setShowReportBoard(true) }}>Report</li>}
                             <Modify
                             modal={setElipsisInfoComment}

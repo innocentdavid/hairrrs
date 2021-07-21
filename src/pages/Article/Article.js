@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import TrendingArticles from '../../components/TrendingArticles/TrendingArticles';
-import { auth, db } from '../../firebase';
+import { db } from '../../firebase';
 import firebase from "firebase";
 import { deleteArticle, getDesc, getMonthDate, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
 import ArticleComments from './Components/comments/ArticleComments';
@@ -54,8 +54,8 @@ function Article() {
   // Article initial setLiked setDisLiked
   useEffect(() => {
     let unsubscribe = () => {
-      if (articleId && auth.currentUser) {
-        var uid = auth.currentUser?.uid
+      if (articleId && user) {
+        var uid = user?.uid
 
         unsubscribe = db.collection('articles').doc(articleId).collection('likes').doc(uid).get()
           .then(doc => {
@@ -69,7 +69,7 @@ function Article() {
       }
     }
     unsubscribe();
-  }, [articleId])
+  }, [articleId, user])
 
 
   // comments_likes_dislikes_views
@@ -110,8 +110,8 @@ function Article() {
   const [disLiked, setDisLiked] = useState(false);
 
   const ReactToArticle = (reaction) => {
-    if (auth.currentUser) {
-      const uid = auth.currentUser.uid;
+    if (user) {
+      const uid = user.uid;
       if (articleId) {
         if (reaction === 'likes') {
           if (disLiked) {
@@ -132,7 +132,7 @@ function Article() {
             })
             setLiked(false)
           } else {
-            db.collection('articles').doc(articleId).collection('likes').doc(uid).set({ userName: auth.currentUser.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+            db.collection('articles').doc(articleId).collection('likes').doc(uid).set({ userName: user.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
             db.collection('articles').doc(articleId).update({ totalLikes: firebase.firestore.FieldValue.increment(1) });
             
             db.collection('users').doc(article?.author?.uid).update({
@@ -161,7 +161,7 @@ function Article() {
             // })
             setDisLiked(false)
           } else {
-            db.collection('articles').doc(articleId).collection(reaction).doc(uid).set({ userName: auth.currentUser.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+            db.collection('articles').doc(articleId).collection(reaction).doc(uid).set({ userName: user.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
             db.collection('articles').doc(articleId).update({ totalDisLikes: firebase.firestore.FieldValue.increment(1) });
             
             // db.collection('users').doc(article?.author?.uid).update({
@@ -265,7 +265,7 @@ function Article() {
                       &nbsp;&nbsp;&nbsp;
                       <span>{getMonthDate(article?.createdAt)}</span>
                     </div>
-                    {auth.currentUser?.uid === article?.author?.uid &&
+                    {user?.uid === article?.author?.uid &&
                       <>
                         <button style={{ position: 'absolute', top: -15, right: 50 }}>
                           <Link style={{ color: 'inherit' }} to={`/create-article?update=${articleId}`}>Edit</Link>
@@ -314,7 +314,7 @@ function Article() {
                     <article id="mainArticle"><div dangerouslySetInnerHTML={{ __html: article?.article }} /></article>
                   </div>
                   {/* react to article */}
-                  {auth.currentUser &&
+                  {user &&
                     <>
                       <div className="comments-thumbs-save">
                         <div className="children">
@@ -362,7 +362,7 @@ function Article() {
                             <WebShareApi url={`ntutu-fdb00.web.app/article?title=${articleUrlSlug}`} title={article?.title} text={`${article?.title} \n \n`} />
                           </div>
 
-                          {auth.currentUser.uid !== article?.author?.uid && <div className="reach" id={`${articleId}_reported`}>
+                          {user.uid !== article?.author?.uid && <div className="reach" id={`${articleId}_reported`}>
                             <img src="/images/Group 1192.svg" alt="elipsis icon" onClick={() => { setElipsisInfoComment(!elipsisInfoComment) }} />
                             {elipsisInfoComment &&
                               <div className="elipsis--info-comment">

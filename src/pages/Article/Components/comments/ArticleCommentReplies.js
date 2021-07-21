@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { auth, db } from '../../../../firebase';
+import { db } from '../../../../firebase';
 import firebase from 'firebase';
 import Reactions from './Reactions';
 import RepliesReactions from './RepliesReactions';
 import ReportBoard from '../../../../components/ReportBoard';
 import Modify from '../Modify';
+import UserProfile from '../../../../components/UserProfile/UserProfile';
 
 function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUserId, commentText }) {
+    const user = UserProfile.getUser()
     const [replies, setReplies] = useState([]);
     const [newReply, setReply] = useState('');
     const [showReplies, setShowReplies] = useState(false)
@@ -31,12 +33,12 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUser
     }, [articleId, commentId, limit, showReplies]);
 
     const replyComment = () => {
-        if (auth.currentUser?.displayName) {
+        if (user?.displayName) {
             if (newReply !== '') {
                 var data = {
                     reply: newReply,
                     totalReplies: totalReplies + 1,
-                    user: {uid: auth.currentUser.uid, displayName: auth.currentUser.displayName, photoURL: auth.currentUser.photoURL },
+                    user: {uid: user.uid, displayName: user.displayName, photoURL: user.photoURL },
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 }
                 db.collection('articles').doc(articleId).collection('comments')
@@ -83,7 +85,7 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUser
                     {elipsisInfoComment &&
                         <div className="elipsis--info-comment">
                             <ul style={{ display: 'flex' }}>
-                                {auth.currentUser.uid !== commentUserId &&
+                                {user.uid !== commentUserId &&
                                 <li style={{ margin: '5px' }} onClick={() => { setShowReportBoard(true) }}>Report</li>}
                                 <Modify
                                     modal={setElipsisInfoComment}
@@ -131,14 +133,14 @@ function ArticleCommentReplies({ articleId, commentId, totalReplies, commentUser
                     </div>
 
                     <div className="reply-box">
-                        <img className="user-photo" src={auth.currentUser?.photoURL ? auth.currentUser.photoURL : '/images/default-user.png'} alt={auth.currentUser?.displayName} />
+                        <img className="user-photo" src={user?.photoURL ? user.photoURL : '/images/default-user.png'} alt={user?.displayName} />
                         <form action="comment" method="POST" onSubmit={(e) => { e.preventDefault(); replyComment() }} >
                             <div className="holder-accord">
                                 <textarea onChange={(e) => { setReply(e.target.value) }} value={newReply} type="text" name="reply" placeholder="write reply" className="comment-textarea"></textarea>
                                 <div className="submit-content-cont">
                                     {newReply &&
                                         <button className="submit-content">
-                                            {auth.currentUser ? <img src="/images/Group 1188.svg" alt="send icon" /> : <i className="fa fa-times"></i>}
+                                            {user ? <img src="/images/Group 1188.svg" alt="send icon" /> : <i className="fa fa-times"></i>}
                                         </button>
                                     }
                                 </div>

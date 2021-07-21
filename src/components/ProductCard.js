@@ -24,7 +24,7 @@ function ProductCard({ catg }) {
             .where('category', '==', catg)
             .orderBy('createdAt', 'desc')
             .onSnapshot((snapshot) => {
-                if(!snapshot.empty){
+                if (!snapshot.empty) {
                     let r = snapshot.docs.map(doc => ({ product: doc.data(), id: doc.id }))
                     setProducts(r)
                     localStorage.setItem(storageId, JSON.stringify(r));
@@ -34,31 +34,35 @@ function ProductCard({ catg }) {
 
     return (<>
         {products?.map(({ product, id }) => (
-            <Link 
-            key={id} 
-            onClick={() => { topFunction() }}
-            to={`product?title=${product?.title && UrlSlug(product?.title, 'encode')}`} 
-            className="products" >
+            <div
+                key={id}
+                className="products" >
                 <div className="shopper">
                     <div className="imgbox">
                         {product?.productImages[0]?.src &&
-                            <MyImage
-                            src={product?.productImages[0]?.src}
-                            width= '119px'
-                            height='100%'
-                            alt="images"
-                            className="images"
-                            />
+                            <Link
+                                onClick={() => { topFunction() }}
+                                to={`product?title=${product?.title && UrlSlug(product?.title, 'encode')}`} >
+                                <MyImage
+                                    src={product?.productImages[0]?.src}
+                                    width='119px'
+                                    height='100%'
+                                    alt="images"
+                                    className="images"
+                                />
+                            </Link>
                         }
                         <div className="details">
-                            <h2>{product?.title}</h2>
-                            <span>{product?.price}</span>
-                            <div className="seller">{product?.sellerName}</div>
+                            <Link onClick={() => { topFunction() }}
+                                to={`product?title=${product?.title && UrlSlug(product?.title, 'encode')}`} >
+                                <h2>{product?.title}</h2>
+                                <span>{product?.price}</span>
+                            </Link>
                             <div className="likes--save">
                                 <div className="promo-validity">
                                     <div className="goldpromotion">{product?.promotion}</div>
                                 </div>
-                                <div style={{}}>
+                                <div style={{ cursor: 'pointer' }}>
                                     {hasSaved(saveList, id) ?
                                         <img
                                             onClick={(e) => { e.preventDefault(); Unsave(id) }}
@@ -78,7 +82,7 @@ function ProductCard({ catg }) {
                         </div>
                     </div>
                 </div>
-            </Link>
+            </div>
         ))}
     </>)
 }
