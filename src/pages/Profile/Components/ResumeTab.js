@@ -12,25 +12,25 @@ function ResumeTab() {
     const currentUser = UserProfile.getUser();
     var { userName } = useParams()
     const [openLoading, setOpenLoading] = useState(true)
-    const [isOnline, setIsOnline] = useState(true)
+    // const [isOnline, setIsOnline] = useState(true)
     const history = useHistory();
 
-    useEffect(() => {
-        navigator.onLine ? setIsOnline(true) : setIsOnline(false)
-    }, [])
+    // useEffect(() => {
+    //     navigator.onLine ? setIsOnline(true) : setIsOnline(false)
+    // }, [])
 
-    window.addEventListener('online', updateStatus);
-    window.addEventListener('offline', updateStatus);
+    // window.addEventListener('online', updateStatus);
+    // window.addEventListener('offline', updateStatus);
 
-    function updateStatus(event) {
-        if (navigator.onLine) {
-            setIsOnline(true)
-            alert('Your connection is back 😊')
-        } else {
-            setIsOnline(false)
-            alert('You have lost your internet connection 😥')
-        }
-    }
+    // function updateStatus(event) {
+    //     if (navigator.onLine) {
+    //         setIsOnline(true)
+    //         alert('Your connection is back 😊')
+    //     } else {
+    //         setIsOnline(false)
+    //         alert('You have lost your internet connection 😥')
+    //     }
+    // }
 
     useEffect(() => {
         if (userName === currentUser?.userName) {
@@ -46,7 +46,7 @@ function ResumeTab() {
                 })
         }
 
-        if (isOnline) {
+        // if (isOnline) {
             db.collection('resume').doc(user?.uid)
                 .onSnapshot((snapshot) => {
                     if (!snapshot.empty) {
@@ -64,8 +64,8 @@ function ResumeTab() {
                         setOpenLoading(false)
                     }
                 })
-        } else { alert('Your have lost your internet connection 😥'); history.goBack() }
-    }, [currentUser, history, isOnline, user, userName])
+        // } else { alert('Your have lost your internet connection 😥'); history.goBack() }
+    }, [currentUser, history, user, userName])
 
     const [name, setName] = useState('')
     const [owner, setOwner] = useState([])

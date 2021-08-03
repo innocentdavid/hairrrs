@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Businesses from './pages/Businesses/Businesses';
 import Home from './pages/Home/Home';
@@ -23,20 +23,20 @@ import PageNotFound from './PageNotFound'
 import ResumeTab from './pages/Profile/Components/ResumeTab';
 
 function App() {
-  const [isOnline, setIsOnline] = useState(true)
+  // const [isOnline, setIsOnline] = useState(true)
 
-  window.addEventListener('online', updateStatus);
-  window.addEventListener('offline', updateStatus);
+  // window.addEventListener('online', updateStatus);
+  // window.addEventListener('offline', updateStatus);
 
-  function updateStatus(event) {
-    if (navigator.onLine && !isOnline) {
-      setIsOnline(true)
-      // alert('Your connection is back 😊')
-    } else {
-      setIsOnline(false)
-      // alert('You have lost your internet connection 😥')
-    }
-  }
+  // function updateStatus(event) {
+  //   if (navigator.onLine && !isOnline) {
+  //     setIsOnline(true)
+  //     // alert('Your connection is back 😊')
+  //   } else {
+  //     setIsOnline(false)
+  //     // alert('You have lost your internet connection 😥')
+  //   }
+  // }
 
   return (
     <>
@@ -63,8 +63,9 @@ function App() {
             <Route path='/article' exact component={Article} />
 
             <Route path='/' exact component={Home} />
-            <Route path='/:userName' exact component={Profile} />
-            <Route path='/:userName/cv' exact component={ResumeTab} />
+            
+            <Route path='profile/:userName' exact component={Profile} />/
+            <Route path='profile/:userName/cv' exact component={ResumeTab} />
 
             {/* <Redirect to='/404' component={PageNotFound} /> */}
           </Layout>

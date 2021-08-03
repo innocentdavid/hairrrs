@@ -6,7 +6,7 @@ import WebShareApi from '../../components/WebShareApi';
 import { SaveListContext } from '../../contexts/GlobalStore';
 import { auth, db } from '../../firebase';
 import firebase from 'firebase';
-import { getFormattedValue, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
+import { getFormattedValue, getMonthDateYearHour_minute, hasSaved, save, topFunction, Unsave, UrlSlug } from '../../fuctions';
 import MyImage from '../../components/MyImage';
 import UserProfile from '../../components/UserProfile/UserProfile';
 
@@ -145,7 +145,7 @@ function Job() {
                   <Link to={`/apply?apply-for=${job?.title && UrlSlug(job?.title, 'encode')}`} className="views-container-2"
                     // onClick={() => { alert('Your request has been sent and you\'ll be contacted soon') }}
                     style={{ cursor: 'pointer' }}>
-                    <div className="applybtn">
+                    <div className="applybtn" onClick={topFunction}>
                       <img src="images/applybtn.png" style={{ marginRight: 10 }} alt="" />
                       Apply
                     </div>

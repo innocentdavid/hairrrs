@@ -19,9 +19,10 @@ function ApplyForJob() {
 
   if (!jobTitle) { history.push('/jobs') }
 
-  const [job, setJob] = useState(null)
-  const [jobId, setJobId] = useState(null)
-  const [questions, setQuestions] = useState([])
+  const [job, setJob] = useState(null);
+  const [jobId, setJobId] = useState(null);
+  const [showQuestionaire, setShowQuestionaire] = useState(false);
+  const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
     if (jobTitle) {
@@ -29,10 +30,11 @@ function ApplyForJob() {
         .where('title', '==', jobTitle)
         .onSnapshot((snapshot) => {
           let r = snapshot.docs.map(doc => ({ job: doc.data(), id: doc.id }))
-          console.log(r[0]?.job?.questions)
+          console.log(r[0].job.showForm)
+          setShowQuestionaire(r[0].job.showForm)
           setJob(r[0].job)
           setJobId(r[0].jobId)
-          
+
           if (r[0]?.job?.questions) {
             setQuestions(r[0]?.job?.questions)
           }
@@ -41,15 +43,22 @@ function ApplyForJob() {
   }, [jobTitle])
 
   return (
-    <div className="layout" style={{ marginTop: '38px' }}>
-      <div style={{ width: '800px', minHeight: '70vh', overflow: 'auto', background: "white" }}>
-        <center style={{ margin: '5px' }}><h1>Apply for the position of {jobTitle}</h1></center>
+    <div className="layout p-2" style={{ marginTop: '38px', width: '800px', minHeight: '70vh', overflow: 'auto', background: "white" }}>
+      <center><h1 className="text-uppercase">Apply for the position of {jobTitle}</h1></center>
 
-        <div>* Show questionaire form</div>
+      <div className="mb-2"></div>
 
-        <div>* Show cv</div>
+      {showQuestionaire && <h1 className="text-uppercase">questionaire form</h1>}
 
-        <div>* buttons for <b>edit cv</b> and <b>Apply now</b> </div>
+      <div className="m-2"></div>
+
+      <h1 className="text-uppercase">Resume</h1>
+
+      <div className="m-1"></div>
+
+      <div className="d-flex align-items-center">
+        <button className="btn btn-sm">Edit cv</button>
+        <button className="btn btn-sm btnSolid">Apply now</button>
       </div>
     </div>
   )

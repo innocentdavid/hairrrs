@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Messages from './Component/Messages';
 import Notification from './Component/Notification';
@@ -8,22 +8,9 @@ import UpArticles from './Component/UpArticles';
 import UpBusiness from './Component/UpBusiness';
 import UpJobVacancies from './Component/UpJobVacancies';
 import UpProducts from './Component/UpProducts';
-import { auth, db } from '../../firebase';
+import { topFunction } from '../../fuctions';
 
 function Header() {
-    const [user, setUser] = useState(null)
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-            if (authUser) {
-                db.collection('users').doc(authUser.uid)
-                    .onSnapshot(user => {
-                      setUser(user.data())
-                    });
-            }
-        })  
-        return () => { unsubscribe() }
-      }, []);
 
     return (
         <>
@@ -35,10 +22,11 @@ function Header() {
                 <nav>
                     {/* logos */}
                     <div className="logo">
-                        <Link to="/"><img src="/images/hairrrs-Logo.png" alt="logo" /></Link>
+                        
+                        <Link onClick={topFunction} to="/"><img src="/images/hairrrs-Logo.png" alt="logo" /></Link>
                     </div>
                     <div className="logo--mobile">
-                        <Link to="/"><img src="/images/logo 2.png" alt="logo" /></Link>
+                        <Link onClick={topFunction} to="/"><img src="/images/logo 2.png" alt="logo" /></Link>
                     </div>
 
                     {/* search */}
