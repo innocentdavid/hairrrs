@@ -7,7 +7,6 @@ import Layout from './Layout';
 import Product from './pages/Product/Product';
 import CreateArticle from './pages/CreateArticle/CreateArticle';
 import Article from './pages/Article/Article';
-import { getRandomInt } from './fuctions';
 // import ImageUploadProcessing from './components/ImageUploadProcessing';
 import AddProduct from './pages/Add_Product/AddProduct';
 import AddJob from './pages/Add_Job_v/AddJob';
@@ -21,6 +20,8 @@ import ApplyForJob from './components/ApplyForJob/ApplyForJob';
 import Backend from './pages/Backend/Backend';
 import PageNotFound from './PageNotFound'
 import ResumeTab from './pages/Profile/Components/ResumeTab';
+import Cv from './pages/Profile/Cv/Cv';
+import ProfileRedirect from './pages/Profile/ProfileRedirect';
 
 function App() {
   // const [isOnline, setIsOnline] = useState(true)
@@ -45,11 +46,10 @@ function App() {
           <Route path='/backend' exact component={Backend} />
           {/* <Route path='/ImageUploadProcessing' exact component={ImageUploadProcessing} /> */}
 
-          <Layout key={getRandomInt(100000000)}>
+          <Layout>
             <Route path='/404' component={PageNotFound} />
             <Route path='/settings' exact component={SettingsPage} />
             <Route path='/articles' exact component={Articles} />
-            <Route path='/profile' component={Profile} />
             <Route path='/business-profile' exact component={BusinessProfile} />
             <Route path='/add-product' exact component={AddProduct} />
             <Route path='/add-job' exact component={AddJob} />
@@ -64,8 +64,10 @@ function App() {
 
             <Route path='/' exact component={Home} />
             
-            <Route path='profile/:userName' exact component={Profile} />/
-            <Route path='profile/:userName/cv' exact component={ResumeTab} />
+            <Route path='/profile' component={ProfileRedirect} />
+            <Route path='/profile/:userName' exact component={Profile} />
+            <Route path='/cv' exact component={Cv} />
+            <Route path='/cv/:userName' exact component={ResumeTab} />
 
             {/* <Redirect to='/404' component={PageNotFound} /> */}
           </Layout>

@@ -2,11 +2,12 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-function Cv() {
+function ProfileRedirect() {
   const history = useHistory();
   useEffect(() => {
-    history.push('/cv/me');
+    history.push('/profile/me');
   }, [history])
   return (<></>)
 }
-export default Cv
+
+export default ProfileRedirect

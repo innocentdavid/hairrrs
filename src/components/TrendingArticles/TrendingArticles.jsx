@@ -52,7 +52,7 @@ function TrendingArticles({ limit = "18" }) {
                                     <div className="imgbox1">
                                         <div>
                                             <div style={{ position: 'relative' }}>
-                                                <Link to={`/${article?.author?.userName}`}
+                                                <Link to={`/profile?u=${article?.author?.userName}`}
                                                     onClick={() => { topFunction() }}
                                                     style={{ margin: 10, position: 'absolute' }}
                                                     className="authorAndName" >

@@ -5,8 +5,12 @@ import UserProfile from '../../../components/UserProfile/UserProfile';
 import { db } from '../../../firebase';
 import { topFunction } from '../../../fuctions';
 import Attachment from './Attachment'
+// import html2canvas from 'html2canvas';
 
 function ResumeTab() {
+    // html2canvas(document.body).then(function(canvas) {
+    //     document.body.appendChild(canvas);
+    // });
     const [user, setUser] = useState([])
     const [editMode, setEditMode] = useState(false)
     const currentUser = UserProfile.getUser();
@@ -33,8 +37,9 @@ function ResumeTab() {
     // }
 
     useEffect(() => {
-        if (userName === currentUser?.userName) {
+        if (userName === 'me' || userName === currentUser?.userName) {
             setUser(currentUser)
+            setOwner(currentUser)
             setEditMode(true)
         } else {
             setEditMode(false)
@@ -94,7 +99,6 @@ function ResumeTab() {
         topFunction()
     }, [])
 
-
     return (
         <div id="resumetab" className={`resume-cv ${!editMode ? 'resume-cv-edit' : ''}`}>
             {openLoading && <div className="loader" style={{ display: 'grid' }}>
@@ -130,7 +134,7 @@ function ResumeTab() {
                     <div className="b-photo-1" style={{
                         marginRight: '50px'
                     }}>
-                        {owner && <img src={owner?.photoURL} alt={owner?.userName} />}
+                        {owner && <img src={owner ? owner.photoURL : owner.photoURLmax} alt={owner?.userName} />}
                     </div>
                     {/* <div className="watermark">
                         from Hairrrs

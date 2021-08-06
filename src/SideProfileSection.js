@@ -37,7 +37,7 @@ function SideProfileSection({ setOpenLogInOrReg, setOpenAuthModal }) {
     {user?.uid && <div className="accord--profile">
       <div className="user--photo"
         style={{ position: 'relative' }}>
-        <Link to={`/${user?.userName}`} onClick={() => { topFunction() }}>
+        <Link to={`/profile`} onClick={() => { topFunction() }}>
           <MyImage
             src={user?.photoURL}
             width=''
@@ -47,7 +47,7 @@ function SideProfileSection({ setOpenLogInOrReg, setOpenAuthModal }) {
           />
         </Link>
 
-        <Link to={`/${user?.userName}`} onClick={() => { topFunction() }}>
+        <Link to={`/profile`} onClick={() => { topFunction() }}>
           <span style={{ fontSize: '1.2rem', color: '#f40053', marginLeft: 10 }}>{user?.displayName}</span>
         </Link>
 
