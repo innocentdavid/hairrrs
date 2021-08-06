@@ -27,7 +27,7 @@ function RepliesReactions({ articleId, commentId, replyId, replyUserId, reply })
             isCuserLikedOrDisLiked('likes', setLikedReply);
             isCuserLikedOrDisLiked('disLikes', setDisLikedReply);
         }
-    }, [articleId, commentId, replyId])
+    }, [articleId, commentId, replyId, user])
 
     function getTotalCommentReplyReactions(reaction) {
         db.collection('articles').doc(articleId).collection('comments')
