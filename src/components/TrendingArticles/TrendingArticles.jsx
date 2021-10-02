@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SaveListContext } from '../../contexts/GlobalStore';
 import { db } from '../../firebase';
-import { getDesc, save, Unsave, hasSaved, topFunction, UrlSlug, getMonthDate } from '../../fuctions'
+import { getDesc, save, Unsave, hasSaved, topFunction, UrlSlug, getMonthDate } from '../../myFunctions'
 import MyImage from '../MyImage';
 
 function TrendingArticles({ limit = "18" }) {
@@ -24,9 +24,7 @@ function TrendingArticles({ limit = "18" }) {
         const query = articleRef.orderBy("createdAt", "desc").limit(limit);
         query.onSnapshot((snapshot) => {
             if (!snapshot.empty) {
-                let data = (snapshot.docs.map((doc) => {
-                    return { id: doc.id, article: doc.data() };
-                }));
+                let data = (snapshot.docs.map((doc) => ({ id: doc.id, article: doc.data() })));
                 localStorage.setItem('trendingArticles', JSON.stringify(data));
                 // setCachedAticles(data)
                 setArticles(data);
@@ -52,7 +50,7 @@ function TrendingArticles({ limit = "18" }) {
                                     <div className="imgbox1">
                                         <div>
                                             <div style={{ position: 'relative' }}>
-                                                <Link to={`/profile?u=${article?.author?.userName}`}
+                                                <Link to={`/profile/${article?.author?.userName}`}
                                                     onClick={() => { topFunction() }}
                                                     style={{ margin: 10, position: 'absolute' }}
                                                     className="authorAndName" >
@@ -61,7 +59,7 @@ function TrendingArticles({ limit = "18" }) {
                                                         alt="images"
                                                         className="AuthorPhotoURL"
                                                     />
-                                                    <span className="tooltiptext AuthorName">{article?.author?.displayName}</span>
+                                                    <span className="tooltiptext AuthorName">{article?.author?.userName}</span>
                                                 </Link>
                                                 <Link to={`/article?title=${article?.UrlSlug}`}
                                                     onClick={() => { topFunction() }}>
@@ -71,17 +69,17 @@ function TrendingArticles({ limit = "18" }) {
 
                                             <div className="details1">
                                                 <Link to={`/article?title=${article?.UrlSlug}`} onClick={() => { topFunction() }}>
-                                                    <h2>{article?.title}</h2>
+                                                    <h6>{article?.title}</h6>
                                                 </Link>
                                                 <div className="informations">
-                                                    <span>{getDesc(article?.article)}</span>
+                                                    <p className="" style={{ fontFamily: 'Segeo-UI', lineHeight: '1.3rem' }}>{getDesc(article?.body)}</p>
 
                                                     <div className="artc-2">
                                                         <div className="categories-filter">
-                                                            <Link style={{ display: 'block' }} to={`/articles?title=${UrlSlug(article?.category, 'encode')}`}>
+                                                            <Link style={{ display: 'block' }} to={`/articles?category=${UrlSlug(article?.category, 'encode')}`}>
                                                                 {article?.category}
                                                             </Link>
-                                                            <h3>{getMonthDate(article?.createdAt)}</h3>
+                                                            <div className="text-gray-light">{ article?.updatedAt ? getMonthDate(article?.updatedAt) : getMonthDate(article?.createdAt)}</div>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -306,10 +306,25 @@ function getFormattedValue(value = 0, prefix) {
 
 
 export {
-    month, getMonthDate, formatAMPM, getMonthDateYearHour_minute,
-    getDesc, topFunction, getRandomInt, UrlSlug,
-    getUserGeolocationDetails, b64toBlob,
-    deleteArticle, save, Unsave, hasSaved, followUser,
-    unFollowUser, hasFollowed, pasteHtmlAtCaret, makeid, resizeSingleImage,
+    month, 
+    getMonthDate, 
+    formatAMPM, 
+    getMonthDateYearHour_minute,
+    getDesc, 
+    topFunction, 
+    getRandomInt, 
+    UrlSlug,
+    getUserGeolocationDetails, 
+    b64toBlob,
+    deleteArticle, 
+    save, 
+    Unsave, 
+    hasSaved, 
+    followUser,
+    unFollowUser, 
+    hasFollowed, 
+    pasteHtmlAtCaret, 
+    makeid, 
+    resizeSingleImage,
     getFormattedValue
 };

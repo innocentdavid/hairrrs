@@ -40,7 +40,7 @@ function UpArticles() {
                     <span className="cats">
                         <ul>
                             {articleCategories && articleCategories.map(({ id, data }) => (
-                                <Link key={id} to={`/articles?category=${UrlSlug(data.value, 'encode')}`}><li>{data.value}</li></Link>
+                                <Link key={id} to={`/articles?category=${UrlSlug(data?.value, 'encode')}`}><li>{data?.value}</li></Link>
                             ))}
                         </ul>
                     </span>

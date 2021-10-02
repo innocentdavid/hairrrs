@@ -8,6 +8,7 @@ import { UrlSlug } from '../../fuctions';
 import Attachment from './Components/Attachment';
 import CurrencyField from '../../components/CustomizedInputField/CustomizedInputField';
 import UserProfile from '../../components/UserProfile/UserProfile';
+import { makeid } from '../../myFunctions';
 
 function AddJob() {
     const user = UserProfile.getUser()
@@ -100,10 +101,10 @@ function AddJob() {
             const data = {
                 title,
                 jobDesc,
+                employerId: user?.uid,
                 employer: { 
-                    displayName: user?.displayName, 
-                    userName: user?.userName, 
-                    uid: user?.uid, 
+                    userName: user?.userName,
+                    uid: user?.uid,
                     photoURL: user?.photoURL 
                 },
                 salaryPlan,
@@ -155,13 +156,17 @@ function AddJob() {
 
     // edit
 
-    const setImageToList = async (id, src) => {
+    
+    const setImageToList = async (checkedImageList) => {
         let imgs = [];
-        imgs.push({ id, src })
-        let img = await imgs
-        let a = [...jobImages, ...img]
-        if (a) {
-            setJobImages(a)
+        checkedImageList.forEach(checkedImage => {
+            var id = makeid(5)
+            var src = checkedImage.value
+            imgs.push({ id, src })
+        });
+        if(imgs){ 
+            let a = [...jobImages, ...imgs];
+            setJobImages(a);            
         }
     }
 
@@ -223,7 +228,7 @@ function AddJob() {
             {openImageLib && <ImageLib
                 title={'Hairrs'}
                 closeInsertImageModal={closeInsertImageModal}
-                inserImgCaller='AddJob'
+                insertImgCaller='AddJob'
                 setImageToList={setImageToList}
             />}
 

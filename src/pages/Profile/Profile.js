@@ -23,9 +23,8 @@ function Profile() {
   useEffect(() => {
     if (userName !== user?.userName && userName !== 'me') {
       setMeMode(false)
-    } else {
-      setOpenLoading(false);
     }
+    setOpenLoading(false);
   }, [userName, user?.userName])
 
 
@@ -38,19 +37,17 @@ function Profile() {
           if (!snapshot.empty) {
             let result = snapshot.docs.map(doc => ({ ...doc.data(), uid: doc.id }))
             setUser(result[0]);
-            setOpenLoading(false);
           } else {
-            setUser(UserProfile.getUser())
-            setOpenLoading(false);
-            // history.push(`/404`)
             // console.log('not found')
+            // history.push(`/404`)
+            history.push(`/profile/me`)
+            setUser(UserProfile.getUser())
+            setMeMode(true)
           }
         });
-    } else {
-      setUser(UserProfile.getUser());
-      setOpenLoading(false);
     }
-  }, [meMode, userName])
+    setOpenLoading(false);
+  }, [history, meMode, userName])
 
   const [totalFollowers, setTotalFollowers] = useState(0)
   const [totalFollowing, setTotalFollowing] = useState(0)
@@ -82,9 +79,9 @@ function Profile() {
       </div>}
 
       <Helmet>
-        <title>{`${user && (user.displayName)?.replace(/\b(\w)/g, s => s.toUpperCase())} - Hairrrs`}</title>
+        <title>{`${user && (user.userName)?.replace(/\b(\w)/g, s => s.toUpperCase())} - Hairrrs`}</title>
         <meta name="description" content="Everything Hairs" />
-        <meta property="og:title" content={`${user && user.displayName} - Hairrrs`} />
+        <meta property="og:title" content={`${user && user.userName} - Hairrrs`} />
         <meta property="og:url" content={`https://ntutu-fdb00.web.app/profile`} />
         <meta property="og:type" content="article" />
         <meta property="og:description" content="Everything Hairs" />
@@ -125,7 +122,7 @@ function Profile() {
           <div className="data-info">
             <div className="container">
               <div className="business-name" style={{ textTransform: 'capitalize' }}>
-                {user?.displayName}
+                {user?.userName}
               </div>
               <div className="email-address">
                 {user?.email}
@@ -147,8 +144,9 @@ function Profile() {
                   <span>{user?.website}</span></>}
 
                 <div className="locate-icon">
-                  <img src="images/location-icon.svg" alt="locate icon ohyanga" />
-                </div><span>Locate</span>
+                <i className="fa fa-map-marker"></i>
+                <span>Locate</span>
+                </div>
               </div>
             </div>
           </div>
@@ -167,7 +165,7 @@ function Profile() {
               <div className="btn-folowers">
                 <Link to="/settings" >
                   <div className="userbtn-1">
-                    <img src="images/Icon-settings.png" alt="setting icon" />
+                    <img src="/images/Icon-settings.png" alt="settings" />
                   </div>
                 </Link>
               </div>
@@ -228,7 +226,7 @@ function Profile() {
             topFunction()
             history.push(`/cv/${user.userName}`)
           }}>
-            <img src="images/resume-img.svg" alt="resume" />
+            <img src="/images/resume-img.svg" alt="resume" />
             <h2>View resume</h2>
           </div>
         </div>

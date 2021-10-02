@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import TrendingArticles from '../../components/TrendingArticles/TrendingArticles';
-import { db } from '../../firebase';
+import { auth, db } from '../../firebase';
 import firebase from "firebase";
 import { deleteArticle, getDesc, getMonthDate, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
 import ArticleComments from './Components/comments/ArticleComments';
@@ -11,9 +11,27 @@ import ItemOwner from '../../components/ItemOwner';
 import ReportBoard from '../../components/ReportBoard'
 import WebShareApi from '../../components/WebShareApi';
 import UserProfile from '../../components/UserProfile/UserProfile';
+import { ReactToArticle } from '../../myFunctions';
 
 function Article() {
-  const user = UserProfile.getUser()
+  const [user, setUser] = useState(UserProfile.getUser());
+  // setUser
+  useEffect(() => {
+    auth.onAuthStateChanged(authUser => {
+      // console.log(authUser);
+      setUser(UserProfile.getUser())
+      // if (authUser?.uid) {
+      //   const fetch = () => {
+      //     db.collection('users').doc(authUser?.uid).onSnapshot((snapshot => {
+      //       if(snapshot.exists){
+      //         setUser(snapshot.data())
+      //       }
+      //     }))
+      //   }
+      //   fetch();
+      // }
+    })
+  }, [])
 
   const [showReportBoard, setShowReportBoard] = useState(false)
   const [elipsisInfoComment, setElipsisInfoComment] = useState(false)
@@ -22,7 +40,7 @@ function Article() {
   const history = useHistory();
   const params = new URLSearchParams(window.location.search);
   if (!params.has('title')) {
-    history.push('/')
+    history.push('/articles')
   }
   var articleUrlSlug = params.get('title')
 
@@ -30,6 +48,7 @@ function Article() {
   var [article, setArticle] = useState([]);
   const [articleId, setArticleId] = useState(null);
 
+  // setArticle setArticleId
   useEffect(() => {
     const fetchArticle = async () => {
       const response = db.collection('articles')
@@ -38,7 +57,7 @@ function Article() {
       const data = await response.get();
 
       if (data.empty) {
-        history.push('/')
+        history.push('/articles')
       } else {
         data.docs.forEach(item => {
           setArticleId(item.id)
@@ -105,78 +124,25 @@ function Article() {
   // comments_likes_dislikes_views end
 
 
-  // ReactToArticle
+  // handleReactToArticle
   const [liked, setLiked] = useState(false);
   const [disLiked, setDisLiked] = useState(false);
 
-  const ReactToArticle = (reaction) => {
-    if (user) {
-      const uid = user.uid;
-      if (articleId) {
-        if (reaction === 'likes') {
-          if (disLiked) {
-            db.collection('articles').doc(articleId).collection('disLikes').doc(uid).delete();
-            db.collection('articles').doc(articleId).update({ totalDisLikes: firebase.firestore.FieldValue.increment(-1) });
+  const handleReactToArticle = (reaction) => {
+    let articleAuthorUid = article?.uthor?.uid
+    ReactToArticle({
+      reaction,
+      articleId,
+      disLiked,
+      setDisLiked,
+      liked,
+      articleAuthorUid,
+      setLiked,
+    })
 
-            // db.collection('users').doc(article?.author?.uid).update({
-            //   totalEngagement: firebase.firestore.FieldValue.increment(-1)
-            // })
-            setDisLiked(false)
-          }
-          if (liked) {
-            db.collection('articles').doc(articleId).collection('likes').doc(uid).delete();
-            db.collection('articles').doc(articleId).update({ totalLikes: firebase.firestore.FieldValue.increment(-1) });
-            
-            db.collection('users').doc(article?.author?.uid).update({
-              totalEngagement: firebase.firestore.FieldValue.increment(-1)
-            })
-            setLiked(false)
-          } else {
-            db.collection('articles').doc(articleId).collection('likes').doc(uid).set({ userName: user.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-            db.collection('articles').doc(articleId).update({ totalLikes: firebase.firestore.FieldValue.increment(1) });
-            
-            db.collection('users').doc(article?.author?.uid).update({
-              totalEngagement: firebase.firestore.FieldValue.increment(1)
-            })
-            setLiked(true)
-          }
-        }
-
-        if (reaction === 'disLikes') {
-          if (liked) {
-            db.collection('articles').doc(articleId).collection('likes').doc(uid).delete();
-            db.collection('articles').doc(articleId).update({ totalLikes: firebase.firestore.FieldValue.increment(-1) });
-            
-            db.collection('users').doc(article?.author?.uid).update({
-              totalEngagement: firebase.firestore.FieldValue.increment(-1)
-            })
-            setLiked(false)
-          }
-          if (disLiked) {
-            db.collection('articles').doc(articleId).collection('disLikes').doc(uid).delete();
-            db.collection('articles').doc(articleId).update({ totalDisLikes: firebase.firestore.FieldValue.increment(-1) });
-            
-            // db.collection('users').doc(article?.author?.uid).update({
-            //   totalEngagement: firebase.firestore.FieldValue.increment(-1)
-            // })
-            setDisLiked(false)
-          } else {
-            db.collection('articles').doc(articleId).collection(reaction).doc(uid).set({ userName: user.displayName, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-            db.collection('articles').doc(articleId).update({ totalDisLikes: firebase.firestore.FieldValue.increment(1) });
-            
-            // db.collection('users').doc(article?.author?.uid).update({
-            //   totalEngagement: firebase.firestore.FieldValue.increment(1)
-            // })
-            setDisLiked(true)
-          }
-        }
-
-      }
-    } else {
-      alert('sorry you have to login')
-    }
+    
   }
-  // ReactToArticle ends
+  // handleReactToArticle ends
 
   // set page viewed
   useEffect(() => {
@@ -238,7 +204,6 @@ function Article() {
         <meta property="og:type" content="article" />
         <meta property="og:description" content={article && getDesc(article?.article, 65)} />
         <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/ntutu-fdb00.appspot.com/o/hairrrs-Logo-original-resized.png?alt=media&token=b322368f-6abc-477b-aa10-13f3ed71e277" />
-
       </Helmet>
 
       {article ?
@@ -263,7 +228,10 @@ function Article() {
                     <div>
                       {article?.category ? <Link to={`/articles?category=${UrlSlug(article.category, 'encode')}`} className="category">{article?.category}</Link> : <span>...</span>}
                       &nbsp;&nbsp;&nbsp;
-                      <span>{getMonthDate(article?.createdAt)}</span>
+                      {article?.updatedAt ? 
+                      <span>Last modified {getMonthDate(article?.updatedAt)}</span> :
+                      <span>Published on {getMonthDate(article?.createdAt)}</span>
+                      }
                     </div>
                     {user?.uid === article?.author?.uid &&
                       <>
@@ -305,20 +273,20 @@ function Article() {
                 </div>
 
                 <div className="artc-img">
-                  <img src={article?.articleCover} alt={article?.title} />
+                  <img src={article?.mainImage} alt={article?.title} />
                 </div>
 
                 <div className="artc-1">
                   {/* main article */}
                   <div className="Article-story">
-                    <article id="mainArticle"><div dangerouslySetInnerHTML={{ __html: article?.article }} /></article>
+                    <article id="mainArticle"><div dangerouslySetInnerHTML={{ __html: article?.body }} /></article>
                   </div>
                   {/* react to article */}
-                  {user &&
+                  {/* {user && */}
                     <>
                       <div className="comments-thumbs-save">
                         <div className="children">
-                          <div onClick={() => { ReactToArticle('likes') }}>
+                          <div onClick={() => { handleReactToArticle('likes') }}>
                             <div className="reach">
                               <img src="/images/saturday feather-thumbs-up.svg" alt="thumbs up" />
                               <span className='views'>{totalLikes}</span>
@@ -326,7 +294,7 @@ function Article() {
                             <div className={`underLine_${liked}`}></div>
                           </div>
 
-                          <div onClick={() => { ReactToArticle('disLikes') }}>
+                          <div onClick={() => { handleReactToArticle('disLikes') }}>
                             <div className="reach">
                               <img src="/images/saturday feather-thumbs-down.svg" alt="thumbs down" />
                               <span className='views'>{totalDisLikes}</span>
@@ -362,7 +330,7 @@ function Article() {
                             <WebShareApi url={`ntutu-fdb00.web.app/article?title=${articleUrlSlug}`} title={article?.title} text={`${article?.title} \n \n`} />
                           </div>
 
-                          {user.uid !== article?.author?.uid && <div className="reach" id={`${articleId}_reported`}>
+                          {user?.uid !== article?.author?.uid && <div className="reach" id={`${articleId}_reported`}>
                             <img src="/images/Group 1192.svg" alt="elipsis icon" onClick={() => { setElipsisInfoComment(!elipsisInfoComment) }} />
                             {elipsisInfoComment &&
                               <div className="elipsis--info-comment">
@@ -385,9 +353,9 @@ function Article() {
                           totalComments={totalComments}
                           articleId={articleId} />}
 
-                      {/* ReactToArticle end */}
+                      {/* handleReactToArticle end */}
                     </>
-                  }
+                  {/* } */}
                 </div>
               </div>
 

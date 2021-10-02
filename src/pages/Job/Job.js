@@ -142,14 +142,22 @@ function Job() {
                 </div>
 
                 <div className="reviews">
-                  <Link to={`/apply?apply-for=${job?.title && UrlSlug(job?.title, 'encode')}`} className="views-container-2"
+                  {job?.employer?.uid !== user?.uid ?
+                    <Link to={`/apply?apply-for=${job?.title && UrlSlug(job?.title, 'encode')}`} className="views-container-2"
                     // onClick={() => { alert('Your request has been sent and you\'ll be contacted soon') }}
                     style={{ cursor: 'pointer' }}>
-                    <div className="applybtn" onClick={topFunction}>
+                    <div className="applybtn" onClick={()=>{topFunction()}}>
                       <img src="images/applybtn.png" style={{ marginRight: 10 }} alt="" />
                       Apply
                     </div>
-                  </Link>
+                  </Link> :
+                  <Link to={`/jobVacancyResponses?jobId=${jobId}&jobTitle=${job?.title}`} className="views-container-2" style={{ cursor: 'pointer' }}>
+                  <div className="applybtn" onClick={()=>{topFunction()}}>
+                    <img src="images/applybtn.png" style={{ marginRight: 10 }} alt="" />
+                    View responses
+                  </div>
+                </Link>
+                  }
 
                   <div className="report-1">
                     {/* share */}
@@ -216,6 +224,17 @@ function Job() {
                     </div>
                   </div>
                 </div>
+
+                <Link to={`/apply?apply-for=${job?.title && UrlSlug(job?.title, 'encode')}`} className="views-container-2 mt-2"
+                    // onClick={() => { alert('Your request has been sent and you\'ll be contacted soon') }}
+                    style={{ cursor: 'pointer' }}>
+                    <div className="applybtn" onClick={()=>{topFunction()}}>
+                      <img src="images/applybtn.png" style={{ marginRight: 10 }} alt="" />
+                      Apply
+                    </div>
+                  </Link>
+
+
               </div>
             </div>
           </div>

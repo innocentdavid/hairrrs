@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import Auth from './components/Auth/Auth';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
 import SideProfileSection from './SideProfileSection';
 import { topFunction } from './fuctions';
 import MyImage from './components/MyImage';
-import UserProfile from './components/UserProfile/UserProfile';
+import AuthUser from './components/AuthUser/AuthUser';
 
 function Layout({ children }) {
-    const user= UserProfile.getUser()
     const params = new URLSearchParams(window.location.search);
     var scrollTo = params.get('scrollTo')
     var el = document.querySelector(`#${scrollTo}`);
@@ -31,137 +29,63 @@ function Layout({ children }) {
         return true
     }
 
-    const [openLogInOrReg, setOpenLogInOrReg] = useState(false)
+    return (<>
+        <Header />
 
-    useEffect(() => {
-        if(!user){ 
-            setOpenLogInOrReg(true)
-        }
-    }, [user])
+        <div className="layout">
 
-    const setOpenAuthModal = (type) => {
-        let e = document.querySelector("#authModal");
-        if (type === true) {
-            if (e) { e.style.display = 'block' }
-        } else { if (e) { e.style.display = 'none' } }
-    }
-
-
-    return (
-        <>
-            {openLogInOrReg && <div className="login" style={{
-                position: 'fixed',
-                top: "175px",
-                left: 30,
-                width: '250px',
-                background: "white",
-                marginRight: "10px",
-                paddingTop: "20px",
-                paddingBottom: "40px",
-                alignItems: "center",
-                display: "flex",
-                justifyContent: "center",
-                zIndex: 21
-            }}>
-                <button
-                    onClick={() => { setOpenAuthModal(true) }}
-                    className="signin"
-                    style={{ margin: "20px 0", cursor: 'pointer' }}
-                >login / reg</button>
-            </div>}
-
-            <Auth setOpenAuthModal={setOpenAuthModal} setOpenLogInOrReg={setOpenLogInOrReg} />
-
-            <Header />
-
-            <div className="layout">
-
-                {/* SideBar */}
-                <div className="mainLayoutCont">
-                    <div className="div1">
-                        {locationCheck() &&
-                            <div className="ly0">
-                                <div className="f-sidebar">
-                                    <div className="f-child"></div>
-                                    <div className="layout1">
-
-                                        {!openLogInOrReg && <SideProfileSection
-                                            setOpenLogInOrReg={setOpenLogInOrReg}
-                                            setOpenAuthModal={setOpenAuthModal}
-                                        />}
-
-                                        <div className={openLogInOrReg ? "layout1a mt-130" : "layout1a"}>
-                                            <Link to="#" ><div className="shopper9">
-                                                {/* <div className="user-display">
-                                                    <MyImage
-                                                        src={"/images/user?.png"}
-                                                        width=''
-                                                        height=''
-                                                        alt=""
-                                                        className=""
-                                                    />
-                                                    <span className="tooltiptext">Chizzyfix</span>
-                                                </div> */}
-                                                {/* <div className="imgbox1">
-                                                    <MyImage
-                                                        src={"/images/0_NEgmVl2J_RRzI9Sr.jpg"}
-                                                        width=''
-                                                        height=''
-                                                        alt=""
-                                                        className=""
-                                                    />
-                                                    <div className="learnmore">
-                                                        <div className="website">trytune.com/about</div>
-                                                        <div className="learn-more">Learn more</div>
-                                                    </div>
-                                                    <div className="details1">
-                                                        <h2>How to braid hair in 3 minutes. 6steps</h2>
-                                                        <div className="informations">
-                                                            <span className="info">Full matching frontal hair lasts for 10years can be dyed, washed and ironed Show Contact...</span>
-                                                        </div>
-                                                    </div>
-                                                </div> */}
-                                            </div>
-                                            </Link>
-                                        </div>
-                                    </div>
+            {/* SideBar */}
+            <div className="mainLayoutCont">
+                <div className="div1">
+                    {locationCheck() &&
+                        <div className="ly0">
+                            <div className="f-sidebar">
+                                <div className="f-child"></div>
+                                <div className="layout1">
+                                    <SideProfileSection />
                                 </div>
                             </div>
-                        }
-                    </div>
-                    {/* main page */}
-                    <div className="div2">
-                        <div id="mainCont">{children}</div>
-                    </div>
+                        </div>
+                    }
                 </div>
 
-
-                {/* modals */}
-
-                <div className="floater">
-                    <div className="support"><span>Support</span>
-                        <MyImage
-                            src={"/images/support-icon.svg"}
-                            width=''
-                            height=''
-                            alt="hairrrs comment icon"
-                            className=""
-                        />
-                    </div>
-                    <div className="scrolltotop" onClick={() => { topFunction() }}>
-                        <MyImage
-                            src={"/images/Icon feather-chevron-down.svg"}
-                            width=''
-                            height=''
-                            alt="hairrrs comment icon"
-                            className=""
-                        />
-                    </div>
+                {/* main page */}
+                <div className="div2">
+                    <div id="mainCont">{children}</div>
                 </div>
-                {/* modals */}
             </div>
-        </>
-    )
+
+
+            {/* modals */}
+
+            {/* AuthUser */}
+            <div className="signinModal">
+                <AuthUser />
+            </div>
+
+            <div className="floater">
+                <div className="support"><span>Support</span>
+                    <MyImage
+                        src={"/images/support-icon.svg"}
+                        width=''
+                        height=''
+                        alt="hairrrs comment icon"
+                        className=""
+                    />
+                </div>
+                <div className="scrolltotop" onClick={() => { topFunction() }}>
+                    <MyImage
+                        src={"/images/Icon feather-chevron-down.svg"}
+                        width=''
+                        height=''
+                        alt="hairrrs comment icon"
+                        className=""
+                    />
+                </div>
+            </div>
+            {/* modals */}
+        </div>
+    </>)
 }
 
 export default Layout

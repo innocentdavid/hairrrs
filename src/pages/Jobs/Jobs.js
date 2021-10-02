@@ -27,8 +27,12 @@ function Jobs() {
       db.collection('Jobs')
         .where('catogory', '==', category)
         .onSnapshot((snapshot) => {
-          let r = snapshot.docs.map(doc => ({ job: doc.data(), id: doc.id }))
-          setJobs(r)
+          if (!snapshot.empty) {
+            let r = snapshot.docs.map(doc => ({ job: doc.data(), id: doc.id }))
+            setJobs(r)
+          } else {
+            setcategory('all')
+          }
         })
     }
   }, [category])

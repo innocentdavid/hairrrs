@@ -1,62 +1,74 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MyImage from './components/MyImage';
 import SwitchAccount from './components/Popups/SideProfileSection/SwitchAccount';
-import { auth } from './firebase';
-import { topFunction } from './fuctions';
+import { auth, db } from './firebase';
+import { topFunction, triggerAuthUser } from './myFunctions';
+import './styles/sideProfileSection.css'
 
-function SideProfileSection({ setOpenLogInOrReg, setOpenAuthModal }) {
-  const [user, setUser] = useState()
-  useEffect(() => {
-    var u = JSON.parse(localStorage.getItem('user'))
-    if(u){
-      var userC = u?.data?.user?.user
-      setUser(userC)
-    }
-  }, [])
-
+function SideProfileSection() {
   const [signOutModal, setSignOutModal] = useState(false)
   const [showSwitchAccount, setShowSwitchAccount] = useState(false)
+  
+  const [user, setUser] = useState([]);
+  // setUser
+  useEffect(() => {
+    auth.onAuthStateChanged(authUser => {
+      if (authUser?.uid) {
+        const fetch = () => {
+          db.collection('users').doc(authUser?.uid).onSnapshot((snapshot => {
+            if(snapshot.exists){
+              setUser(snapshot.data())
+            }
+          }))
+        }
+        fetch();
+      }
+    })
+  }, [])
 
-
-  const handleSignOut = async () => {
+  const handleSignOut = () => {
+    setSignOutModal(false);
     const data = {
       uid: user?.uid,
-      displayName: user?.displayName,
+      userName: user?.userName,
       photoURL: user?.photoURL
     }
-    await localStorage.setItem('lastUser', JSON.stringify(data));
-
+    localStorage.setItem('lastUser', JSON.stringify(data));
     localStorage.removeItem("user");
     auth.signOut();
-    setUser(null)
-    setOpenLogInOrReg(true)
+    setUser(null);
+    // window.location.reload();
   }
 
   return (<>
-    {user?.uid && <div className="accord--profile">
+    <div className="accord--profile">
       <div className="user--photo"
         style={{ position: 'relative' }}>
-        <Link to={`/profile`} onClick={() => { topFunction() }}>
+        {user?.uid && <Link to={`/profile/me`} onClick={() => { topFunction() }}>
           <MyImage
             src={user?.photoURL}
             width=''
             height=''
-            alt={user?.displayName}
+            alt={user?.userName}
             className="user"
           />
-        </Link>
+        </Link>}
 
-        <Link to={`/profile`} onClick={() => { topFunction() }}>
-          <span style={{ fontSize: '1.2rem', color: '#f40053', marginLeft: 10 }}>{user?.displayName}</span>
-        </Link>
+        {user?.uid ?
+          <Link to={`/profile/me`} onClick={() => { topFunction() }}>
+            <span style={{ fontSize: '1.2rem', color: '#f40053', marginLeft: 10 }}>{user?.userName}</span>
+          </Link> :
+          <button onClick={() => { triggerAuthUser(true) }} className="btnSolid">log in / sign up</button>
+        }
 
-        <span
+        {user?.uid && <span
           onClick={(e) => { e.preventDefault(); setSignOutModal(!signOutModal) }}
           style={{ color: '#f40053', marginLeft: 10 }}>
-          {signOutModal ? <i style={{ fontSize: '25px' }} className="fa fa-angle-up" aria-hidden="true"></i>
+          {signOutModal ? <i style={{ fontSize: '25px', marginButtom: -10 }} className="fa fa-angle-up" aria-hidden="true"></i>
             : <i style={{ fontSize: '25px' }} className="fa fa-angle-down" aria-hidden="true"></i>}
-        </span>
+        </span>}
 
         {signOutModal &&
           <div
@@ -72,7 +84,7 @@ function SideProfileSection({ setOpenLogInOrReg, setOpenAuthModal }) {
             {showSwitchAccount && <SwitchAccount
               setShowSwitchAccount={setShowSwitchAccount}
               handleSignOut={handleSignOut}
-              setOpenAuthModal={setOpenAuthModal}
+            // setOpenAuthModal={setOpenAuthModal}
             />}
             <div className="SignOut"
               onClick={(e) => { e.preventDefault(); handleSignOut() }}>
@@ -83,12 +95,12 @@ function SideProfileSection({ setOpenLogInOrReg, setOpenAuthModal }) {
       </div>
 
       <div className="profile" style={{ width: '100%', textAlign: 'left' }}>
-        <Link to="/profile">Analystics</Link><br />
-        <Link to="/profile">Products</Link><br />
-        <Link to="/profile">Job Vacancies</Link><br />
-        <Link to="/profile">Articles</Link>
+        <Link to="/profile/me#analytics">Analystics</Link><br />
+        <Link to="/profile/me#Products">Products</Link><br />
+        <Link to="/profile/me#Job Vacancies">Job Vacancies</Link><br />
+        <Link to="/profile/me#Articles">Articles</Link>
       </div>
-    </div>}
+    </div>
   </>)
 }
 

@@ -3,7 +3,7 @@ import { db } from '../../firebase';
 import firebase from 'firebase';
 import ImageLib from '../../components/ImageLib';
 import CustomSelectDropDown from '../../components/CustomSelectDropDown';
-import { getFormattedValue, makeid, UrlSlug } from '../../fuctions';
+import { getFormattedValue, loading, makeid, UrlSlug } from '../../myFunctions';
 import UserProfile from '../../components/UserProfile/UserProfile';
 import { useHistory } from 'react-router-dom';
 import LocationSearchInput from '../../components/LocationSearchInput';
@@ -13,14 +13,13 @@ function AddProduct() {
     var history = useHistory()
     var user = UserProfile.getUser()
     const params = new URLSearchParams(window.location.search);
-    const [openLoading, setOpenLoading] = useState(false)
-
     const [productId, setProductId] = useState(null)
-
+    
+    // setProductId
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         if (params.has('edit')) {
-            setOpenLoading(true)
+            loading('open')
             setProductId(params.get('edit'));
         }
     }, [])
@@ -83,36 +82,26 @@ function AddProduct() {
     const [productImages, setProductImages] = useState([])
 
     const addProduct = async () => {
-        setOpenLoading(true)
-
-        const getFV = await getFormattedValue(price, user?.currency?.symbol)
-        console.log(price)
-
+        loading('open')
         if (productImages) {
+            const getFV = await getFormattedValue(price, user?.currency?.symbol);
+            // altCurrency = 
+            const currency = user?.currency?.symbol ? user?.currency?.symbol : ""
             const data = {
-                title,
-                price: getFV,
-                productDesc,
+                title, price: getFV, productDesc,
                 seller: {
-                    displayName: user?.displayName,
-                    uid: user?.uid,
                     userName: user?.userName,
+                    uid: user?.uid,
                     photoURL: user?.photoURL,
                     phoneNumber: user.phoneNumber
                 },
-                negotiable,
-                type,
-                rigion,
+                negotiable, type, rigion,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                category,
-                productImages: productImages,
-                promotion: 'Regular',
-                country: 'Nigeria',
-                address,
-                quantity: 1,
-                totalPageView: 0,
-                currency: user?.currency?.symbol
+                category, productImages: productImages, promotion: 'Regular',
+                country: 'Nigeria', address, quantity: 1,
+                totalPageView: 0, currency
             }
+            console.log(data)
 
             if (params.has('edit')) {
                 await db.collection('products').doc(params.get('edit')).update(data);
@@ -133,7 +122,7 @@ function AddProduct() {
 
             // window.location = `/product?title=${title && UrlSlug(title, 'encode')}`
             history.push(`/product?title=${title && UrlSlug(title, 'encode')}`)
-            setOpenLoading(false)
+            loading('close')
         }
     }
 
@@ -143,12 +132,18 @@ function AddProduct() {
 
     // edit
 
-    const setImageToList = async (id, src) => {
+
+    const setImageToList = async (checkedImageList) => {
         let imgs = [];
-        imgs.push({ id, src })
-        let img = await imgs
-        let a = [...productImages, ...img]
-        setProductImages(a)
+        checkedImageList.forEach(checkedImage => {
+            var id = makeid(5)
+            var src = checkedImage.value
+            imgs.push({ id, src })
+        });
+        if (imgs) {
+            let a = [...productImages, ...imgs];
+            setProductImages(a);
+        }
     }
 
     const removeImage = (id) => {
@@ -186,6 +181,8 @@ function AddProduct() {
                         setRigion(r.rigion)
                         setAddress(r.address)
                         setNegotiable(r.negotiable)
+                        // console.log('1', r.price)
+                        // console.log('2', (r.price?.slice(1).replace(/,/g, '')))
                     } else {
                         // history.push('/products')
                     }
@@ -195,21 +192,16 @@ function AddProduct() {
 
     useEffect(() => {
         if (title) {
-            setOpenLoading(false)
+            loading('close')
         }
     }, [title])
 
 
-    return (
-        <form>
-            {openLoading && <div className="loader" style={{ display: 'grid' }}>
-                <img src="/images/loading.svg" alt="" />
-            </div>}
-
+    return (<>
             {openImageLib && <ImageLib
                 title={'Hairrs'}
                 closeInsertImageModal={closeInsertImageModal}
-                inserImgCaller='AddProduct'
+                insertImgCaller='AddProduct'
                 setImageToList={setImageToList}
             />}
 
@@ -253,7 +245,7 @@ function AddProduct() {
                                         value={productDesc}
                                         onChange={(e) => { document.querySelector('.productDescErrSection').textContent = ''; setProductDesc(e.target.value) }}
                                         type="text"
-                                        placeholder="Details"></textarea>
+                                        placeholder="Product description"></textarea>
                                     <div className="productDescErrSection errSection"></div>
                                 </div>
 
@@ -326,7 +318,8 @@ function AddProduct() {
                             onClick={() => { document.querySelector('.holder-promo').style.display = 'none' }}
                             style={{ position: 'absolute', top: 5, right: 30, color: 'white', fontSize: '1.7rem', transform: 'rotate(45deg)', cursor: 'pointer' }}>+</div>
                         <div className="according-000">
-                            <form>
+                            {/* form */}
+                            <div>
                                 <div className="freebtn-00">
                                     <div className="limitation" style={{
                                         display: 'flex',
@@ -352,13 +345,12 @@ function AddProduct() {
                                     </div>
                                 </div>
                                 <button type="submit" className="nextbtn" onClick={(e) => { e.preventDefault(); handleSubmit() }}>Proceed</button>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
-    )
+        </>)
 }
 
 export default AddProduct

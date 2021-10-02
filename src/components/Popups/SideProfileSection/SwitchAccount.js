@@ -1,20 +1,37 @@
-import React from 'react'
-import { db } from '../../../firebase'
-import MyImage from '../../MyImage'
-import UserProfile from '../../UserProfile/UserProfile'
+import React, { useState, useEffect } from 'react';
+import { auth, db } from '../../../firebase';
+import { handleSwitchAccount, triggerAuthUser } from '../../../myFunctions';
+import MyImage from '../../MyImage';
+import UserProfile from '../../UserProfile/UserProfile';
 
-function SwitchAccount({ setShowSwitchAccount, handleSignOut, setOpenAuthModal }) {
-  const user = UserProfile.getUser()
-  const allUsers = JSON.parse(localStorage.getItem('allUsers'))
+function SwitchAccount({ setShowSwitchAccount, handleSignOut }) {
+  const [user, setUser] = useState([])
+  const [allUSERS, setAllUSERS] = useState([])
 
-  const handleSwitch = (uid) => {
-    db.collection('users').doc(uid)
-      .onSnapshot(user => {
-        if (user.exists) {
-          localStorage.removeItem("user");
-          UserProfile.setUser(user.data()); // also set the auth current user to this new user
-        }
-      });
+  // setUser
+  useEffect(() => {
+    auth.onAuthStateChanged(authUser => {
+      if (authUser?.uid) {
+        db.collection('users').doc(authUser?.uid).onSnapshot((snapshot => {
+          if (snapshot.exists) {
+            setUser(snapshot.data())
+          } else {
+            let res = UserProfile.getUser()
+            res && setUser(res);
+          }
+        }))
+      }
+    })
+  }, []);
+
+  useEffect(() => {
+    const allUsers = JSON.parse(localStorage.getItem('allUsers'))
+    allUsers && setAllUSERS(allUsers)
+  }, []);
+
+  const handleSwitch = async (uid) => {
+    let res = await handleSwitchAccount(uid);
+    res === 'success' && setShowSwitchAccount(false); // window.location.reload()
   }
 
 
@@ -29,12 +46,13 @@ function SwitchAccount({ setShowSwitchAccount, handleSignOut, setOpenAuthModal }
 
   const switchAccount = {
     position: 'absolute',
-    top: -50,
+    top: -100,
     width: 350,
     height: 500,
     background: 'white',
     textAlign: 'left',
-    boxShadow: "2px 2px 16px 0px rgb(102 102 102 / 49%)"
+    boxShadow: "2px 2px 16px 0px rgb(102 102 102 / 49%)",
+    zIndex: 95,
   }
 
   const switchAccountHeader = {
@@ -62,7 +80,7 @@ function SwitchAccount({ setShowSwitchAccount, handleSignOut, setOpenAuthModal }
         className="switchAccount-body">
         <div>
           <b>currently logged in as: </b>
-          <span>{user?.displayName}</span>
+          <span>{user?.userName ? user?.userName : user?.displayName}</span>
         </div>
         <br />
         <br />
@@ -70,18 +88,18 @@ function SwitchAccount({ setShowSwitchAccount, handleSignOut, setOpenAuthModal }
         <b>Switch to:</b>
         <div style={{ minHeight: 5 }}></div>
 
-        {allUsers ? allUsers?.map((user) => (
+        {allUSERS ? allUSERS?.map((user) => (
           <div
             key={user?.uid}
             onClick={() => { handleSwitch(user?.uid) }}
             style={{ display: 'flex', alignItems: 'center', marginBottom: 20, cursor: 'pointer' }}>
             <MyImage
               src={user?.photoURL}
-              alt={user?.displayName}
+              alt={user?.userName ? user?.userName : user?.displayName}
               className="AuthorPhotoURL"
             />
 
-            <div style={{ marginLeft: 20, fontSize: 16 }}>{user?.displayName}</div>
+            <div style={{ marginLeft: 20, fontSize: 16 }}>{user?.userName ? user?.userName : user?.displayName}</div>
           </div>
         )) : <>
           <h4 style={{ color: 'red' }}>You do not have another account</h4>
@@ -89,7 +107,7 @@ function SwitchAccount({ setShowSwitchAccount, handleSignOut, setOpenAuthModal }
 
         <div style={{ minHeight: 15 }}></div>
         <div className="d-flex align-items-center">
-          <button className="mr-2" onClick={(e) => { setOpenAuthModal(true) }}>Add new account</button>
+          <button className="mr-2" onClick={(e) => { triggerAuthUser(true) }}>Add new account</button>
           <button onClick={handleSignOut}>Logout</button>
         </div>
 

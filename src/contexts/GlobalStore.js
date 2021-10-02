@@ -13,7 +13,7 @@ const GlobalStore = ({ children }) => {
     // save list
     useEffect(() => {
         if (user) {
-            let uid = auth.currentUser.uid
+            let uid = auth?.currentUser?.uid
             db.collection('users').doc(uid).collection('saveList').onSnapshot(snapshot => {
                 let totalSaveList = snapshot.docs.length;
                 let result = snapshot.docs.map(doc => ({ list: doc.data(), id: doc.id, totalSaveList }))
@@ -25,7 +25,7 @@ const GlobalStore = ({ children }) => {
     // notification list
     useEffect(() => {
         if (user) {
-            let uid = auth.currentUser.uid
+            let uid = auth?.currentUser?.uid
             db.collection('users').doc(uid).collection('history').onSnapshot(snapshot => {
                 let totalNotificationList = snapshot.docs.length;
                 let result = snapshot.docs.map(doc => ({ list: doc.data(), id: doc.id, totalNotificationList }))

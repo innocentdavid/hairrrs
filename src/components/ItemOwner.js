@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
-import { auth, db } from '../firebase';
+import { db } from '../firebase';
+import { hasFollowed } from '../myFunctions';
 import Chat from './Chat';
 import ReportBoard from './ReportBoard'
 import UserProfile from './UserProfile/UserProfile';
 
 function ItemOwner({ userId }) {
-    const [user, setUser] = useState(UserProfile.getUser());
+    const user = UserProfile.getUser()
+    const [owner, setOwner] = useState([]);
+
     useEffect(() => {
         db.collection('users').doc(userId).get().then(doc => {
-            setUser(doc.data())
+            setOwner(doc.data());
         })
     }, [userId]);
 
@@ -21,8 +24,8 @@ function ItemOwner({ userId }) {
 
     // setShowFbtn true if current user is not the  author
     useEffect(() => {
-        if (auth.currentUser?.uid !== userId) { setShowFbtn(true) }
-    }, [userId])
+        if (user?.uid !== userId) { setShowFbtn(true) }
+    }, [user, userId])
 
     // setTotalFollowers
     useEffect(() => {
@@ -36,36 +39,28 @@ function ItemOwner({ userId }) {
         unsubscribe();
     }, [userId])
 
+    
     // check if current user is already following the author
-    var currentUser = auth.currentUser
-
     useEffect(() => {
-        const unsubscribe = () => {
-            if (currentUser && userId) {
-                db.collection('users').doc(userId).collection('follower').doc(currentUser.uid).get()
-                    .then((doc) => {
-                        setHasFollow(doc.exists);
-                    });
-            }
-        }
+        const unsubscribe = () => { user && userId && setHasFollow(hasFollowed(userId)) }
         unsubscribe()
-    }, [currentUser, userId])
+    }, [user, userId])
 
     const followAuthor = () => {
         if (user) {
-            if (!hasFollow && auth.currentUser) {
-                var uid = auth.currentUser.uid
+            if (!hasFollow && user) {
+                var uid = user?.uid
 
                 db.collection('users').doc(uid).collection('following').doc(userId).set({
                     uid: userId,
-                    photoURL: user.photoURL,
-                    displayName: user.displayName
+                    photoURL: owner.photoURL,
+                    userName: owner.userName
                 })
 
                 db.collection('users').doc(userId).collection('follower').doc(uid).set({
-                    uid: auth.currentUser.uid,
-                    photoURL: auth.currentUser.photoURL,
-                    displayName: auth.currentUser.displayName
+                    uid,
+                    photoURL: user.photoURL,
+                    userName: user.userName
 
                 })
                 setHasFollow(true);
@@ -76,8 +71,8 @@ function ItemOwner({ userId }) {
     const unFollowAuthor = () => {
         if (userId) {
             if (hasFollow) {
-                db.collection('users').doc(userId).collection('follower').doc(auth.currentUser.uid).delete()
-                db.collection('users').doc(auth.currentUser.uid).collection('following').doc(userId).delete()
+                db.collection('users').doc(userId).collection('follower').doc(user?.uid).delete()
+                db.collection('users').doc(user?.uid).collection('following').doc(userId).delete()
                 setHasFollow(false);
             }
         }
@@ -95,16 +90,16 @@ function ItemOwner({ userId }) {
             <div className="sellers-data">
                 <div className="postedBy">Posted by</div>
                 <div className="users-data">
-                    <Link to={`/${user?.userName}`} className="images-data"> <img src={user?.photoURL} alt={user && user?.displayName} /></Link>
+                    <Link to={`/${owner?.userName}`} className="images-data"> <img src={owner?.photoURL} alt={owner && owner?.userName} /></Link>
                     <div className="author-name">
-                        {user?.displayName && user?.displayName === auth.currentUser?.displayName ? 'You' : user?.displayName}
+                        {user?.userName && owner?.userName === user?.userName ? 'You' : owner?.userName}
                     </div>
 
                     <div className="clickables">
-                        {auth.currentUser && auth.currentUser?.uid !== userId ? <div className="message" onClick={() => { setOpenChat(true) }}>Message</div>
+                        {user && user?.uid !== userId ? <div className="message" onClick={() => { setOpenChat(true) }}>Message</div>
                             : <div className="message" style={{ background: "#ff7ba861", border: 'none' }}></div>}
                         &nbsp;
-                        {auth.currentUser && hasFollow ? <div className={`followed showFbtn_${showFbtn}`} onClick={() => { unFollowAuthor() }}>unfollow</div>
+                        {user && hasFollow ? <div className={`followed showFbtn_${showFbtn}`} onClick={() => { unFollowAuthor() }}>unfollow</div>
                             : <div className={`follow showFbtn_${showFbtn}`} onClick={() => { followAuthor() }}>Follow</div>}
                         <div className={`followed totalFollowers_${showFbtn}`} onClick={() => { followAuthor() }}>Following</div>
                         &nbsp;
@@ -112,7 +107,7 @@ function ItemOwner({ userId }) {
                     </div>
 
                 </div>
-                {auth.currentUser && auth.currentUser?.uid !== userId &&
+                {user && user?.uid !== userId &&
                     <div className="report" onClick={() => { setShowReportBoard(true) }}>
                         <img src="/images/Icon material-flag.png" className="flag" alt="" />
                         Report this Business

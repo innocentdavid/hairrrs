@@ -2,13 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import firebase from 'firebase';
 import { db } from '../../firebase';
-import { getDesc, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../fuctions';
-import { Helmet } from 'react-helmet';
+import { getDesc, getMonthDateYearHour_minute, hasSaved, save, Unsave, UrlSlug } from '../../myFunctions';
+import { loading, triggerAuthUser } from '../../myFunctions';
 import { NotificationContext, SaveListContext } from '../../contexts/GlobalStore';
 import SocialMediaButtons from '../../components/SocialMediaButtons';
 import UserProfile from '../../components/UserProfile/UserProfile';
 import ItemOwner from '../../components/ItemOwner';
 import Chat from '../../components/Chat';
+import Loading from '../../components/Loading';
+
+import { outOfStock } from '../../lib/api';
+import { confirmAlert } from 'react-confirm-alert';
+import HeaderMetaData from '../../components/HeaderMetaData';
 
 function Product() {
     var user = UserProfile.getUser();
@@ -63,7 +68,38 @@ function Product() {
         }
     }
 
+    const handleOutOfStock = () => {
+        confirmAlert({
+            title: 'Confirm to delete',
+            message: 'Are you sure to do this.',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: async () => {
+                        loading('open');
+
+                        let res = await outOfStock(productId)
+
+                        console.log(res)
+                        loading('close');
+
+                        history.push('/products')
+                    }
+                },
+                {
+                    label: 'No',
+                    // onClick: () => alert('Click No')
+                }
+            ]
+        });
+        // if (productId && await window.confirm('Are you sure?')) {
+        //     db.collection('products').doc(productId).delete()
+        //     history.push('/products')
+        // }
+    }
+
     const [hasRequestedCalled, setHasRequestedCalled] = useState(false);
+    // setHasRequestedCalled
     useEffect(() => {
         if (notificationList && product) {
             notificationList.forEach(item => {
@@ -87,9 +123,6 @@ function Product() {
         }
     }, [product])
 
-    // var activeTile = document.querySelector('.activeTile');
-    // console.log({ activeTile });
-
     document.querySelectorAll('.tile').forEach(tile => {
         tile.addEventListener('click', (e) => {
             document.querySelector('#prevw-pane').src = e.target.attributes.src.value
@@ -97,31 +130,37 @@ function Product() {
     })
 
     const requestcall = (id) => {
-        if (product?.seller?.displayName !== user.displayName) {
-            if (product?.seller?.id) {
-                db.collection('users').doc(product?.seller?.id).collection('history').doc(`${id}_requestedCalls`).set({
-                    userName: user.displayName,
-                    userPhotoURL: user.photoURL,
-                    productTitle: product?.title,
-                    type: 'requestedCalls',
-                    email: user.email,
-                    phone: user.phoneNumber,
-                    link: `/product?title=${productId}`,
-                    name: user.displayName,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                })
+        if (user?.userName) {
+            if (product?.seller?.userName !== user?.userName) {
+                if (product?.seller?.id) {
+                    db.collection('users').doc(product?.seller?.id).collection('history').doc(`${id}_requestedCalls`).set({
+                        userName: user?.userName,
+                        userPhotoURL: user.photoURL,
+                        productTitle: product?.title,
+                        type: 'requestedCalls',
+                        email: user.email,
+                        phone: user.phoneNumber,
+                        link: `/product?title=${productId}`,
+                        name: user?.userName,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    })
 
-                db.collection('users').doc(user?.uid).collection('requestedCalls').doc(id).set({
-                    title: product?.title,
-                    price: product?.price,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                })
+                    db.collection('users').doc(user?.uid).collection('requestedCalls').doc(id).set({
+                        title: product?.title,
+                        price: product?.price,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    })
+                }
+                setHasRequestedCalled(true)
             }
+        } else {
+            alert('You have to login to continue');
+            triggerAuthUser(true)
         }
-        setHasRequestedCalled(true)
     }
+
     const deleteRequestcall = (id) => {
-        if (product?.seller?.displayName !== user.displayName) {
+        if (product?.seller?.userName !== user?.userName) {
             if (product?.seller?.uid) {
                 db.collection('users').doc(product?.seller?.uid).collection('history').doc(`${id}_requestedCalls`).delete()
                 db.collection('users').doc(user?.uid).collection('requestedCalls').doc(id).delete()
@@ -168,7 +207,6 @@ function Product() {
         // if(captionText){ captionText.innerHTML = dots[slideIndex-1].alt }
     }
 
-
     // set page viewed
     useEffect(() => {
         const setPageViewed = async () => {
@@ -176,10 +214,11 @@ function Product() {
 
             let sellerId = product?.seller?.uid
             let cUserId = user?.uid
+            // console.log(sellerId)
 
             if (sellerId && cUserId) {
-                var totalPageView = await document.querySelector('#totalPageViewSection');
-                var pageUrl = await window.location.href;
+                var totalPageView = document.querySelector('#totalPageViewSection');
+                var pageUrl = window.location.href;
                 var storedPages = await JSON.parse(localStorage.getItem(pageUrl));
                 let UpdatedViewCount = parseInt(totalPageView?.textContent) + 1
 
@@ -203,21 +242,11 @@ function Product() {
 
 
     if (product?.title) {
-        return (
-            <>
-                <Helmet>
-                    <title>{`${product?.title} - Hairrrs`}</title>
-                    <meta name="description" content={getDesc(product?.details, 65)} />
-                    <meta property="og:title" content={product?.category} />
-                    <meta property="og:url" content={`https://ntutu-fdb00.web.app/product?title=${getDesc(product?.title, 35)}`} />
-                    <meta property="og:type" content="product" />
-                    <meta property="og:description" content={getDesc(product?.details, 35)} />
-                    <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/ntutu-fdb00.appspot.com/o/hairrrs-Logo-original-resized.png?alt=media&token=b322368f-6abc-477b-aa10-13f3ed71e277" />
-                </Helmet>
+        return (<>
+            <HeaderMetaData title={product?.title} description={product?.productDesc} />
 
-                {product &&
-                    <>
-                        <div>
+                {product && <>
+                        <>
                             {openChat && <Chat toggle={setOpenChat} userId={user?.uid} />}
                             <div className="layout2a">
                                 <div className="according">
@@ -280,7 +309,7 @@ function Product() {
                                                 </div>
                                                 <div className="reach" style={{ position: 'relative' }}>
                                                     <div className={`show_share show_share_${showShare}`} style={{ position: 'absolute', bottom: '35px' }}>
-                                                        <SocialMediaButtons url={`ntutu-fdb00.web.app/product?title=${productId}`} text={getDesc(product?.details, 65)} />
+                                                        <SocialMediaButtons url={`ntutu-fdb00.web.app/product?title=${productId}`} text={getDesc(product?.productDesc, 65)} />
                                                     </div>
                                                     <div className="text">share</div>
                                                 </div>
@@ -300,7 +329,7 @@ function Product() {
                                                     </div>
                                                     <div className="text">save</div>
                                                 </div>}
-                                            {product?.seller?.uid !== user.uid ?
+                                            {product?.seller?.uid !== user?.uid ?
                                                 <div className="report-product">
                                                     <div className="icon">
                                                         <img src="/images/reportwt.png" alt="" />
@@ -309,7 +338,9 @@ function Product() {
                                                 </div> :
 
                                                 <div className="action-buttons" style={{ marginLeft: 5 }}>
-                                                    <div className="stocksout">Out of stock?</div>
+                                                    <div
+                                                        onClick={handleOutOfStock}
+                                                        className="stocksout">Out of stock?</div>
                                                     <div
                                                         onClick={handleEditProduct}
                                                         className="trash" style={{ marginRight: '5px' }}>Edit</div>
@@ -329,7 +360,7 @@ function Product() {
                                         <hr />
                                         <div className="details-1">
                                             <h3>Details</h3>
-                                            <span className="info">{product?.details}
+                                            <span className="info">{product?.productDesc}
                                             </span>
                                             <div className="post-infos">
                                                 <h2>Posted</h2><span className="info">{getMonthDateYearHour_minute(product?.createdAt)}</span>
@@ -363,7 +394,7 @@ function Product() {
                                     {/* <Trendingproducts /> */}
                                 </div>
                             </div>
-                        </div>
+                        </>
 
                         <ItemOwner userId={product?.seller?.uid} />
                     </>
@@ -371,17 +402,7 @@ function Product() {
             </>
         )
     } else {
-        return (<div style={{
-            width: '100%',
-            height: '100vh',
-            marging: 0,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            fontSize: '100px',
-        }}>
-            Loading...
-        </div>)
+        return <Loading />
     }
 }
 

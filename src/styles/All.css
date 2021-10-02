@@ -44,12 +44,12 @@ body {
 
 button {
   background: white;
-  color: black !important;
-  padding: 5px 10px !important;
+  color: black;
+  padding: 5px 10px;
   border: 1px solid #c10041;
-  border-radius: 3px !important;
+  border-radius: 3px;
   margin: 10px 0;
-  transition: .2s !important;
+  transition: .2s;
 }
 
 button.disabledBtn {
@@ -821,7 +821,7 @@ div#mainCont {
   background: rgb(235, 0, 78);
 }
 
-.signin-modal {
+.signin-modal-local {
   position: fixed;
   background: white;
   height: 100vh;
@@ -856,7 +856,7 @@ div#mainCont {
   margin-top: -15px;
 }
 
-.signin-modal .contents {
+.signin-modal-local .contents {
   display: flex;
   justify-content: space-between;
   margin-right: auto;
@@ -903,17 +903,17 @@ div#mainCont {
   margin-top: 20px;
 }
 
-.signin-modal .contents .image {
+.signin-modal-local .contents .image {
   width: 50%;
   height: 100%;
 }
 
-.signin-modal .contents .image img {
+.signin-modal-local .contents .image img {
   width: 90%;
   height: 90%;
 }
 
-.signup-modal {
+.signup-modal-local {
   /* display: none; */
   position: fixed;
   background: white;
@@ -940,7 +940,7 @@ div#mainCont {
   border-radius: 5px;
 }
 
-.signup-modal .contents {
+.signup-modal-local .contents {
   display: flex;
   justify-content: space-between;
   margin-right: auto;
@@ -990,12 +990,12 @@ div#mainCont {
   margin-top: 20px;
 }
 
-.signup-modal .contents .image {
+.signup-modal-local .contents .image {
   width: 50%;
   height: 100%;
 }
 
-.signup-modal .contents .image img {
+.signup-modal-local .contents .image img {
   width: 90%;
   height: 90%;
 }
@@ -1807,9 +1807,6 @@ a {
   padding-top: 2px;
 }
 
-.according-00 .details h2 {
-  margin-bottom: 10px;
-}
 
 .shelf-hover-menu2 {
   margin-left: 200px;
@@ -1818,22 +1815,6 @@ a {
 
 .shelf-hover-menu3 {
   margin-top: 102px;
-}
-
-h5 {
-  text-align: left;
-  margin-left: -23px;
-  margin-bottom: 30px;
-  color: #f40053;
-  font-weight: 800;
-}
-
-h6 {
-  text-align: left;
-  margin-left: 10px;
-  margin-bottom: 30px;
-  color: #f40053;
-  font-weight: 800;
 }
 
 .shelf-hover-menu1 h5 {
@@ -2437,7 +2418,6 @@ input[type="date"]::-webkit-inner-spin-button {
   text-align: center;
   padding: 10px;
   margin-top: 10px;
-  outline: none;
   border: none;
   border-radius: 5px;
 }
@@ -5820,7 +5800,7 @@ textarea.comment-textarea {
   cursor: pointer;
 }
 
-.contnr .modal {
+.contnr .modal-local {
   position: fixed;
   width: 100%;
   height: 100vh;
@@ -5833,7 +5813,7 @@ textarea.comment-textarea {
   display: none;
 }
 
-.contnr .modal img {
+.contnr .modal-local img {
   position: absolute;
   width: 600px;
   height: 90%;
@@ -5850,7 +5830,7 @@ textarea.comment-textarea {
   cursor: pointer;
 }
 
-.b-photo .modal {
+.b-photo .modal-local {
   position: fixed;
   width: 100%;
   height: 100vh;
@@ -7967,7 +7947,7 @@ seller {
   align-items: center;
 }
 
-.div-icon .btn {
+.div-icon .btn-local {
   background: #dbdbdb;
   height: 10px;
   width: 10px;
@@ -8773,7 +8753,7 @@ seller {
   outline: none;
 }
 
-.resume-cv .container .btn {
+.resume-cv .container .btn-local {
   margin-left: auto;
   margin-right: auto;
   width: 760px;
@@ -9744,7 +9724,7 @@ seller {
     height: 100vh;
     width: 100%;
   }
- .modal{
+ .modal-local{
     position: fixed;
     height: 90vh !important;
     width: 100% !important;
@@ -9754,7 +9734,7 @@ seller {
     padding: 10px;
     display: inline-block !important;
   }
-  .modal .inserts{
+  .modal-local .inserts{
     align-self: center !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -9765,7 +9745,7 @@ seller {
     color: white !important;
     margin-top: 0 !important;
   }
-  .modal .galleryLoad{
+  .modal-local .galleryLoad{
     height: 50vh !important;
     border-left: none !important;
     background: rgb(248, 248, 248);
@@ -9908,7 +9888,7 @@ seller {
     height: 85vh !important;
     box-shadow: none; 
   }
-  .signin-modal{
+  .signin-modal-local{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -10276,7 +10256,7 @@ seller {
 
 
 
-.modal {
+.modal-local {
   background: white;
   height: 400px;
   width: 850px;
@@ -10291,7 +10271,7 @@ seller {
   z-index: 99999999;
 }
 
-.modal .inserts {
+.modal-local .inserts {
   align-items: center;
   text-align: center;
   width: 230px;
@@ -10300,7 +10280,7 @@ seller {
   margin-bottom: auto;
 }
 
-.modal .uploadImage {
+.modal-local .uploadImage {
   background: #f40053;
   color: white;
   border: none;
@@ -10846,7 +10826,7 @@ input[title]:hover::after {
   text-align: left;
 }
 
-.btn {
+.btn-local {
   display: inline-block;
   cursor: pointer;
   margin: 3px 5px;
@@ -10875,6 +10855,7 @@ label {
 .justify-center { justify-content: center }
 .align-center { align-content: center }
 .align-items-center { align-items: center }
+.flex-direction-column { flex-direction: column }
 
 .customArticleTextarea img {
   /* width: 100% !important; */
@@ -10975,16 +10956,6 @@ label {
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
-
-
-
-
-
-
-
-
-
-
 
 /* Hide the images by default */
 .mySlides {

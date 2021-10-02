@@ -20,69 +20,77 @@ import ApplyForJob from './components/ApplyForJob/ApplyForJob';
 import Backend from './pages/Backend/Backend';
 import PageNotFound from './PageNotFound'
 import ResumeTab from './pages/Profile/Components/ResumeTab';
-import Cv from './pages/Profile/Cv/Cv';
-import ProfileRedirect from './pages/Profile/ProfileRedirect';
+import EditCV from './pages/Profile/Components/EditCV';
+import JobVacancyResponses from './pages/JobVacancyResponses/JobVacancyResponses';
+import JobVacancyResponse from './pages/JobVacancyResponses/JobVacancyResponse';
+import MyJobs from './pages/MyJobs/MyJobs';
+import ContestantsPage from './pages/Contestants/ContestantsPage';
+import ContestantReg from './pages/Contestants/ContestantReg';
+import Contestant from './pages/Contestants/Contestant';
+import Business from './pages/Businesses/Business';
+import Forgetpassword from './components/Forgetpassword';
+import HeaderMetaData from './components/HeaderMetaData';
 
 function App() {
-  // const [isOnline, setIsOnline] = useState(true)
 
-  // window.addEventListener('online', updateStatus);
-  // window.addEventListener('offline', updateStatus);
+  return (<>
+    <HeaderMetaData title="Hairrrs" description="Everything hair" />
 
-  // function updateStatus(event) {
-  //   if (navigator.onLine && !isOnline) {
-  //     setIsOnline(true)
-  //     // alert('Your connection is back 😊')
-  //   } else {
-  //     setIsOnline(false)
-  //     // alert('You have lost your internet connection 😥')
-  //   }
-  // }
+    <Router>
+      <Switch>
+        <Route path='/backend' exact component={Backend} />
+        {/* <Route path='/ImageUploadProcessing' exact component={ImageUploadProcessing} /> */}
 
-  return (
-    <>
-      <Router>
-        <Switch>
-          <Route path='/backend' exact component={Backend} />
-          {/* <Route path='/ImageUploadProcessing' exact component={ImageUploadProcessing} /> */}
+        <Layout>
+          <Route path='/404' component={PageNotFound} />
+          <Route path='/settings' exact component={SettingsPage} />
+          <Route path='/articles' exact component={Articles} />
+          <Route path='/add-product' exact component={AddProduct} />
+          <Route path='/add-job' exact component={AddJob} />
+          <Route path='/apply' exact component={ApplyForJob} />
+          <Route path='/job' exact component={Job} />
+          <Route path='/jobs' exact component={Jobs} />
+          <Route path='/jobs/me' exact component={MyJobs} />
+          <Route path='/products' exact component={Products} />
+          <Route path='/product' exact component={Product} />
+          <Route path='/businesses' exact component={Businesses} />
+          <Route path='/businesses/:businessSlug' component={Business} />
+          <Route path='/business-profile' exact component={BusinessProfile} />
+          <Route path='/create-article' exact component={CreateArticle} />
+          <Route path='/article' exact component={Article} />
+          <Route path='/jobVacancyResponses' exact component={JobVacancyResponses} />
+          <Route path='/jobVacancyResponse' exact component={JobVacancyResponse} />
+          <Route path='/contestants' exact component={ContestantsPage} />
+          <Route path='/contestant' exact component={Contestant} />
+          <Route path='/contestant-reg' exact component={ContestantReg} />
+          <Route path='/forgetpassword' exact component={Forgetpassword} />
 
-          <Layout>
-            <Route path='/404' component={PageNotFound} />
-            <Route path='/settings' exact component={SettingsPage} />
-            <Route path='/articles' exact component={Articles} />
-            <Route path='/business-profile' exact component={BusinessProfile} />
-            <Route path='/add-product' exact component={AddProduct} />
-            <Route path='/add-job' exact component={AddJob} />
-            <Route path='/apply' exact component={ApplyForJob} />
-            <Route path='/job' exact component={Job} />
-            <Route path='/jobs' exact component={Jobs} />
-            <Route path='/products' exact component={Products} />
-            <Route path='/product' exact component={Product} />
-            <Route path='/businesses' exact component={Businesses} />
-            <Route path='/create-article' exact component={CreateArticle} />
-            <Route path='/article' exact component={Article} />
+          <Route path='/' exact component={Home} />
 
-            <Route path='/' exact component={Home} />
-            
-            <Route path='/profile' component={ProfileRedirect} />
-            <Route path='/profile/:userName' exact component={Profile} />
-            <Route path='/cv' exact component={Cv} />
-            <Route path='/cv/:userName' exact component={ResumeTab} />
+          <Route path='/profile/:userName' exact component={Profile} />
+          {/* <Route path='/profile'>
+              <Redirect to="/profile/me" />
+            </Route> */}
 
-            {/* <Redirect to='/404' component={PageNotFound} /> */}
-          </Layout>
+          <Route path='/cv/:userName' exact component={ResumeTab} />
+          {/* <Route path='/cv'>
+              <Redirect to="/cv/me" />
+            </Route> */}
+          <Route path='/editCV' exact component={EditCV} />
 
-          <Route path="*" component={PageNotFound} />
+          {/* <Redirect to='/404' component={PageNotFound} /> */}
+        </Layout>
 
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-        </Switch>
-      </Router>
-    </>
-  );
+
+        <Route path="*" component={PageNotFound} />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+      </Switch>
+    </Router>
+  </>)
 }
 
 export default App;

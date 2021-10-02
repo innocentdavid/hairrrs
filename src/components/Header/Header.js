@@ -8,7 +8,7 @@ import UpArticles from './Component/UpArticles';
 import UpBusiness from './Component/UpBusiness';
 import UpJobVacancies from './Component/UpJobVacancies';
 import UpProducts from './Component/UpProducts';
-import { topFunction } from '../../fuctions';
+import { topFunction } from '../../myFunctions';
 
 function Header() {
 
@@ -46,22 +46,21 @@ function Header() {
             <div className="addboard">
                 <div className="close" onClick={() => { document.querySelector('.addboard').style.display = "none" }}>&times;</div>
                 <div className="accord-030">
-                    <span>Start selling</span>
-                    <span>080</span>
+                    <h1>Start selling</h1>
 
                     <div className="business-statistics">
                         <div className="stats-0">
-                            <Link to="add-product" onClick={() => { document.querySelector('.addboard').style.display = "none" }}>
+                            <Link to="/add-product" onClick={() => { document.querySelector('.addboard').style.display = "none" }}>
                                 <div className="box-3">
                                     <img src="/images/icon-add-product.png" alt="" className="" /><h2>sell product</h2>
                                 </div>
                             </Link>
-                            <Link to="add-job" onClick={() => { document.querySelector('.addboard').style.display = "none" }}>
+                            <Link to="/add-job" onClick={() => { document.querySelector('.addboard').style.display = "none" }}>
                                 <div className="box-3">
                                     <img src="/images/icon-add-job.png" alt="" className="" /><h2>upload job vacancy</h2>
                                 </div>
                             </Link>
-                            <Link to="create-article" onClick={() => { document.querySelector('.addboard').style.display = "none" }}>
+                            <Link to="/create-article" onClick={() => { document.querySelector('.addboard').style.display = "none" }}>
                                 <div className="box-3">
                                     <img src="/images/icon-add-article.png" alt="" className="" /><h2>Write an article</h2>
                                 </div>

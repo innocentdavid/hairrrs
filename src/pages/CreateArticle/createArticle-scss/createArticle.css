@@ -81,4 +81,13 @@
       -ms-flex-align: end;
           align-items: flex-end;
 }
+
+.embed-modal {
+  position: fixed;
+  bottom: 50px;
+  width: 100%;
+  margin: auto;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+}
 /*# sourceMappingURL=createArticle.css.map */

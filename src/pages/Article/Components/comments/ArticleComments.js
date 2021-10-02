@@ -34,7 +34,7 @@ function ArticleComments({ articleId, totalComments }) {
                     id: articleId,
                     comment,
                     totalReplies: 0,
-                    user: {uid: user.uid, displayName: user.displayName, photoUrl: user.photoURL },
+                    user: {uid: user.uid, userName: user.userName, photoUrl: user.photoURL },
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 }
                 db.collection('articles').doc(articleId).collection('comments').add(data);
@@ -51,8 +51,8 @@ function ArticleComments({ articleId, totalComments }) {
     const [authUserPhotoURL, setAuthUserPhotoURL] = useState('/images/default-user.png');
     const currentUser = user
     useEffect(() => {
-        if (currentUser.photoURL) {
-            setAuthUserPhotoURL(currentUser.photoURL)
+        if (currentUser?.photoURL) {
+            setAuthUserPhotoURL(currentUser?.photoURL)
         }
     }, [currentUser])
 
@@ -81,10 +81,10 @@ function ArticleComments({ articleId, totalComments }) {
                     <div key={commentId} className="comments-post">
                         <div key={commentId} className="img-comment">
                             <div className="user-data">
-                                <img key={commentId} className="c-photo" src={comment?.user?.photoUrl ? comment.user.photoUrl : '/images/default-user.png'} alt="" />
+                                <img key={commentId} className="c-photo" src={comment?.user?.photoUrl ? comment.user?.photoUrl : '/images/default-user.png'} alt="" />
                             </div>
                             <div className="post--" style={{ marginLeft: '20px' }}>
-                                <div className="username">{comment?.user?.displayName}</div>
+                                <div className="username">{comment?.user?.userName}</div>
                                 <p className="comment">{comment.comment}</p>
                             </div>
                         </div>
